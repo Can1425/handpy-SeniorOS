@@ -42,7 +42,7 @@ while not button_a.is_pressed():
         oled.DispChar(str('请稍等，正在获取源码'), 5, 18, 1, True)
         oled.DispChar(str('如A键无法退出，重启'), 5, 45, 1, True)
         oled.show()
-        _response = urequests.get((''.join([str(x) for x in ['https://gitee.com/can1425/Flag-OS_plugins/raw/master/Flag_plugins/', Flag_plugins_num, '.fos']])), headers={})
+        _response = urequests.get((''.join([str(x) for x in ['https://gitee.com/can1425/mPython_Flag-OS_Radient/raw/plugins/Flag_plugins/', Flag_plugins_num, '.fos']])), headers={})
         Flag_consani(64, 64, 0, 0, 0, 0, 128, 64)
         oled.fill(0)
         exec(_response.text)

@@ -73,9 +73,9 @@ def home():
             flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
         while not button_a.is_pressed():
             flagos.system.core.ui_app('Flag 云端通知')
-            oled.DispChar(str(Flag_sys_notifications[1]), 5, 18, 2)
-            oled.DispChar(str(Flag_sys_notifications[2]), 5, 32, 2)
-            oled.DispChar(str(Flag_sys_notifications[3]), 5, 45, 2)
+            oled.DispChar(str(Flag_sys_notifications[1]), 5, 18, 1)
+            oled.DispChar(str(Flag_sys_notifications[2]), 5, 32, 1)
+            oled.DispChar(str(Flag_sys_notifications[3]), 5, 45, 1)
             oled.show()
         flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
         home()
