@@ -87,3 +87,21 @@ def display_font(_font, _str, _x, _y, _wrap, _z=0):
         oled.blit(framebuf.FrameBuffer(bytearray(_d[0]), _d[2], _d[1],
         framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
+
+def collect():
+    # 此代码来自 TaoLiSystem
+    m = gc.mem_free()
+    n = 3
+    gc.collect()
+    while n > 0:
+        if m == gc.mem_free():
+            gc.collect()
+            n -= 1
+        else:
+            m = gc.mem_free()
+            gc.collect()
+            n = 3
+    return m
+
+def about():
+    print("Flag OS 2.0 (240202006[mXDF])")
