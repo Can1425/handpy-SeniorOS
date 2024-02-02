@@ -212,7 +212,9 @@ def app():
         oled.show()
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
             flagos.system.core.consani(home_movement_x, 6, 36, 36, 0, 0, 128, 64)
-            exec((str(flagos.system.core.get_file('./flagos/apps/app_' + str(Flag_app_num) + '.main.py', '\r\n'))))
+            with open("flagos/apps/app_" + str(Flag_app_num) + "/main.py", "r") as f:
+                Flag_exec_code = f.read()
+                exec(Flag_exec_code)
     flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
     home()
 
