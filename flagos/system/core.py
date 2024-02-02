@@ -3,6 +3,7 @@ import flagos.system.pages
 import ntptime
 import network
 import time
+import os
 
 time_hour = 0
 time_min = 0
@@ -21,6 +22,54 @@ def ui_app(Flag_sys_ui_app_title):
     oled.DispChar(str((str(Flag_sys_ui_app_title))), 5, 0, 2)
     oled.DispChar(str((''.join([str(x) for x in [time_hour, ':', time_min]]))), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
+
+# 闲话：DataCtrl和F＆P factory是瓦在外边旅游用十分鸡肋的蓝牙键盘在android手机上写的 有十分弱智的错误请在某个commit中偷偷改掉 plz（AidLinux倒还可以 有平板的可以试试 记得换一个对实体键盘兼容性高一点的输入法编码
+# 这也是为什么这么多TODO的原因（）
+
+# 适用于data下fos扩展名文件的信息读写操作
+# TODO:将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
+class DataCtrl:
+    def __init__(self,dataFolderPath):
+        self.data={}
+        self.dataFolderPath=dataFolderPath
+        for i in os.listdir(dataFolderPath):
+            with open(File_Path_Factory.JoinPath(dataFolderPath,i)),'w',encoding='utf-8')as f:
+            	self.data[i]=f.read().strip('\r')
+        # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
+    def Get(self,dataName):
+        return self.data[dataName]
+    def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
+        if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
+            self.data[dataName]=dataValue
+            return
+		with open(File_Path_Factory.JoinPath(self.dataFolderPath,dataName+'.fos'),'w',encoding='utf-8') as f:
+            f.write(dataValue)   
+        if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
+            self.data[dataName]=dataValue                 
+        
+# 文件/路径 格式工厂
+class File_Path_Factory:
+
+	# TODO:判断文件是否存在
+	# 传入一绝对路径 返回1布尔值
+	def FileIsExist(filePath):
+    	...
+
+	# TODO:判断路径指向的文件对象是否是目录
+	# 传入一绝对路径 返回1布尔值
+	def IsDir(filePath):
+    	...
+
+	# TODO:相对路径转绝对路径
+	# dir是需要转化的路径 workDir是这个路径在执行代码是的路径 默认用os.getcwd获取
+	def RelativePath2AbsPath(path,workDir=os.getcwd()):
+        ...
+
+	# TODO:链接两个路径
+    # 两个参数 folderPath和filePath
+    # 前者文件夹参数在于反斜杠和斜杠的统一
+	def JoinPath(folderPath,filePath):
+        ...
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     if str(get_file('./flagos/data/Flag_sys_ui_light.fos', '\r\n')) == 'Open':
@@ -88,7 +137,8 @@ def display_font(_font, _str, _x, _y, _wrap, _z=0):
         framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
 
-def collect():
+def FullCollect():
+    # 反复进行collect函数直至达到极限
     # 此代码来自 TaoLiSystem
     m = gc.mem_free()
     n = 3
