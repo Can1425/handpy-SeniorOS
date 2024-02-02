@@ -198,9 +198,9 @@ def app():
             elif home_movement_x >= 118:
                 home_movement_x = 114
         oled.fill(0)
-        oled.RoundRect(home_movement_x, 3, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 40), 3, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 80), 3, 36, 36, 3, 1)
+        oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
+        oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
+        oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
         oled.DispChar(str(Flag_app_list[Flag_app_num]), 35, 45, 3)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 46:
@@ -211,7 +211,7 @@ def app():
             Flag_app_num = 3
         oled.show()
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            flagos.system.core.consani(home_movement_x, 3, 36, 36, 0, 0, 128, 64)
+            flagos.system.core.consani(home_movement_x, 6, 36, 36, 0, 0, 128, 64)
             exec(('import flagos.apps.app_' + str(Flag_app_num)))
     flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
     home()
