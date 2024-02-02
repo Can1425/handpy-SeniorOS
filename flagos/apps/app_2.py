@@ -2,6 +2,8 @@ from mpython import *
 import urequests
 import flagos.system.core
 
+Flag_plugins_num = 1
+
 while not button_a.is_pressed():
     gc.enable()
     gc.collect()
