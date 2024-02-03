@@ -18,3 +18,5 @@ while True:
         oled.DispChar(str('Attempting to boot to User(main.py)...'), 0, 0, 1, True)
         oled.show()
         break
+
+
