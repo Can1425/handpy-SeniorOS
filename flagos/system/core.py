@@ -152,6 +152,3 @@ def FullCollect():
             gc.collect()
             n = 3
     return m
-
-def about():
-    print("Flag OS 2.0 (240202006[mXDF])")
