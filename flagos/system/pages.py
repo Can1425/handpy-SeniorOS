@@ -52,9 +52,9 @@ def home():
     while not (touchpad_t.is_pressed() and touchpad_h.is_pressed() or button_a.is_pressed() or button_b.is_pressed()):
         time_disposal()
         oled.fill(0)
-        flagos.system.core.display_font(font.dvsmb_21, (str(time_hour)), 34, 20, False)
-        flagos.system.core.display_font(font.dvsmb_21, (':'), 61, 20, False)
-        flagos.system.core.display_font(font.dvsmb_21, (str(time_min)), 68, 20, False)
+        flagos.system.core.display_font(flagos.fonts.quantum, (str(time_hour)), 34, 20, False)
+        flagos.system.core.display_font(flagos.fonts.quantum, (':'), 61, 20, False)
+        flagos.system.core.display_font(flagos.fonts.quantum, (str(time_min)), 68, 20, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     if button_a.is_pressed():
@@ -197,10 +197,14 @@ def app():
                 home_movement_x = 4
             elif home_movement_x >= 118:
                 home_movement_x = 114
+        with open("flagos/apps/app_" + str(Flag_app_num) + "/logo", "r") as f:
+            app_logo = f.read()
         oled.fill(0)
         oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
+        oled.Bitmap(home_movement_x, 6, app_logo, 25, 25, 1)
+        oled.Bitmap(home_movement_x, 6, 'app_logo', 25, 25, 1)
         oled.DispChar(str(Flag_app_list[Flag_app_num]), 35, 45, 3)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 46:
@@ -222,6 +226,6 @@ def app():
         oled.fill(0)
         while not button_a.is_pressed():
             oled.Bitmap(32, 12, bytearray([0XFF,0X38,0X00,0X00,0X00,0X03,0X80,0X38,0XFF,0X38,0X00,0X00,0X00,0X0F,0XE0,0XFE, 0XFF,0X38,0X00,0X00,0X00,0X1E,0XF1,0XEF,0XE0,0X38,0X00,0X00,0X00,0X38,0X71,0X86, 0XE0,0X38,0XFC,0X3D,0X80,0X30,0X39,0X80,0XE0,0X38,0XFC,0X7F,0X80,0X30,0X39,0XE0, 0XFF,0X38,0X0E,0X63,0X80,0X30,0X38,0XFC,0XFF,0X38,0X3E,0X61,0X80,0X30,0X38,0X1E, 0XE0,0X38,0XFE,0X61,0X80,0X30,0X38,0X07,0XE0,0X39,0XCE,0X61,0X80,0X38,0X30,0X87, 0XE0,0X39,0X8E,0X73,0X80,0X3C,0XF1,0XC7,0XE0,0X3D,0XFE,0X3F,0X80,0X1F,0XE1,0XFE, 0XE0,0X1C,0XEE,0X1D,0X80,0X07,0XC0,0X78,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X00, 0X00,0X00,0X00,0X73,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X3F,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X1C,0X00,0X00,0X00,0X00,]), 64, 18, 1)
-            oled.DispChar(str('Flag OS 2.0.0.24020301.Alpha'), 0, 32, 1, True)
+            oled.DispChar(str('Flag OS 2.0.0.24020302.Alpha'), 0, 32, 1, True)
             oled.show()
         flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
