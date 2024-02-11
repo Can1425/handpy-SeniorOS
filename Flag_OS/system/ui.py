@@ -1,13 +1,12 @@
 from mpython import *
-import Flag_OS.system.pages
-import Flag_OS.system as core
+import Flag_OS.system.core as core
 import ntptime
 import network
 import time
 import os
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
-    if str(get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
+    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
         oled.invert(1)
     else:
         oled.invert(0)
@@ -30,19 +29,47 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
     if touchpad_p.is_pressed() and touchpad_y.is_pressed():
         return
     time.sleep_ms(consani_done_wait)
-    consani_done_wait = consani_done_wait + 1
+    consani_done_wait = consani_done_wait + 3
+
+def consani_app(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height, logo, logo_x):
+    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
+        oled.invert(1)
+    else:
+        oled.invert(0)
+    try:
+      consani_done_wait = 3
+      oled.fill(0)
+      for count in range(7):
+          oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
+          oled.fill(0)
+          consani_done_x = (consani_done_x - consani_start_x) // 2
+          consani_done_y = (consani_done_y - consani_start_y) // 2
+          consani_done_wide = (consani_start_wide + consani_done_wide) // 2
+          consani_done_height = (consani_start_height + consani_done_height) // 2
+          logo_x = (logo_x + 52) //2
+          oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
+          oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
+          oled.show()
+    except:
+        oled.DispChar(str(' :( 我们遇到了一些问题，将在 3 秒后返回'), 5, 25, 1, True)
+        oled.show()
+        return
+    if touchpad_p.is_pressed() and touchpad_y.is_pressed():
+        return
+    time.sleep_ms(consani_done_wait)
+    consani_done_wait = consani_done_wait + 3
     
 def app(app_title):
     global time_hour, time_min, sys_hour, sys_min
-    time_disposal()
+    core.time_disposal()
     oled.fill(0)
-    if str(get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
+    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
         oled.invert(1)
     else:
         oled.invert(0)
     oled.fill_rect(1, 0, 126, 16, 1)
     oled.DispChar(str((str(app_title))), 5, 0, 2)
-    oled.DispChar(str((''.join([str(x) for x in [time_hour, ':', time_min]]))), 93, 0, 2)
+    oled.DispChar(str((''.join([str(x) for x in [core.time_hour, ':', core.time_min]]))), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
 def display_font(_font, _str, _x, _y, _wrap, _z=0):
