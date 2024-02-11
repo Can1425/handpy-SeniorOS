@@ -1,5 +1,4 @@
 from mpython import *
-import Flag_OS.system.pages
 import ntptime
 import network
 import time
@@ -74,7 +73,6 @@ def time_disposal():
         time_min = '0' + str(sys_min)
     else:
         time_min = sys_min
-    return time_hour, time_min
 
 def init_file(_path):
     f = open(_path, 'w')

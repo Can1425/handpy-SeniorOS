@@ -11,7 +11,7 @@ while True:
         oled.fill(0)
         oled.DispChar(str('Attempting to boot to System...'), 0, 0, 1, True)
         oled.show()
-        import flagos.system.main
+        import Flag_OS.system.main
         break
     elif button_b.is_pressed():
         oled.fill(0)

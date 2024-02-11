@@ -1,6 +1,6 @@
 from mpython import *
 import Flag_OS.system.pages
-from Flag_OS.system.core import *
+import Flag_OS.system as core
 import ntptime
 import network
 import time
