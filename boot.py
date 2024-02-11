@@ -3,7 +3,7 @@ from mpython import *
 def display_message(message):
     oled.fill(0)
     oled.DispChar(str(message), 0, 0, 1, True)
-    oled.show
+    oled.show()
 
 while True:
     display_message('Flag OS BIOS')
@@ -13,7 +13,6 @@ while True:
 
     if button_a.is_pressed():
         display_message('Attempting to boot to System...')
-        oled.show()
         import Flag_OS.system.main
         break
     elif button_b.is_pressed():
