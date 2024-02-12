@@ -6,7 +6,7 @@ mPython掌控是一块MicroPython微控制器板。掌控板是创客教育专�
 
 ## 关于 Flag OS
 
-Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作系统，旨在致力于构建完整的 mPython 生态体验。Flag OS 也是一个为 mPython 开发者们准备好的全新平台，这里优化了大量官方固件中缺失的体验与功能，像 mPython 硬件的极限靠近。Flag OS 不是 mPython 中的 MIUI ，也不会成为 mPython 中的 MIUI ，为了保证各位开发者能将程序毫发无损的迁移至 Flag OS ，我们并未对固件做破坏性改动或删除重要功能，这将是日后， Flag OS 生态强健有力的基础。
+Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作系统，旨在致力于构建完整的 mPython 生态体验。Flag OS 也是一个为 mPython 开发者们准备好的全新平台，这里优化了大量官方固件中缺失的体验与功能，向 mPython 硬件的极限靠近。Flag OS 不是 mPython 中的 MIUI ，也不会成为 mPython 中的 MIUI ，为了保证各位开发者能将程序毫发无损的迁移至 Flag OS ，我们并未对固件做破坏性改动或删除重要功能，这将是日后， Flag OS 生态强健有力的基础。
 
 ## Flag OS 现有版本文件目录
 
