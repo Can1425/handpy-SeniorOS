@@ -15,7 +15,7 @@ Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作
 
 │  boot.py  # Flag OS BIOS，用于引导系统/用户程序运行
 │
-└─flagos  # Flag OS System
+└─Flag_OS  # Flag OS System
         │
         ├─system  # 系统核心代码
         │      core.py  # 系统可调用代码
