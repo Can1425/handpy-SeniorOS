@@ -74,7 +74,7 @@ def display_font(_font, _str, _x, _y, _wrap, _z=0):
 def message(display_content_1, display_content_2):
     oled.fill(0)
     oled.rect(1, 1, 127, 60, 1)
-    oled.DispChar(str((str(display_content_1))), 5, 5, 1)
-    oled.DispChar(str((str(display_content_2))), 5, 20, 1)
-    oled.DispChar(str('PY-明白'), 40, 45, 2)
+    oled.DispChar(display_content_1, 5, 5, 1)
+    oled.DispChar(display_content_2, 5, 20, 1)
+    oled.DispChar('PY-明白', 40, 45, 2)
     oled.show()
