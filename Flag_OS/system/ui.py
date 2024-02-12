@@ -1,15 +1,12 @@
 from mpython import *
-import Flag_OS.system.core as core
+import Flag_OS.system.core as Core
 import ntptime
 import network
 import time
 import os
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
-    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
-        oled.invert(1)
-    else:
-        oled.invert(0)
+    oled.invert(int(Core.DataCtrl.Get('light')))
     try:
       consani_done_wait = 3
       oled.fill(0)
@@ -32,10 +29,7 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
     consani_done_wait = consani_done_wait + 3
 
 def consani_app(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height, logo, logo_x):
-    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
-        oled.invert(1)
-    else:
-        oled.invert(0)
+    oled.invert(int(Core.DataCtrl.Get('light')))
     try:
       consani_done_wait = 3
       oled.fill(0)
@@ -59,17 +53,12 @@ def consani_app(consani_done_x, consani_done_y, consani_done_wide, consani_done_
     time.sleep_ms(consani_done_wait)
     consani_done_wait = consani_done_wait + 3
     
-def app(app_title):
-    global time_hour, time_min, sys_hour, sys_min
-    core.time_disposal()
+def app(app_title:str):
     oled.fill(0)
-    if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
-        oled.invert(1)
-    else:
-        oled.invert(0)
+    oled.invert(int(Core.DataCtrl.Get('light')))
     oled.fill_rect(1, 0, 126, 16, 1)
-    oled.DispChar(str((str(app_title))), 5, 0, 2)
-    oled.DispChar(str((''.join([str(x) for x in [core.time_hour, ':', core.time_min]]))), 93, 0, 2)
+    oled.DispChar(app_title, 5, 0, 2)
+    oled.DispChar(str((''.join([str(Core.GetTime.Hour()), ':', str(Core.GetTime.Min())]))), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
 def display_font(_font, _str, _x, _y, _wrap, _z=0):
@@ -89,4 +78,3 @@ def message(display_content_1, display_content_2):
     oled.DispChar(str((str(display_content_2))), 5, 20, 1)
     oled.DispChar(str('PY-明白'), 40, 45, 2)
     oled.show()
-    return

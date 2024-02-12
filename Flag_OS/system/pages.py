@@ -13,6 +13,10 @@ import math
 import gc
 import Flag_OS.fonts.quantum
 
+# Gxxk留言：
+# 以后写设置面板记得注意 有关Flag_OS/data/light.fos的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
+# PS: 这是我改的 毕竟cfgfile又不给用户看
+
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
@@ -143,10 +147,7 @@ def app():
     time.sleep_ms(5)
     while not button_a.is_pressed():
         oled.fill(0)
-        if str(core.get_file('./Flag_OS/data/light.fos', '\r\n')) == 'Open':
-            oled.invert(1)
-        else:
-            oled.invert(0)
+        oled.invert(int(core.DataCtrl.Get('light')))
         if home_movement_x >= 0 and home_movement_x <= 118:
             if touchpad_p.is_pressed() and touchpad_y.is_pressed():
                 home_movement_x = home_movement_x + 7
