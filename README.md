@@ -1,6 +1,6 @@
 # Flag OS 2 | 自成边界
 
-![新春特别涂装](IMG_20240211_155227.jpg)
+![新春特别涂装](gitee_logo.jpg)
 
 ## 关于 mPython/掌控板
 
