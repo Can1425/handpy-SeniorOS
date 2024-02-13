@@ -24,6 +24,30 @@ app_list = ['Flag 设置', 'Flag 线上插件', 'Flag 文件']
 app_tip = ['Flag OS 设置', '线上拓展插件', 'Flag OS 文件操作']
 setings_panel_list = ['亮度', '音量', '日光模式']
 Flag_OS_logo = bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X60,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X1F,0XFC,0XE0,0X00,0X00,0X00,0X01,0XFF,0X01,0XFF,0X00,0X00,0X00, 0X00,0X00,0X00,0X1F,0XFC,0XE0,0X00,0X00,0X00,0X03,0XFF,0X83,0XFF,0X00,0X00,0X00, 0X00,0X00,0X00,0X18,0X00,0XE0,0X00,0X00,0X00,0X07,0X83,0XC7,0X80,0X00,0X00,0X00, 0X00,0X00,0X00,0X38,0X00,0XE0,0X00,0X00,0X00,0X0E,0X01,0XC6,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X38,0X00,0XE3,0XF0,0X0F,0XF0,0X0E,0X01,0XCE,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X38,0X00,0XC3,0XFC,0X1F,0XF0,0X0C,0X01,0XCE,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X38,0X00,0XC0,0X3C,0X3C,0X70,0X1C,0X01,0XC7,0X80,0X00,0X00,0X00, 0X00,0X00,0X00,0X3F,0XF1,0XC0,0X0E,0X70,0X70,0X1C,0X01,0XC7,0XF8,0X00,0X00,0X00, 0X00,0X00,0X00,0X3F,0XF1,0XC0,0X0E,0X70,0X70,0X1C,0X01,0XC1,0XFE,0X00,0X00,0X00, 0X00,0X00,0X00,0X3F,0XF1,0XC7,0XFC,0X70,0X70,0X1C,0X01,0XC0,0X1E,0X00,0X00,0X00, 0X00,0X00,0X00,0X30,0X01,0XCF,0XFC,0X60,0X60,0X1C,0X01,0XC0,0X0E,0X00,0X00,0X00, 0X00,0X00,0X00,0X70,0X01,0XCC,0X0C,0X60,0X60,0X1C,0X01,0X80,0X0E,0X00,0X00,0X00, 0X00,0X00,0X00,0X70,0X01,0XDC,0X1C,0X70,0XE0,0X1C,0X03,0X80,0X0E,0X00,0X00,0X00, 0X00,0X00,0X00,0X70,0X01,0X9C,0X1C,0X70,0XE0,0X1E,0X07,0X00,0X1E,0X00,0X00,0X00, 0X00,0X00,0X00,0X70,0X01,0X8F,0XFC,0X7F,0XE0,0X0F,0XFF,0X1F,0XFC,0X00,0X00,0X00, 0X00,0X00,0X00,0X70,0X01,0X87,0XFC,0X3F,0XE0,0X07,0XFC,0X1F,0XF8,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XE0,0X00,0X40,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XC0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X01,0XC0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X7F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X7F,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,])
+
+def configure_wifi(ssid, password):
+    ui.consani(0, 64, 128, 64, 0, 0, 128, 64)
+    oled.fill(0)
+    oled.Bitmap(32, 23, Flag_OS_logo, 64, 18, 1)
+    oled.fill_rect(0, 48, 128, 16, 0)
+    oled.DispChar(str('              请稍等...'), 0, 48, 1)
+    oled.show()
+    try:
+        wifi.connectWiFi(ssid, password)
+        ntptime.settime(8, "time.windows.com")
+        oled.fill_rect(0, 48, 128, 16, 0)
+        oled.DispChar(str('             配置成功'), 0, 48, 1)
+        oled.show()
+        time.sleep(2)
+        return True
+    except:
+        oled.fill_rect(0, 48, 128, 16, 0)
+        oled.DispChar(str('             配置失败'), 0, 48, 1)
+        oled.show()
+        while True:
+            if button_a.is_pressed() or button_b.is_pressed():
+                return False
+
 def wifi_page():
     oled.fill(0)
     oled.Bitmap(32, 23, Flag_OS_logo, 64, 18, 1)
@@ -31,77 +55,15 @@ def wifi_page():
     oled.show()
     while True:
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            ui.consani(0, 64, 128, 64, 0 ,0 ,128 , 64)
-            oled.fill(0)
-            try:
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('            请稍等...'), 0, 48, 1)
-                oled.show()
-                wifi.connectWiFi('TP-LINK_CD4A','13697295123')
-                ntptime.settime(8, "time.windows.com")
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('            配置成功'), 0, 48, 1)
-                oled.show()
-                time.sleep(2)
+            if configure_wifi('TP-LINK_CD4A', '13697295123'):
                 return
-            except:
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('            配置失败'), 0, 48, 1)
-                oled.show()
-                while True:
-                    if button_a.is_pressed():
-                        return
-                    elif button_b.is_pressed():
-                        return
         elif touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            ui.consani(0, 64, 128, 64, 0 ,0 ,128 , 64)
-            oled.fill(0)
-            try:
-                oled.Bitmap(32, 23, Flag_OS_logo, 64, 18, 1)
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('              请稍等...'), 0, 48, 1)
-                oled.show()
-                wifi.connectWiFi('Redmi Note 12 Turbo','12345678910')
-                ntptime.settime(8, "time.windows.com")
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('             配置成功'), 0, 48, 1)
-                oled.show()
-                time.sleep(2)
+            if configure_wifi('Redmi Note 12 Turbo', '12345678910'):
                 return
-            except:
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('             配置失败'), 0, 48, 1)
-                oled.show()
-                while True:
-                    if button_a.is_pressed():
-                        return
-                    elif button_b.is_pressed():
-                        return
         elif touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            ui.consani(0, 64, 128, 64, 0 ,0 ,128 , 64)
-            oled.fill(0)
-            try:
-                oled.Bitmap(32, 23, Flag_OS_logo, 64, 18, 1)
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('              请稍等...'), 0, 48, 1)
-                oled.show()
-                wifi.connectWiFi('Xiaomi_2A7A','menghan116118')
-                ntptime.settime(8, "time.windows.com")
-                oled.fill(0)
-                oled.DispChar(str('            配置成功'), 0, 48, 1)
-                oled.show()
-                time.sleep(2)
+            if configure_wifi('Xiaomi_2A7A', 'menghan116118'):
                 return
-            except:
-                oled.fill_rect(0, 48, 128, 16, 0)
-                oled.DispChar(str('            配置失败'), 0, 48, 1)
-                oled.show()
-                while True:
-                    if button_a.is_pressed():
-                        return
-                    elif button_b.is_pressed():
-                        return
-                        
+                
 def home():
     time.sleep_ms(20)
     while not (touchpad_t.is_pressed() and touchpad_h.is_pressed() or button_a.is_pressed() or button_b.is_pressed()):
