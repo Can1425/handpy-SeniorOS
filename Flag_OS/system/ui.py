@@ -71,10 +71,13 @@ def display_font(_font, _str, _x, _y, _wrap, _z=0):
         framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
 
-def message(display_content_1, display_content_2):
-    oled.fill(0)
-    oled.rect(1, 1, 127, 60, 1)
-    oled.DispChar(display_content_1, 5, 5, 1)
-    oled.DispChar(display_content_2, 5, 20, 1)
-    oled.DispChar('PY-明白', 40, 45, 2)
+def message(display_content_1, display_content_2: str):
+    oled.fillstrstr
+    width = 127
+    height = 60
+    oled.rect(1, 1, width, heigheightheight
+
+    title = "PY-明白"
+    oled.DispChar(f"{content_1}\n{content_2}", 5, 5, 1)
+    oled.Dispchar(title, (width - len(title)*8)//2, 45, 2)
     oled.show()
