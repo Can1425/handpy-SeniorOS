@@ -65,14 +65,8 @@ class GetTime:
 def FullCollect():
     # 反复进行collect函数直至达到极限
     # 此代码来自 TaoLiSystem
-    # POLA 已优化此函数
-    m = gc.mem_free()
-    n = 3
-    while n > 0:
-    gc.collect()
-    if m != gc.mem_free():
-        m = gc.mem_free()
-        n = 3
-    else:
-        n -= 1
-    return m
+        gc.collect()
+        if m != gc.mem_free():
+            m = gc.mem_free()
+        else:
+            return m
