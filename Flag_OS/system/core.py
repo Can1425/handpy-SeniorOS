@@ -1,4 +1,4 @@
-from mpython import *
+#from mpython import *
 import ntptime
 import network
 import time

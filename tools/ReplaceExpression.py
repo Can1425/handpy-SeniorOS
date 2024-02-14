@@ -17,11 +17,10 @@ class Tools:
                                         'touchPad_O':f"touchPad_O.read()<{touchPadValue}",
                                         'touchPad_N':f"touchPad_N.read()<{touchPadValue}"
             }))
-        return f"{' or '.join(targetButton)}"
-    testData="format成功!"
+        return f"{' or '.join(targetButtonList)}"
 
 def main():
-    path=input("快...🥵快用硕大的代码插入我的小 程序...🥵\n    然后🥵...🥵，在里面尽情的按下「Enter」吧！\n")
+    path=input("请给定文件路径\n")
     # 读取文件
     with open(path, "r", encoding="utf-8") as f:
         code = [i.strip("\r") for i in f.read().split("\n")] # strip属于对crlf作兼容
