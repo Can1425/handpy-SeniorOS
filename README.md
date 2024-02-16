@@ -43,3 +43,38 @@ Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作
 请注意，您的开发应当基于 Alpha 分支，您的提交也应在 Alpha 分支进行
 
 目前该系统没有正式版本
+
+
+## 如何构建？
+
+本系统使用了专用的特殊工具以提高代码精简度/可读性，如果您对系统在本地仓库做了一定更改，并不能直接刷入至掌控版中
+
+我们编写了`Makefile`文件，您可以在本地仓库中使用**make命令**来构建**Flag OS**
+
+但在此之前，您需要进行一些简单的环境配置
+
+### 创建并激活虚拟环境
+```bash
+python -m venv venv
+./venv/Scripts/Activate.ps1
+# 如果您使用cmd.exe作为终端 请使用以下代码：
+./venv/Scripts/activate.bat
+# Linux用户根据以上代码以此类推 可以使用以下代码：
+./venv/Scripts/activate
+```
+
+### 安装编译器
+
+这是本作唯一的一个需要配置的外部编译器，接下来请在终端中输入以下代码 便会安装完成.
+```python
+pip install mpy-cross-v5
+```
+
+### 构建
+
+非常简单 一句话即可：
+```bash
+python ./tools/Build.py
+```
+
+将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可.

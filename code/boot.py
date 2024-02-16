@@ -5,7 +5,7 @@ while True:
     oled.DispChar('A - FlagOS',0,16)
     oled.DispChar('B - main.py',0,32)
     oled.hline(50, 62, 30, 1)
-    while not (button_a.value()==0 or button_b.value()==0):
+    while not eval("[/GetButtonExpr('thab')/]"):
         pass
     if button_a.is_pressed():
         oled.fill(0)
