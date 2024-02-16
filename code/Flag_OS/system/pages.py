@@ -1,5 +1,5 @@
 from mpython import oled,wifi
-from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
+from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T#LP's PR:温馨提示:还有touchpad_p/y/t/h/o/n(小写;问一下这™谁写)
 from mpython import button_a,button_b
 import Flag_OS.system.ui as UI
 import Flag_OS.system.core as Core
@@ -64,7 +64,7 @@ def wifi_page():
             if ConfigureWLAN('Redmi Note 12 Turbo', '12345678910'):
                 return
         elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            if ConfigureWLAN('Xiaomi_2A7A', 'menghan116118'):
+            if ConfigureWLAN('Xiaomi_2A7A', 'menghan116118'):#LP's PR:不懂就问，有相关wifi config类的代码吗
                 return
 
 def CloudNotification():
