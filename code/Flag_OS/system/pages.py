@@ -65,7 +65,7 @@ def wifi_page():
             if ConfigureWLAN('Redmi Note 12 Turbo', '12345678910'):
                 return
         elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            if ConfigureWLAN('Xiaomi_2A7A', 'menghan116118'):
+            if ConfigureWLAN('Xiaomi_2A7A', 'menghan116118'):#LP's PR:不懂就问，有相关wifi config类的代码吗
                 return
 
 def CloudNotification():
@@ -214,3 +214,7 @@ def about():
         oled.Bitmap(32, 12, logo_FlagOS, 64, 18, 1)
         oled.show()
     UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
+def wlanscan():#定义扫描wifi函数
+    wlan = network.WLAN()#定义类
+    wlan.active(True)#打开
+    return [i[0].decode() for i in network.WLAN().scan()]#返回
