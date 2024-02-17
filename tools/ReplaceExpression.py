@@ -13,7 +13,7 @@ projectShortCommit=projectCommit[0:7]
 
 constData={
     "version":"",
-    "screenMethod":"fast",
+    "screenshotMethod":"fast",
     "branch":projectBranch,
     "fullCommit":projectCommit,
     "commit":projectShortCommit

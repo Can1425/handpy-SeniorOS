@@ -14,7 +14,7 @@ eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
 eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
 eval("[/hashtag/]");button_a=button_a;button_b=button_b
 
-# --SystemUniRuntime
+# --SystemUniRuntime--
 
 # Gxxk留言：
 # 以后写设置面板记得注意 有关Flag_OS/data/light.fos的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
@@ -108,13 +108,26 @@ def SettingPanel():
 
 def home():
     time.sleep_ms(20)
-    while not (touchPad_T.is_pressed() and touchPad_H.is_pressed() or button_a.is_pressed() or button_b.is_pressed()):
+    while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
         UI.display_font(Flag_OS.fonts.quantum, (str(Core.GetTime.Hour())), 30, 18, False)
         UI.display_font(Flag_OS.fonts.quantum, (str(Core.GetTime.Min())), 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
+    if eval("[/GetButtonExpr('ab',connector='and')/]"):
+        oled.fill(0)
+        oled.DispChar("退出确认",0,-1)
+        oled.hline(0,15,128,1)
+        oled.DispChar("你同时按下了AB",0,16)
+        oled.DispChar("将回到启动选择器",0,32)
+        oled.DispChar("同时按下PN确认",0,48)
+        oled.show()
+        while not eval("[/GetButtonExpr('pythonab')/]"):pass
+        if eval("[/GetButtonExpr('pn')/]"):
+            return True
+        
+
     if button_a.is_pressed():
         CloudNotification()
     elif button_b.is_pressed():

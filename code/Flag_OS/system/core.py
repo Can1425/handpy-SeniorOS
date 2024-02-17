@@ -2,7 +2,9 @@ import time
 import os
 import framebuf
 from machine import unique_id
-
+# --SystemUniRuntime--
+eval('[/hashtag/]');gc=gc;wifi=wifi
+# --SystemUniRuntime--
 
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
@@ -30,7 +32,7 @@ class File_Path_Factory:
 
     # 将所有的斜杠替换为反斜杠 便于统一路径
     def Replace2Backslash(path):
-        return path.replace("\\","/").split("/")
+        return path.replace("\\","/")
 
     # 判断文件是否存在
     # 传入一绝对路径 返回1布尔值
@@ -71,7 +73,7 @@ def FullCollect():
 
 # 获取设备ID
 def GetDeviceID(mode=0):
-    if mode==0:return "".join(str(wifi.sta.config('mac'))[2:len(str(wlan.sta.config('mac')))-1].split("\\x"))
+    if mode==0:return "".join(str(wifi.sta.config('mac'))[2:len(str(wifi.sta.config('mac')))-1].split("\\x"))
     elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
 
 # 支持2算法的截图
@@ -88,14 +90,14 @@ class Screenshot:
             f.write(bufb)
     def Enumerate(path):
         # 史上最nb的截屏方法！真神奇！哈哈哈
-        if eval("[/Const('screenMethod')/]")=="fast":
+        if eval("[/Const('screenshotMethod')/]")=="fast":
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')
                 for y in range(128):
                     row_data = bytearray(8) #缓冲区
                     for x in range(64):row_data[x//8]|=(oled.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
                     f.write(row_data)
-        elif eval("[/Const('screenMethod')/]")=="ram":
+        elif eval("[/Const('screenshotMethod')/]")=="ram":
             buffer = bytearray(1024)  # 创建缓冲区
             # 获取屏幕像素状态
             for y in range(64):

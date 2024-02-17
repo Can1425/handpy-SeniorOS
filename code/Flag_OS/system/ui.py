@@ -1,12 +1,17 @@
-from mpython import oled,wifi
-from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from mpython import button_a,button_b
 import Flag_OS.system.core as Core
 import ntptime
 import network
 import time
-import os
+import ustruct
 import framebuf
+
+# --SystemUniRuntime--
+eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
+eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
+eval("[/hashtag/]");button_a=button_a;button_b=button_b
+
+# --SystemUniRuntime--
+
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     oled.invert(int(Core.DataCtrl.Get('light')))
     try:
@@ -54,7 +59,16 @@ def ConsaniApp(consani_done_x, consani_done_y, consani_done_wide, consani_done_h
         return
     time.sleep_ms(consani_done_wait)
     consani_done_wait = consani_done_wait + 3
-    
+
+def GetCharWidth(s):
+    strWidth = 0
+    for c in s:
+        charData = oled.f.GetCharacterData(c)
+        if charData is None:continue
+        strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
+    return strWidth
+AutoCenter=lambda string:64-GetCharWidth(string)//2
+
 def app(app_title:str):
     oled.fill(0)
     oled.invert(int(Core.DataCtrl.Get('light')))

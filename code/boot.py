@@ -1,6 +1,9 @@
 from mpython import oled
-#import time #LP's PR:此处加载程序建议加一点点等待时间，否则下面显示加约等于没加，还浪费RAM
-while True:#LP's PR:给点用户可选的启动啊喂，很烦的！！
+import time,uos
+def RenameCode():
+    time.sleep(1.5)
+    uos.rename('/main.py.bak','/main.py')
+while True:
     oled.fill(0)
     oled.DispChar('FlagOS 启动选择器',0,0)
     oled.DispChar('A - FlagOS',0,16)
@@ -11,7 +14,7 @@ while True:#LP's PR:给点用户可选的启动啊喂，很烦的！！
         pass
     if button_a.is_pressed():
         oled.fill(0)
-        oled.DispChar('将启动至FlagOS...',0,0)
+        oled.DispChar('0.5s后启动至FlagOS...',0,0)
         oled.show()
         from mpython import wifi
         from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
@@ -22,15 +25,24 @@ while True:#LP's PR:给点用户可选的启动啊喂，很烦的！！
                 "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
                 "button_a":button_a,"button_b":button_b,
                 "ntptime":__import__('ntptime'),
-                "time":__import__('time'),
-                "gc":gc
+                "time":time,
+                "gc":gc,
+                "os":uos
         }
-        runtimeDict["runtimeDict"]=runtimeDict
         __import__("Flag_OS.system.main",runtimeDict)
         break
     elif button_b.is_pressed():
         oled.fill(0)
-        oled.DispChar('将启动至main.py...',0,0)
+        oled.DispChar('0.5s后启动至main.py...',0,0)
         oled.show()
-        #time.sleep(0.5) #详见PR的line2
+        time.sleep(0.5)
+        break
+    elif eval("[/GetButtonExpr('th')/]"):
+        oled.fill(0)
+        oled.DispChar('启动至REPL...',0,0)
+        oled.DispChar("缓冲区下 屏幕已oled.fill(0)",0,16,auto_return=True)
+        oled.show()
+        oled.fill(0)
+        uos.rename('/main.py','/main.py.bak') # 先重命名main.py 直接进入REPL
+        __import__("_thread").start_new_thread(RenameCode,()) # 开多线程 在1s后(已进入REPL)时重命名回去
         break
