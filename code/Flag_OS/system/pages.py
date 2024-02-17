@@ -161,3 +161,16 @@ def about():
         oled.Bitmap(32, 12, logo_FlagOS, 64, 18, 1)
         oled.show()
     UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
+#PR函数如下：
+def wlanscan():#定义扫描wifi函数
+    wlan = network.WLAN()#定义类
+    wlan.active(True)#打开
+    return [i[0].decode() for i in network.WLAN().scan()]#返回
+    #注意，此函数从LP OS移植
+def read_wifi_config(file_path):#定义读配置文件函数，参数：wifi配置文件路径
+    with open(file_path,'r') as f:#读文件
+        config=f.read().split('\n')#读配置，以\n换行
+        wifi_ssid=config[0]
+        wifi_pwd=config[1]
+        w=[wifi_ssid,wifi_pwd]
+        return w
