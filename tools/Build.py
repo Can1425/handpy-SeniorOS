@@ -14,6 +14,16 @@ codeFile=[
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置
+# TODO:未测试
+def treeDir(dir):
+    for i in os.listdir(dir):
+        if os.path.isdir(dir+i):
+            treeDir(dir+i+"/")
+        else:
+            #判断是不是py文件
+            if i.split(".")[-1]=="py":
+                codeFile.append(os.path.join(dir+i))
+
 
 def Build(codeFile,inputDir,outputDir):
     try:shutil.rmtree(outputDir)
@@ -30,9 +40,6 @@ def Build(codeFile,inputDir,outputDir):
         os.system(f"mpy-cross-v5 {path} -march=xtensawin")
         os.remove(path)
 
-# TODO:设计一个制作安装包的程序
-def MakeInstaller():
-    pass
 
 if __name__=="__main__":
     Build(codeFile,codeDir,buildDir)

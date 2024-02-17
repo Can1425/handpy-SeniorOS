@@ -2,12 +2,28 @@
 # 格式：eval("[/表达式/]")
 
 import sys
+from git import Repo # GitPython
+
+projectPath="G:\\PythonProject\\mPython\\mPython-Flag-OS\\"
+# 根据具体情况编写
+projectRepo=Repo(projectPath)
+projectBranch=projectRepo.active_branch.name
+projectCommit=projectRepo.head.object.hexsha
+projectShortCommit=projectCommit[0:7]
+
+constData={
+    "version":"",
+    "screenMethod":"fast",
+    "branch":projectBranch,
+    "fullCommit":projectCommit,
+    "commit":projectShortCommit
+}
 
 class Tools:
     # 根据targetButton值生成一个纯or表达式
     # 例：输入：thab
     # 
-    def GetButtonExpr(targetButton,touchPadValue=100):
+    def GetButtonExpr(targetButton,connector="or",touchPadValue=100):
         targetButtonList=[]
         for i in targetButton:
             targetButtonList.append(eval(i,
@@ -20,7 +36,11 @@ class Tools:
                                         'o':f"touchPad_O.read()<{touchPadValue}",
                                         'n':f"touchPad_N.read()<{touchPadValue}"
             }))
-        return f"{' or '.join(targetButtonList)}"
+        return f"({f' {connector} '.join(targetButtonList)})"
+    def Const(name):
+        global constData
+        return constData[name]
+    hashtag="#"
 
 def ReplaceExpr(inputPath,outputPath=""):
     if outputPath=="":outputPath=inputPath
@@ -29,7 +49,7 @@ def ReplaceExpr(inputPath,outputPath=""):
         code = [i.strip("\r") for i in f.read().split("\n")] # strip属于对crlf作兼容
     # 遍历并查找标识符
     for line in range(len(code)):
-        if ("eval(\"[/" in code[line]) and ("/]\")" in code[line]):
+        if ("eval(" in code[line]) and ("[/" in code[line]) and ("/]" in code[line]) and (")" in code[line]):
             exprStart=code[line].index("[/")+2  # +2是因为 string.index 返回的是起始位置 需要+ len("[/") 才行
             exprEnd=code[line].index("/]")      # 防止各位看着有点晕 拆分来写 顺手加个日志 反正电脑端性能无所谓
             exprResult=eval(f"Tools.{code[line][exprStart:exprEnd]}")

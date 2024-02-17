@@ -1,3 +1,5 @@
 .vscode
-venv
+.venv
 build
+tools/__pycache__
+tools/packs

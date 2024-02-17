@@ -1,9 +1,8 @@
-#from mpython import *
-import ntptime
-import network
 import time
 import os
-import gc
+import framebuf
+from machine import unique_id
+
 
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
@@ -70,71 +69,40 @@ def FullCollect():
         else:
             return m
 
+# 获取设备ID
+def GetDeviceID(mode=0):
+    if mode==0:return "".join(str(wifi.sta.config('mac'))[2:len(str(wlan.sta.config('mac')))-1].split("\\x"))
+    elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
+
+# 支持2算法的截图
+# 分别为 直接复制缓冲区数据(CopyFrameBuf) 和 枚举缓冲区数据(Enumerate)
+# 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
+# 这里Enumerate部分使用的算法取决于构建阶段 对本代码作EXPR操作时 constData["screenMethod"] 的值是 fast 还是 ram
 class Screenshot:
-    def copyFramebuf():
-        pass
-    def screenshot(mode=4,path=False,RA=128,RB=64,RX=0,RY=0):
-        if mode==1 and path!=False:print("[GxxkAPI]警告：模式一只会返回一个二位数组，path参数无法使用")
-        if mode!=3 and (RA or RB or RX or RY):print("[GxxkAPI]警告：除模式三以外的模式均不需要标注")
-        else:GxxkAPI_Error("截屏时启用除模式1以外的模式需要指定写入路径")
-        # 方法1: 强行直接扫，速度快但是占用内存大- by Gxxk
-        if mode==1:
-            print("[GxxkAPI]尝试截取缓冲区内容用于截取屏幕内容（模式1-列表生成器，返回一个数组-By Gxxk-速度优先）")
-            return [[oled.pixel(j,i) for j in range(128)] for i in range(64)]
-        # 方法2：逐行扫描，逐行写入，慢但是占用资源小，掌控版可读取-By emo
-        elif mode==2:
-            if path==False:raise GxxkAPI_Error("截屏时启用模式2需要指定写入路径")
-            print("[GxxkAPI]尝试逐列截取屏幕内容并写入至文件"+path+"内（模式2-无返回内容-By emo的程序大神-协议P1）")
-            f=open(path,"w")
-            f.write("P1\n#Screenshot\n128 64\n")
-            for y in range(64):
-                for x in range(0,127):
-                    f.write(str(oled.pixel(x,y)))
-                    f.write(" ")
-                f.write(str(oled.pixel(127,y)))
-                f.write("\n")
-            f.write("#screenshot by emofalling")
-            f.close()
-        # 方法3：未知，写的有点玄乎，看不懂-可设定截屏范围-by LP
-        elif mode==3:
-            if path==False:raise GxxkAPI_Error("截屏时启用模式3需要指定写入路径和截图起始点（RX/RY），图片长/宽（RA/RB）")
-            print("[GxxkAPI]尝试单像素截取屏幕内容并写入至文件"+path+"内（模式3-无返回内容-可设置截屏范围-By LP-协议P1）")
-            file = open("screenshot.pbm","w")
-            file.write("P1" + "\n" + RA + " " + RB + "\n")
-            for i in range(int(RB)):
-                for j in range(int(RA)):
-                    file.write(str(oled.pixel(RX,RY)))
-                    file.write(str(" "))
-                    RX += 1
-                file.write("\n")
-                RY += 1
-            file.write("#Screenshot by LP_OVERROR")
+    def CopyFramebuf(path):
+        bufb=bytearray(128*64)
+        with open(path,"wb")as f:
+            f.write(b"P4\n128 64\n")
+            buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
+            buf.blit(oled.buffer,0,0)
+            f.write(bufb)
+    def Enumerate(path):
         # 史上最nb的截屏方法！真神奇！哈哈哈
-        elif mode==4:
-            if path==False:raise GxxkAPI_Error("截屏时启用模式4需要指定写入路径")
-            print("[GxxkAPI]尝试逐列截取屏幕内容并以64像素点为单位写入进缓冲区内（模式4-无返回内容-速度/占用平衡-默认选项）")
+        if eval("[/Const('screenMethod')/]")=="fast":
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')
                 for y in range(128):
                     row_data = bytearray(8) #缓冲区
-                    for x in range(64):row_data[x//8]|=(oled.pixel(x, y)&1)<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
+                    for x in range(64):row_data[x//8]|=(oled.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
                     f.write(row_data)
-                f.write(b'# screenshot func by Gxxk')
-        # 第三种的ram占用问题最优解（话说本来4and这个本来内存占用似乎就还行 30kb剩余都能截）
-        elif mode==5:
-            if path==False:raise GxxkAPI_Error("截屏时启用模式5需要指定写入路径")
-            print("[GxxkAPI]尝试逐列截取屏幕内容（模式5-无返回内容-By ChatGPT&Gxxk-内存优先）")
+        elif eval("[/Const('screenMethod')/]")=="ram":
             buffer = bytearray(1024)  # 创建缓冲区
             # 获取屏幕像素状态
             for y in range(64):
                 for x in range(128):
-                    pixel = oled.pixel(x, y)  # 获取屏幕像素状态
-                    bit_pos = 7 - (x % 8)
-                    buffer[x // 8 + y * (128 // 8)] |= (pixel & 1) << bit_pos  # 将像素状态写入缓冲区
+                    buffer[x//8+y*16]|=oled.pixel(x,y)<<7-(x%8)
             # 保存为PBM文件
-            print("[GxxkAPI]尝试写入缓冲区内容")
             with open('screenshot.pbm', 'wb') as f:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
-                f.write(b'# screenshot func by Gxxk')
