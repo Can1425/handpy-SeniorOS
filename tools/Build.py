@@ -11,6 +11,7 @@ codeFile=[
     "Flag_OS/system/ui.py",
     "Flag_OS/system/pages.py",
     "Flag_OS/fonts/quantum.py",
+    "Flag_OS/system/update.py"
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置

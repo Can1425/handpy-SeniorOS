@@ -12,7 +12,7 @@ class DataCtrl:
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
-        for i in os.listdir(dataFolderPath):
+        for i in [f for f in os.listdir(dataFolderPath) if not f.endswith('.fos')]:
             with open(dataFolderPath+i,'w',encoding='utf-8')as f:
                 self.data[i.strip('.fos')]=f.read().strip('\r')
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
