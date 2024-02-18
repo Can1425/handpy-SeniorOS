@@ -8,6 +8,7 @@ while True:
     oled.DispChar('FlagOS 启动选择器',0,0)
     oled.DispChar('A - FlagOS',0,16)
     oled.DispChar('B - main.py',0,32)
+    oled.DispChar("TH- REPL",0,48)
     oled.hline(50, 62, 30, 1)
     oled.show()
     while not eval("[/GetButtonExpr('thab')/]"):
@@ -29,6 +30,7 @@ while True:
                 "gc":gc,
                 "os":uos
         }
+        runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
         __import__("Flag_OS.system.main",runtimeDict)
         break
     elif button_b.is_pressed():
@@ -37,7 +39,7 @@ while True:
         oled.show()
         time.sleep(0.5)
         break
-    elif eval("[/GetButtonExpr('th')/]"):
+    elif eval("[/GetButtonExpr('th','and')/]"):
         oled.fill(0)
         oled.DispChar('启动至REPL...',0,0)
         oled.DispChar("缓冲区下 屏幕已oled.fill(0)",0,16,auto_return=True)

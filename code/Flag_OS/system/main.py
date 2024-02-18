@@ -2,9 +2,9 @@
 #import Flag_OS.system.core as core
 # --SystemUniRuntime--
 eval("[/hashtag/]");runtimeDict=runtimeDict
+runtimeDict["runtimeDict"]=runtimeDict
 # --SystemUniRuntime--
 
-runtimeDict["runtimeDict"]=runtimeDict
 Pages=__import__("Flag_OS.system.pages",runtimeDict)
 Pages.wifi_page()
 returnData=Pages.home()

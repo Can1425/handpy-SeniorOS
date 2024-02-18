@@ -49,13 +49,13 @@ Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作
 
 本系统使用了专用的特殊工具以提高代码精简度/可读性，如果您对系统在本地仓库做了一定更改，并不能直接刷入至掌控版中
 
-我们编写了`Makefile`文件，您可以在本地仓库中使用**make命令**来构建**Flag OS**
+我们编写了`./tools/Build.py`，您可以在本地仓库中**直接运行它**来构建**Flag OS**
 
 但在此之前，您需要进行一些简单的环境配置
 
 ### 创建并激活虚拟环境
 ```bash
-python -m venv venv
+python -m venv .venv
 ./venv/Scripts/Activate.ps1
 # 如果您使用cmd.exe作为终端 请使用以下代码：
 ./venv/Scripts/activate.bat

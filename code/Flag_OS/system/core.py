@@ -3,7 +3,7 @@ import os
 import framebuf
 from machine import unique_id
 # --SystemUniRuntime--
-eval('[/hashtag/]');gc=gc;wifi=wifi
+eval('[/hashtag/]');gc=gc;wifi=wifi;oled=oled
 # --SystemUniRuntime--
 
 # 适用于data下fos扩展名文件的信息读写操作

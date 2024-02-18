@@ -23,6 +23,13 @@ ACCEPT : touchPad_X
 - 换行符使用**LF**(即`\n`)
 
 ## Commit编写规范
+
+本项目禁止网页单文件commit！
+
+请使用**Gitee IDE**或Git手动Push！
+
+违者将被强行回滚其commit.
+
 ### 模板
 ```text
 <type>:<title>
