@@ -16,7 +16,7 @@ def GetMD5(path:list)->list:
 
 # 没啥修改 给Build.py定制的.
 def GetMD5List(path):
-    tree=ScanFile(input(path))
+    tree=ScanFile(path)
     md5List=GetMD5(tree)
     return dict(zip(tree,md5List))
 
