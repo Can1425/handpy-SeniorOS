@@ -1,5 +1,6 @@
 from mpython import *
-import Flag_OS.system.core
+import Flag_OS.system.ui as ui
+import ntptime
 
 def time():
     try:
@@ -10,13 +11,13 @@ def time():
         oled.fill(0)
         oled.DispChar(str('成功'), 0, 0, 1)
         oled.show()
-        Flag_OS.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        ui.consani(0, 0, 0, 0, 0, 0, 128, 64)
     except:
-        Flag_OS.system.core.consani(64, 64, 0, 0, 0, 0, 128, 64)
+        ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
         oled.fill(0)
         oled.DispChar(str('失败'), 0, 0, 1)
         oled.show()
-        flagos.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        ui.consani(0, 0, 0, 0, 0, 0, 128, 64)
 
 def collect():
     try:
@@ -27,10 +28,10 @@ def collect():
         oled.fill(0)
         oled.DispChar(str('成功'), 0, 0, 1)
         oled.show()
-        Flag_OS.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        ui.consani(0, 0, 0, 0, 0, 0, 128, 64)
     except:
-        Flag_OS.system.core.consani(64, 64, 0, 0, 0, 0, 128, 64)
+        ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
         oled.fill(0)
         oled.DispChar(str('失败'), 0, 0, 1)
         oled.show()
-        Flag_OS.system.core.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        ui.consani(0, 0, 0, 0, 0, 0, 128, 64)

@@ -8,7 +8,7 @@ while True:
     oled.DispChar('FlagOS 启动选择器',0,0)
     oled.DispChar('A - FlagOS',0,16)
     oled.DispChar('B - main.py',0,32)
-    oled.DispChar("TH- REPL",0,48)
+    oled.DispChar("TH - REPL",0,48)
     oled.hline(50, 62, 30, 1)
     oled.show()
     while not eval("[/GetButtonExpr('thab')/]"):
@@ -17,6 +17,7 @@ while True:
         oled.fill(0)
         oled.DispChar('0.5s后启动至FlagOS...',0,0)
         oled.show()
+        time.sleep(0.5)
         from mpython import wifi
         from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
         from mpython import button_a,button_b
