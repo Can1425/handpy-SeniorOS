@@ -1,5 +1,6 @@
 from mpython import *
 import Flag_OS.system.ui as ui
+import Flag_OS.system.core
 import ntptime
 
 def time():
