@@ -1,6 +1,6 @@
 from mpython import *
 import Flag_OS.system.ui as ui
-import Flag_OS.system.core
+import Flag_OS.system.core as core
 import ntptime
 
 def time():
@@ -19,13 +19,12 @@ def time():
         oled.DispChar(str('失败'), 0, 0, 1)
         oled.show()
         ui.consani(0, 0, 0, 0, 0, 0, 128, 64)
-
 def collect():
     try:
         oled.fill(0)
         oled.DispChar(str('请稍等...'), 0, 0, 1)
         oled.show()
-        Flag_OS.system.core.collect()
+        core.FullCollect()
         oled.fill(0)
         oled.DispChar(str('成功'), 0, 0, 1)
         oled.show()

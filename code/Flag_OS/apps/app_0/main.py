@@ -16,10 +16,10 @@ while not button_a.is_pressed():
         settings_num = settings_num + -1
         if settings_num < 1:
             settings_num = 1
-    Flag_OS.system.ui.app("Setting")
+    ui.app("Setting")
     oled.DispChar(str('暂无简介'), 5, 18, 1, True)
     oled.DispChar(str(settings_list[settings_num]), 5, 45, 1)
-    oled.DispChar(''.join([settings_num,'/',settings_list]), 105, 45, 1)
+    oled.DispChar(''.join([str(settings_num),'/',str(len(settings_list))]), 105, 45, 1)
     oled.show()
     if touchpad_t.is_pressed() and touchpad_h.is_pressed():
         if settings_num == 0:
