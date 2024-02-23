@@ -70,6 +70,13 @@ python -m venv .venv
 pip install mpy-cross-v5
 ```
 
+### 安装Build.py前置
+
+Build.py需要使用Gitpython库来保证正常运行，请在终端中运行以下代码安装GitPython.
+```python
+pip install GitPython
+```
+
 ### 构建
 
 非常简单 一句话即可：
