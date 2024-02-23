@@ -11,7 +11,7 @@ codeFile=[
     "Flag_OS/system/ui.py",
     "Flag_OS/system/pages.py",
     "Flag_OS/fonts/quantum.py",
-    "Flag_OS/system/update.py"
+    "Flag_OS/system/update.py",
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置
@@ -36,6 +36,8 @@ def Build(codeFile,inputDir,outputDir):
         ReplaceExpr(outputDir+i)
     # 编译
     for i in codeFile:
+        if i == "boot.py":
+            break
         print(f"MPYC {i}")
         path=outputDir+i
         os.system(f"mpy-cross-v5 {path} -march=xtensawin")
