@@ -1,4 +1,4 @@
-from mpython import oled
+from mpython import *
 import time,uos
 def RenameCode():
     time.sleep(1.5)
@@ -22,6 +22,7 @@ while True:
         from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
         from mpython import button_a,button_b
         import gc;gc.enable()
+        global runtimeDict
         runtimeDict={
                 "oled":oled,"wifi":wifi(),
                 "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
@@ -32,7 +33,7 @@ while True:
                 "os":uos
         }
         runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        __import__("Flag_OS.system.main",runtimeDict)
+        import Flag_OS.system.main
         break
     elif button_b.is_pressed():
         oled.fill(0)

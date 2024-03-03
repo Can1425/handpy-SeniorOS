@@ -8,16 +8,22 @@ eval('[/hashtag/]');gc=gc;wifi=wifi;oled=oled
 
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
+# 初始化函数
 class DataCtrl:
+    # 初始化函数，传入文件夹路径
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
-        for i in [f for f in os.listdir(dataFolderPath) if not f.endswith('.fos')]:
+        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.fos')]:
             with open(dataFolderPath+i,'w',encoding='utf-8')as f:
                 self.data[i.strip('.fos')]=f.read().strip('\r')
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
+        #print(self.data)
+    # 获取数据
     def Get(self,dataName):
-        return self.data[dataName]
+        with open(str("/Flag_OS/data/"+dataName+".fos"),'r') as f:
+            return f.read()
+    # 写入数据
     def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
         if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
             self.data[dataName]=dataValue
@@ -25,7 +31,7 @@ class DataCtrl:
         with open(self.dataFolderPath+dataName+'.fos','w',encoding='utf-8') as f:
             f.write(dataValue)   
         if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
-            self.data[dataName]=dataValue                 
+            self.data[dataName]=dataValue                
         
 # 文件/路径 格式工厂
 class File_Path_Factory:

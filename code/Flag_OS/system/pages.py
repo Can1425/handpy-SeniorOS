@@ -7,8 +7,22 @@ import urequests
 #import json
 #import math
 #import gc
+import ntptime
 import Flag_OS.fonts.quantum
-
+from mpython import wifi,oled
+from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
+from mpython import button_a,button_b
+import gc
+import time,uos
+runtimeDict={
+        "oled":oled,"wifi":wifi(),
+        "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
+        "button_a":button_a,"button_b":button_b,
+        "ntptime":__import__('ntptime'),
+        "time":time,
+        "gc":gc,
+        "os":uos
+}
 # --SystemUniRuntime--
 eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
 eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
@@ -59,13 +73,7 @@ def wifi_page():
     oled.show()
     while True:
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            if ConfigureWLAN('TP-LINK_CD4A', '13697295123'):
-                return
-        elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            if ConfigureWLAN('Redmi Note 12 Turbo', '12345678910'):
-                return
-        elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            if ConfigureWLAN('Xiaomi_2A7A', 'menghan116118'):#LP's PR:不懂就问，有相关wifi config类的代码吗
+            if ConfigureWLAN('ChinaNet-x6VA', '1145141919810'):
                 return
 
 def CloudNotification():
@@ -110,8 +118,8 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        UI.display_font(Flag_OS.fonts.quantum, (str(Core.GetTime.Hour())), 30, 18, False)
-        UI.display_font(Flag_OS.fonts.quantum, (str(Core.GetTime.Min())), 64, 18, False)
+        UI.DisplayFont(Flag_OS.fonts.quantum, (str(Core.GetTime.Hour())), 30, 18, False)
+        UI.DisplayFont(Flag_OS.fonts.quantum, (str(Core.GetTime.Min())), 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
@@ -172,9 +180,10 @@ def app():
     home_movement_x = 40
     app_num = 0
     time.sleep_ms(5)
+    DataCtrl=Core.DataCtrl('/Flag_OS/data')
     while not button_a.is_pressed():
         oled.fill(0)
-        oled.invert(int(Core.DataCtrl.Get('light')))
+        oled.invert(int(DataCtrl.Get('light')))
         if home_movement_x >= 0 and home_movement_x <= 118:
             if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
                 home_movement_x = home_movement_x + 7
@@ -189,21 +198,21 @@ def app():
         oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
-        oled.Bitmap(home_movement_x + 5, 12, logo.app_1, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_2, 25, 25, 1)
+        oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
+        oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
         oled.DispChar(str(app_list[app_num]), 35, 45, 3)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 46:
             app_num = 0
-            app_logo = logo.app_1
+            app_logo = logo.app_0
         elif home_movement_x >= 47 and home_movement_x <= 85:
             app_num = 1
-            app_logo = logo.app_2
+            app_logo = logo.app_1
         elif home_movement_x >= 85 and home_movement_x <= 118:
             app_num = 2
         oled.show()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            UI.consani_app(home_movement_x, 6, 36, 36, 0, 0, 128, 64, app_logo, home_movement_x + 5)
+            UI.ConsaniApp(home_movement_x, 6, 36, 36, 0, 0, 128, 64, app_logo, home_movement_x + 5)
             class FlagAPI:
                 Core=Core
                 UI=UI

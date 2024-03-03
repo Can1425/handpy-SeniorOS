@@ -1,4 +1,4 @@
-
+import uhashlib
 # 更新函数
 
 # --SURT--
@@ -49,6 +49,12 @@ def UpdFile(updList):
     for i in updList:       # 这里的updList对应GetUpdList的返回值的["updateList"]
         with open(i["filePath"],'wb') as f:
             f.write(GetUpdFile(i["fileMd5"]))
+# 获取本地文件MD5
+def GetFileMD5(fileName):
+    with open(fileName,'rb') as f:
+        data = f.read()
+        h = uhashlib.md5(data)
+        return h
 # 根据对应MD5下载配置文件更新策略并运行    
 def UpdCfg(updCfgST_MD5):
     with open("/cfgUpdST.py",'rb')as f:

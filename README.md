@@ -56,11 +56,11 @@ Flag OS 是运行在 mPython （掌控版）平台上的轻量级多文件操作
 ### 创建并激活虚拟环境
 ```bash
 python -m venv .venv
-./venv/Scripts/Activate.ps1
+.venv/Scripts/Activate.ps1
 # 如果您使用cmd.exe作为终端 请使用以下代码：
-./venv/Scripts/activate.bat
+.venv/Scripts/activate.bat
 # Linux用户根据以上代码以此类推 可以使用以下代码：
-./venv/Scripts/activate
+.venv/Scripts/activate
 ```
 
 ### 安装编译器
