@@ -33,7 +33,7 @@ eval("[/hashtag/]");button_a=button_a;button_b=button_b
 # Gxxk留言：
 # 以后写设置面板记得注意 有关Flag_OS/data/light.fos的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
 # PS: 这是我改的 毕竟cfgfile又不给用户看
-
+# 你写了忘记改了是吧
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
@@ -67,13 +67,48 @@ def ConfigureWLAN(ssid, password):
                 return False
 
 def wifi_page():
+    wifiConfigRead=Core.DataCtrl('/Flag_OS/data/')#初始化模块
+    wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件
+    wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
+    #例如这样:
+    #原wifi配置文件:
+    '''
+    wifi1,wifi1pwd
+    wifi2,wifi2pwd
+    '''
+    #解析后wifi配置文件
+    #['wifi1,wifi1pwd','wifi2,wifi2pwd']
+    wifiSSID=[]
+    wifiPWD=[]
+    for i in range(len(wifiConfig)):
+        cfg=wifiConfig[i].split(',')
+        wifiSSID.append(cfg[0])
+        wifiPWD.append(cfg[1])
+        #这里就是把解析后WiFi配置文件再解析一次
+        #例如:
+        #wificfg=['wifi1,wifi1pwd','wifi2,wifi2pwd']
+        #解析后:
+        #wifissid=['wifi1','wifi2']
+        #wifipwd=['wifi1pwd','wifi2pwd']
+        #对于这玩意是不是要写成单独的函数,待定
+        #对于是否要集合为字典,待定
+        #嗯这么说吧,我懒得细改,所以配置文件必须有3行(即使这3行一样)
     oled.fill(0)
     oled.Bitmap(32, 23, logo_FlagOS, 64, 18, 1)
+    oled.DispChar(str(wifiSSID[0]),0,0)
+    oled.DispChar(str(wifiSSID[1]),0,16)
+    oled.DispChar(str(wifiSSID[2]),0,32)
     oled.DispChar('       请选择 WiFi 配置', 0, 48, 1)
     oled.show()
     while True:
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            if ConfigureWLAN('ChinaNet-x6VA', '1145141919810'):
+            if ConfigureWLAN(wifiSSID[0],wifiPWD[0]):
+                return
+        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            if ConfigureWLAN(wifiSSID[1],wifiPWD[1]):
+                return
+        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+            if ConfigureWLAN(wifiSSID[2],wifiPWD[2]):
                 return
 
 def CloudNotification():

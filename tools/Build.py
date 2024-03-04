@@ -37,7 +37,7 @@ def Build(codeFile,inputDir,outputDir):
     # 编译
     for i in codeFile:
         if i == "boot.py":
-            break
+            continue
         print(f"MPYC {i}")
         path=outputDir+i
         os.system(f"mpy-cross-v5 {path} -march=xtensawin")

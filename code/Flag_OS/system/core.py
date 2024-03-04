@@ -21,7 +21,7 @@ class DataCtrl:
         #print(self.data)
     # 获取数据
     def Get(self,dataName):
-        with open(str("/Flag_OS/data/"+dataName+".fos"),'r') as f:
+        with open("/Flag_OS/data/{}.fos".format(dataName),'r') as f:
             return f.read()
     # 写入数据
     def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
