@@ -27,13 +27,13 @@ runtimeDict={
 eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
 eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
 eval("[/hashtag/]");button_a=button_a;button_b=button_b
-
+#想说一下这个SysUniRunTime,其实读这里只要import boot(理论上),然后boot.runtimeDict即可调用(仅作理论,经实践后再下结论)
 # --SystemUniRuntime--
 
 # Gxxk留言：
 # 以后写设置面板记得注意 有关Flag_OS/data/light.fos的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
 # PS: 这是我改的 毕竟cfgfile又不给用户看
-# 你写了忘记改了是吧
+# 你写了忘记改了是吧 - LP
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
@@ -67,9 +67,9 @@ def ConfigureWLAN(ssid, password):
                 return False
 
 def wifi_page():
-    wifiConfigRead=Core.DataCtrl('/Flag_OS/data/')#初始化模块
-    wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件
-    wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
+    wifiConfigRead=Core.DataCtrl('/Flag_OS/data/')#初始化模块(pass)
+    wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件(pass)
+    wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔(pass)
     #例如这样:
     #原wifi配置文件:
     '''
@@ -90,25 +90,31 @@ def wifi_page():
         #解析后:
         #wifissid=['wifi1','wifi2']
         #wifipwd=['wifi1pwd','wifi2pwd']
-        #对于这玩意是不是要写成单独的函数,待定
-        #对于是否要集合为字典,待定
-        #嗯这么说吧,我懒得细改,所以配置文件必须有3行(即使这3行一样)
+        #对于这玩意是不是要写成单独的函数,待定#
+        #对于是否要集合为字典,待定#
+        #现在3行内会显示,但不能超过3行(按程序设定不会显示)
+        #即将上线换页功能
     oled.fill(0)
     oled.Bitmap(32, 23, logo_FlagOS, 64, 18, 1)
-    oled.DispChar(str(wifiSSID[0]),0,0)
-    oled.DispChar(str(wifiSSID[1]),0,16)
-    oled.DispChar(str(wifiSSID[2]),0,32)
+    for i in range(len(wifiSSID)):
+        if i<4:oled.DispChar(wifiSSID[i],0,i*16)
     oled.DispChar('       请选择 WiFi 配置', 0, 48, 1)
     oled.show()
     while True:
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            if ConfigureWLAN(wifiSSID[0],wifiPWD[0]):
+            if ConfigureWLAN(wifiSSID[0],wifiPWD[0]):#保证至少有1个配置文件
                 return
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            if ConfigureWLAN(wifiSSID[1],wifiPWD[1]):
+            try:
+                if ConfigureWLAN(wifiSSID[1],wifiPWD[1]):
+                    return
+            except:
                 return
         if touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            if ConfigureWLAN(wifiSSID[2],wifiPWD[2]):
+            try:
+                if ConfigureWLAN(wifiSSID[2],wifiPWD[2]):
+                    return
+            except:
                 return
 
 def CloudNotification():
