@@ -1,8 +1,8 @@
 from mpython import *
-import Flag_OS.system.core as core
-import Flag_OS.system.ui as ui
-import Flag_OS.apps.app_0 as core
-import Flag_OS.system.pages as pages
+import SeniorOS.system.core as core
+import SeniorOS.system.ui as ui
+import SeniorOS.apps.app_0 as core
+import SeniorOS.system.pages as pages
 
 time.sleep_ms(5)
 settings_list = ['重连网络', '同步时间', '清理内存', '系统信息', '- Flag OS -', '- End -', ' ']

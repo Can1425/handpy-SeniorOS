@@ -20,8 +20,8 @@ class DataCtrl:
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         #print(self.data)
     # 获取数据
-    def Get(self,dataName):
-        with open("/Flag_OS/data/{}.fos".format(dataName),'r') as f:
+    def Get(dataName):
+        with open("/SeniorOS/data/{}.fos".format(dataName),'r') as f:
             return f.read()
     # 写入数据
     def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):

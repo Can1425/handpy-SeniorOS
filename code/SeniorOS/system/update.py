@@ -12,7 +12,7 @@ SERVER_URL="https://server.ip/port/Flag_OS_UPD/"
 SYSTEM_VERSION=eval("[/Const('version')/]")
 # 读取本地文件清单
 def GetFileList():
-    with open("/Flag_OS/data/fileList.json",'rb')as f:
+    with open("/SeniorOS/data/fileList.json",'rb')as f:
         return f.read().decode()
 # 获取更新清单
 def GetUpdList():

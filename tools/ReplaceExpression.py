@@ -4,7 +4,7 @@
 import sys
 from git import Repo # GitPython
 
-projectPath="G:\\PythonProject\\mPython\\mPython-Flag-OS\\"
+projectPath="E:\\Can1425\\mPython-SeniorOS"
 # 根据具体情况编写
 projectRepo=Repo(projectPath)
 projectBranch=projectRepo.active_branch.name

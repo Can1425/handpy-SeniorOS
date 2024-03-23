@@ -5,8 +5,8 @@ def RenameCode():
     uos.rename('/main.py.bak','/main.py')
 while True:
     oled.fill(0)
-    oled.DispChar('FlagOS 启动选择器',0,0)
-    oled.DispChar('A - FlagOS',0,16)
+    oled.DispChar('SeniorOS 启动选择器',0,0)
+    oled.DispChar('A - SeniorOS',0,16)
     oled.DispChar('B - main.py',0,32)
     oled.DispChar("TH - REPL",0,48)
     oled.hline(50, 62, 30, 1)
@@ -15,7 +15,7 @@ while True:
         pass
     if button_a.is_pressed():
         oled.fill(0)
-        oled.DispChar('0.5s后启动至FlagOS...',0,0)
+        oled.DispChar('0.5s后启动至 SeniorOS...',0,0)
         oled.show()
         time.sleep(0.5)
         from mpython import wifi
@@ -33,7 +33,7 @@ while True:
                 "os":uos
         }
         runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        import Flag_OS.system.main
+        import SeniorOS.system.main
         break
     elif button_b.is_pressed():
         oled.fill(0)

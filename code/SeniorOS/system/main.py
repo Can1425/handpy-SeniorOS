@@ -1,5 +1,5 @@
-#from mpython import *
-#import Flag_OS.system.core as core
+# from mpython import *
+# import SeniorOS.system.core as core
 from mpython import wifi,oled
 from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 from mpython import button_a,button_b
@@ -19,9 +19,9 @@ eval("[/hashtag/]");runtimeDict=runtimeDict
 runtimeDict["runtimeDict"]=runtimeDict
 # --SystemUniRuntime--
 
-import Flag_OS.system.pages as Pages
+import SeniorOS.system.pages as Pages
 Pages.wifi_page()
 returnData=Pages.home()
 while not returnData:
     returnData=Pages.home()
-print("回退到FOS启动选择器")
+print("回退到 SeniorOS 启动选择器")

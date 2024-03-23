@@ -6,12 +6,12 @@ codeDir="./code/"
 buildDir="./build/"
 
 codeFile=[
-    "Flag_OS/system/core.py",
-    "Flag_OS/system/main.py",
-    "Flag_OS/system/ui.py",
-    "Flag_OS/system/pages.py",
-    "Flag_OS/fonts/quantum.py",
-    "Flag_OS/system/update.py",
+    "SeniorOS/system/core.py",
+    "SeniorOS/system/main.py",
+    "SeniorOS/system/ui.py",
+    "SeniorOS/system/pages.py",
+    "SeniorOS/fonts/quantum.py",
+    "SeniorOS/system/update.py",
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置

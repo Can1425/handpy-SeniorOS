@@ -1,6 +1,6 @@
 from mpython import *
-import Flag_OS.system.ui as ui
-import Flag_OS.system.core as core
+import SeniorOS.system.ui as ui
+import SeniorOS.system.core as core
 import ntptime
 
 def time():
