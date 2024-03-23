@@ -12,10 +12,76 @@ mPython掌控是一块MicroPython微控制器板。掌控板是创客教育专�
 
 SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操作系统，旨在致力于构建完整的 mPython 生态体验。SeniorOS 也是一个为 mPython 开发者们准备好的全新平台，这里优化了大量官方固件中缺失的体验与功能，向 mPython 硬件的极限靠近。SeniorOS 不是 mPython 中的 MIUI ，也不会成为 mPython 中的 MIUI ，为了保证各位开发者能将程序毫发无损的迁移至 SeniorOS ，我们并未对固件做破坏性改动或删除重要功能，这将是日后， SeniorOS 生态强健有力的基础。
 
-## Flag OS 现有版本文件目录
+## SeniorOS 现有版本文件目录
+
+### 编译前
 
 ```
-待重写
+/code
+
+│  boot.py  # SeniorOS 启动选择器，用于引导系统/用户程序运行
+│
+└─SeniorOS  # System
+        |
+        ├─system  # 系统核心代码
+        │      core.py  # 系统可调用代码
+        │      pages.py  # 系统可调用页面
+        │      main.py  # 系统引导后最先运行的代码
+        │      ui.py  # 日光引擎
+        │
+        ├─data  # 系统数据
+        │      brightness.fos  # 系统显示亮度
+        |      fileList.json  # 系统更新文件
+        │      volume.fos  # 系统音量
+        │      light.fos  # 系统日光/黑夜模式数据存放
+        |      wifi.fos  # WIFI 预配置文件
+        │
+        ├─apps # 本地预置应用
+        |         logo.py  # 软件图标
+        |  └─ app_0  # 系统设置
+        |           core.py  # 核心代码
+        |           main.py  # 主体
+        |      
+        |  └─ app_1  # 线上插件
+        |           main  # 主体
+        │
+        ├─fonts  # 系统字体
+        │      quantum.py  # 桌面时间字体
+```
+
+### 编译后
+
+```
+/build
+
+│  boot.py  # SeniorOS 启动选择器，用于引导系统/用户程序运行
+│
+└─SeniorOS  # System
+        |
+        ├─system  # 系统核心代码
+        │      core.mpy  # 系统可调用代码
+        │      pages.mpy  # 系统可调用页面
+        │      main.mpy  # 系统引导后最先运行的代码
+        │      ui.mpy  # 日光引擎
+        │
+        ├─data  # 系统数据
+        │      brightness.fos  # 系统显示亮度
+        |      fileList.json  # 系统更新文件
+        │      volume.fos  # 系统音量
+        │      light.fos  # 系统日光/黑夜模式数据存放
+        |      wifi.fos  # WIFI 预配置文件
+        │
+        ├─apps # 本地预置应用
+        |         logo.py  # 软件图标
+        |  └─ app_0  # 系统设置
+        |           core.py  # 核心代码
+        |           main.py  # 主体
+        |      
+        |  └─ app_1  # 线上插件
+        |           main  # 主体
+        │
+        ├─fonts  # 系统字体
+        │      quantum.mpy  # 桌面时间字体
 ```
 
 # 开发注意事项

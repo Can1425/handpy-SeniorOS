@@ -12,7 +12,7 @@
 
 系统组件的注入参数主要存放于`boot.py`内
 
-第三方App的注入参数主要存放于`/Flag_OS/system/pages.py内`
+第三方App的注入参数主要存放于`/SeniorOS/system/pages.py内`
 
 # 看到一些「似乎是无意义代码」并含有SURT标记？
 
