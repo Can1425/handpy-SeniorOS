@@ -67,15 +67,9 @@ def ConfigureWLAN(ssid, password):
                 return False
 
 def wifi_page():
-<<<<<<< HEAD:code/Flag_OS/system/pages.py
-    wifiConfigRead=Core.DataCtrl('/Flag_OS/data/')#初始化模块(pass)
-    wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件(pass)
-    wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔(pass)
-=======
     wifiConfigRead=Core.DataCtrl('/SeniorOS/data/')#初始化模块
     wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件
     wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
->>>>>>> 191d097e5d16da371c26b447c36b65d631798e94:code/SeniorOS/system/pages.py
     #例如这样:
     #原wifi配置文件:
     '''
@@ -103,16 +97,10 @@ def wifi_page():
         #现在3行内会显示,但不能超过3行(按程序设定不会显示)
         #即将上线换页功能
     oled.fill(0)
-<<<<<<< HEAD:code/Flag_OS/system/pages.py
     oled.Bitmap(32, 23, logo_FlagOS, 64, 18, 1)
     for i in range(len(wifiSSID)):
         if i<4:oled.DispChar(wifiSSID[i],0,i*16)
-=======
     oled.Bitmap(32, 23, logo_SeniorOS, 64, 18, 1)
-    oled.DispChar(str(wifiSSID[0]),0,0)
-    oled.DispChar(str(wifiSSID[1]),0,16)
-    oled.DispChar(str(wifiSSID[2]),0,32)
->>>>>>> 191d097e5d16da371c26b447c36b65d631798e94:code/SeniorOS/system/pages.py
     oled.DispChar('       请选择 WiFi 配置', 0, 48, 1)
     oled.show()
     while True:
