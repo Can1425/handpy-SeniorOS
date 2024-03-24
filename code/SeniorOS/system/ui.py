@@ -27,8 +27,12 @@ eval("[/hashtag/]");button_a=button_a;button_b=button_b
 # --SystemUniRuntime--
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
-    data_ctrl=Core.DataCtrl('/SeniorOS/data')
-    oled.invert(int(data_ctrl.Get('light')))
+    try:
+      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
+      oled.invert(int(data_ctrl.Get('light')))
+    except:
+        pass
+
     try:
       consani_done_wait = 3
       oled.fill(0)
@@ -51,8 +55,12 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
     consani_done_wait = consani_done_wait + 3
 
 def ConsaniApp(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height, logo, logo_x):
-    data_ctrl=Core.DataCtrl('/SeniorOS/data')
-    oled.invert(int(data_ctrl.Get('light')))
+    try:
+      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
+      oled.invert(int(data_ctrl.Get('light')))
+    except:
+        pass
+
     try:
       consani_done_wait = 3
       oled.fill(0)
@@ -86,9 +94,12 @@ def GetCharWidth(s):
 AutoCenter=lambda string:64-GetCharWidth(string)//2
 
 def app(app_title:str):
-    data_ctrl=Core.DataCtrl('/SeniorOS/data')
     oled.fill(0)
-    oled.invert(int(data_ctrl.Get('light')))
+    try:
+      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
+      oled.invert(int(data_ctrl.Get('light')))
+    except:
+        pass
     oled.fill_rect(1, 0, 126, 16, 1)
     oled.DispChar(app_title, 5, 0, 2)
     oled.DispChar((''.join([str(Core.GetTime.Hour()), ':', str(Core.GetTime.Min())])), 93, 0, 2)

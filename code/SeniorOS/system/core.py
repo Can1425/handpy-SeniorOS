@@ -20,7 +20,7 @@ class DataCtrl:
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         #print(self.data)
     # 获取数据
-    def Get(dataName):
+    def Get(self,dataName):
         with open("/SeniorOS/data/{}.fos".format(dataName),'r') as f:
             return f.read()
     # 写入数据
@@ -61,9 +61,32 @@ class GetTime:
     Month=lambda:time.localtime()[1]
     Week=lambda:time.localtime()[6]
     Day =lambda:time.localtime()[2]
-    Hour=lambda:time.localtime()[3]
-    Min =lambda:time.localtime()[4]
+    Hour=time.localtime()[3]
+    Min =time.localtime()[4]
     Sec =lambda:time.localtime()[5]
+    if len(str(Hour)) < 2:
+        Hour = '0' + str(Hour)
+    else:
+        Hour = lambda:time.localtime()[3]
+    if len(str(Min)) < 2:
+        Min = '0' + str(Min)
+    else:
+        Min = lambda:time.localtime()[4]
+
+def time_disposal():
+    global time_hour, time_min, sys_hour, sys_min
+    time_hour = str(time.localtime()[3])
+    time_min = str(time.localtime()[4])
+    sys_hour = str(time.localtime()[3])
+    sys_min = str(time.localtime()[4])
+    if len(sys_hour) < 2:
+        time_hour = '0' + str(sys_hour)
+    else:
+        time_hour = sys_hour
+    if len(sys_min) < 2:
+        time_min = '0' + str(sys_min)
+    else:
+        time_min = sys_min
 
 
 def FullCollect():

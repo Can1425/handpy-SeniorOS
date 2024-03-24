@@ -1,0 +1,2 @@
+[console_scripts]
+mpy-cross-v5 = mpy_cross_v5:_run
