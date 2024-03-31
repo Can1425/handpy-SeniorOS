@@ -79,14 +79,6 @@ def time_disposal():
     time_min = str(time.localtime()[4])
     sys_hour = str(time.localtime()[3])
     sys_min = str(time.localtime()[4])
-    if len(sys_hour) < 2:
-        time_hour = '0' + str(sys_hour)
-    else:
-        time_hour = sys_hour
-    if len(sys_min) < 2:
-        time_min = '0' + str(sys_min)
-    else:
-        time_min = sys_min
 
 
 def FullCollect():
