@@ -1,6 +1,8 @@
-# SeniorOS | All-Inclusive
+# 苍旻操作系统｜SeniorOS
 
-（原 Flag OS）
+轻量，强大的 mPython 操作系统
+
+[官网/文档](https://senior.stfp.site/)
 
 ![新春特别涂装](gitee_logo.jpg)
 
