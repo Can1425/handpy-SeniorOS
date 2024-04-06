@@ -10,6 +10,11 @@ from mpython import button_a,button_b
 import gc
 import time,uos
 
+def UITime():
+    h=str(Core.GetTime.Hour())
+    m=str(Core.GetTime.Min())
+    return ('0'+h if len(h)==1 else h) +':'+ ('0'+m if len(m)==1 else m)
+
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     try:
       data_ctrl=Core.DataCtrl('/SeniorOS/data/')
@@ -86,7 +91,7 @@ def app(app_title:str):
         pass
     oled.fill_rect(1, 0, 126, 16, 1)
     oled.DispChar(app_title, 5, 0, 2)
-    oled.DispChar((''.join([str(Core.GetTime.Hour), ':', str(Core.GetTime.Min)])), 93, 0, 2)
+    oled.DispChar(UITime(), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
 def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):

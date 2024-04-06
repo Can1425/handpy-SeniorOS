@@ -111,7 +111,7 @@ class Screenshot:
                     row_data = bytearray(8) #缓冲区
                     for x in range(64):row_data[x//8]|=(oledObj.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
                     f.write(row_data)
-        elif eval("[/Const('screenshotMethod')/]")=="ram":# RAM邮箱
+        elif eval("[/Const('screenshotMethod')/]")=="ram":# RAM优先
             buffer = bytearray(1024)  # 创建缓冲区
             # 获取屏幕像素状态
             for y in range(64):

@@ -149,8 +149,8 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Hour), 30, 18, False)
-        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Min), 64, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Hour()), 30, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Min()), 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
