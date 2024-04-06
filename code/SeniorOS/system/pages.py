@@ -23,12 +23,11 @@ import time,uos
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
-app_list = ['Flag 设置', 'Flag 线上插件', 'Flag 文件']
-app_tip = ['Flag OS 设置', '线上拓展插件', 'Flag OS 文件操作']
+app_list = ['设置', '线上插件', '文件']
+app_tip = ['设置', '线上拓展插件', '文件操作']
 settingsPanelList = ['亮度', '音量', '日光模式']
 
 def ConfigureWLAN(ssid, password):
-    UI.consani(0, 64, 128, 64, 0, 0, 128, 64)
     oled.fill(0)
     oled.Bitmap(16, 20, bytearray([0X07,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XF8,0X00,0X7C,0X00,0X0F,0XFC,0X00, 0X00,0X00,0X00,0X00,0X00,0X01,0XFE,0X00,0XFE,0X00,0X1F,0XFC,0X00,0X00,0X00,0X00, 0X00,0X00,0X07,0XFF,0X01,0XFF,0X80,0X3C,0X00,0X00,0X00,0X01,0X00,0X00,0X00,0X0F, 0X07,0X83,0X83,0X80,0X38,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X1C,0X01,0XC3,0X81, 0X80,0X30,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X38,0X00,0XE3,0X00,0X00,0X30,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X38,0X00,0XE3,0X80,0X00,0X38,0X00,0X18,0X1F,0XE0, 0X0F,0XFC,0X3E,0X30,0X00,0X63,0XC0,0X00,0X3F,0X00,0X7E,0X1F,0XF1,0X9F,0XFC,0X7E, 0X70,0X00,0X71,0XF0,0X00,0X1F,0XF0,0XE7,0X1C,0X39,0X9C,0X0C,0XE0,0X70,0X00,0X70, 0XFE,0X00,0X07,0XF9,0XC3,0X18,0X19,0X98,0X0C,0XC0,0X70,0X00,0X70,0X1F,0X80,0X00, 0X79,0XC3,0X98,0X19,0X98,0X0C,0XC0,0X30,0X00,0X70,0X03,0X80,0X00,0X39,0XFF,0X98, 0X19,0X88,0X04,0XC0,0X30,0X00,0X60,0X01,0XC0,0X00,0X39,0XFF,0X18,0X19,0X80,0X00, 0XC0,0X38,0X00,0XE0,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X88,0X0C,0XC0,0X1C,0X01, 0XC2,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X8C,0X0C,0XC0,0X1E,0X03,0XC7,0X01,0XC0, 0X71,0XF0,0XC3,0X18,0X19,0X8E,0X0C,0XC0,0X0F,0XDF,0X83,0XC3,0X80,0XFF,0XE0,0X7F, 0X18,0X19,0X87,0XFC,0X40,0X07,0XFF,0X01,0XFF,0X00,0XFF,0XC0,0X3C,0X18,0X19,0X83, 0XFC,0X40,0X01,0XFC,0X00,0X7E,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
     oled.fill_rect(0, 48, 128, 16, 0)
@@ -64,12 +63,11 @@ def wifi_page():
     #['wifi1,wifi1pwd','wifi2,wifi2pwd']
     wifiSSID=[]
     wifiPWD=[]
-    print(wifiConfig)
     for i in range(len(wifiConfig)):
         cfg=wifiConfig[i].split(',')
-        print(cfg)
-        #wifiSSID.append(cfg[0])
-        #wifiPWD.append(cfg[1])
+        #wifiSSID.append(cfg[0]) (待修复！)
+        #wifiPWD.append(cfg[1])(待修复！)
+
         #这里就是把解析后WiFi配置文件再解析一次
         #例如:
         #wificfg=['wifi1,wifi1pwd','wifi2,wifi2pwd']
@@ -135,12 +133,13 @@ def CloudNotification():
         UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
         return
     while not button_a.is_pressed():
-        UI.app('Flag 云端通知')
+        UI.app('云端通知')
         oled.DispChar(notifications[1], 5, 18)
         oled.DispChar(notifications[2], 5, 32)
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
-    UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
+    UI.Tti()
+    return home()
 
 # TODO.
 def SettingPanel():
@@ -150,18 +149,17 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        UI.DisplayFont(SeniorOS.fonts.quantum, (str(Core.GetTime.Hour())), 30, 18, False)
-        UI.DisplayFont(SeniorOS.fonts.quantum, (str(Core.GetTime.Min())), 64, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Hour), 30, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Min), 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
         oled.fill(0)
-        oled.DispChar("退出确认",0,-1)
-        oled.hline(0,15,128,1)
-        oled.DispChar("你同时按下了AB",0,16)
-        oled.DispChar("将回到启动选择器",0,32)
-        oled.DispChar("同时按下PN确认",0,48)
+        UI.app('退出确认')
+        oled.DispChar("你同时按下了AB",5,18)
+        oled.DispChar("将回到启动选择器",5,32)
+        oled.DispChar("同时按下PN确认",0,45)
         oled.show()
         while not eval("[/GetButtonExpr('pythonab')/]"):pass
         if eval("[/GetButtonExpr('pn')/]"):
@@ -178,11 +176,11 @@ def home():
         app()
 
 def select(options:list)->tuple:
-    print("[GxxkAPI]进入选择器界面")
+    print("SeniorOS-[GxxkAPI]进入选择器界面")
     target = 0
     # 主循环
     while True:
-        print("[GxxkAPI]Target"+str(target))
+        print("SeniorOS-[GxxkAPI]Target"+str(target))
         # 绘制UI
         oled.DispChar(options[target], 0, 16, reverse=True) # 反色模式绘制选中内容
         try:
@@ -235,7 +233,8 @@ def app():
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
         oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
         oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
-        oled.DispChar(str(app_list[app_num]), 35, 45, 3)
+        oled.DispChar('•', 60, 45, 2)
+        oled.DispChar(str(app_list[app_num]), 5, 45, 3)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 46:
             app_num = 0
@@ -262,8 +261,8 @@ def app():
                     "button_a":button_a,
                     "button_b":button_b,
             })
-    UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
-    home()
+    UI.Tti()
+    return home()
 
 def about():
     oled.fill(0)

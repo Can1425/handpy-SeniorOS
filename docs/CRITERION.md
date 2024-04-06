@@ -44,6 +44,11 @@ ACCEPT : touchPad_X
 - refactor: 重构（即不是新增功能，也不是修改bug的代码变动）
 - chore: 构建过程或辅助工具的变动
 - comfix: 对上一次commit的遗留下来的Bug作修复
+- merge: [合并专用] 用于表示此次commit是为了合并两次commit、
+#### 关于merge
+是专门标注其合并分支/commit的属性的type.
+
+commit body可以为空 但如果同时作了其他修改 则需要将合并以外的修改描述出来
 ### Title
 用于简短描述本次commit所作内容
 ### Body
