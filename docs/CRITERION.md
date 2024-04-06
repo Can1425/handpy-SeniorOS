@@ -49,6 +49,14 @@ ACCEPT : touchPad_X
 是专门标注其合并分支/commit的属性的type.
 
 commit body可以为空 但如果同时作了其他修改 则需要将合并以外的修改描述出来
+
+#### 关于comfix
+
+是 在单次commit的一小段时间之内针对此commit发现/产生的Bug作修补的commit 的commit-type
+
+> merge是在comfix之上又细分出来的一种commit-type 但merge===comfix comfix!==merge
+>
+> merge和comfix的性质一样 但此处为dever们便于区分 采用两种type作表示
 ### Title
 用于简短描述本次commit所作内容
 ### Body
