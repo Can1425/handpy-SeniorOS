@@ -102,7 +102,7 @@ def app(app_title:str):
         pass
     oled.fill_rect(1, 0, 126, 16, 1)
     oled.DispChar(app_title, 5, 0, 2)
-    oled.DispChar((''.join([str(Core.GetTime.Hour()), ':', str(Core.GetTime.Min())])), 93, 0, 2)
+    oled.DispChar((''.join([str(Core.GetTime.Hour), ':', str(Core.GetTime.Min)])), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
 def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
@@ -122,3 +122,24 @@ def message(dispContent:list):
     # 然而这里实测只能放两排（
     oled.Dispchar("PY-明白", 42, 45)
     oled.show()
+
+def Tti(mode=True):
+    """if mode is True then Draw the Left Transition animation
+Else Draw the Left Transition animation
+time=380ms
+"""
+    ckt=128
+    ckr=0
+    if mode:
+        for i in range(10):
+            ckt=ckt/2
+            ckr=ckr + ckt
+            oled.fill_rect(0, 0,round(ckr), 64, 0)
+            oled.show()
+            #time.sleep_ms(10)
+    else:
+        for i in range(10):
+            ckt=ckt/2
+            oled.fill_rect(int(ckt), 0, 128, 64, 0)
+            oled.show()
+            #time.sleep_ms(10)

@@ -55,23 +55,19 @@ class File_Path_Factory:
         # 如异常代表路径无效或不是目录
         except:return False
 
-# 获取日期 ByGxxk
-class GetTime:
-    Year=lambda:time.localtime()[0]
-    Month=lambda:time.localtime()[1]
-    Week=lambda:time.localtime()[6]
-    Day =lambda:time.localtime()[2]
-    Hour=time.localtime()[3]
-    Min =time.localtime()[4]
-    Sec =lambda:time.localtime()[5]
+class GetTime():
+    t=time.localtime()
+    Year=t[0]
+    Month=t[1]
+    Week=t[6]
+    Day =t[2]
+    Hour=t[3]
+    Min =t[4]
+    Sec =t[5]
     if len(str(Hour)) < 2:
         Hour = '0' + str(Hour)
-    else:
-        Hour = lambda:time.localtime()[3]
     if len(str(Min)) < 2:
         Min = '0' + str(Min)
-    else:
-        Min = lambda:time.localtime()[4]
 
 def time_disposal():
     global time_hour, time_min, sys_hour, sys_min
@@ -129,3 +125,4 @@ class Screenshot:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
+
