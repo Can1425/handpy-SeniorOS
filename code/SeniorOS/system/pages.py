@@ -14,26 +14,12 @@ from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touch
 from mpython import button_a,button_b
 import gc
 import time,uos
-runtimeDict={
-        "oled":oled,"wifi":wifi(),
-        "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
-        "button_a":button_a,"button_b":button_b,
-        "ntptime":__import__('ntptime'),
-        "time":time,
-        "gc":gc,
-        "os":uos
-}
-# --SystemUniRuntime--
-eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
-eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
-eval("[/hashtag/]");button_a=button_a;button_b=button_b
-#想说一下这个SysUniRunTime,其实读这里只要import boot(理论上),然后boot.runtimeDict即可调用(仅作理论,经实践后再下结论)
-# --SystemUniRuntime--
+
 
 # Gxxk留言：
 # 以后写设置面板记得注意 有关 SeniorOS/data/light.fos 的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
 # PS: 这是我改的 毕竟cfgfile又不给用户看
-# 你写了忘记改了是吧 - LP
+# 你写了忘记改了是吧 - LP    Gxxk/Reply:emm 实际上是改了内置逻辑忘记改配置文件
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
@@ -95,7 +81,7 @@ def wifi_page():
         #现在3行内会显示,但不能超过3行(按程序设定不会显示)
         #即将上线换页功能
 
-    # 可恶的Gxxk，不得不妥协一下了
+    # 可恶的Gxxk，不得不妥协一下了     Gxxk/Reply：啊哈哈哈 标准啥的想改就改 有时没必要妥协
     wifiSSID=['wifi1','wifi2']
     wifiPWD=['wifi1pwd','wifi2pwd']
     oled.fill(0)

@@ -48,25 +48,33 @@ needReboot参数:当该值为True时 不修改实际运行值
 
 获取具有唯一性的设备ID
 
-传参：0/1
+传参：mode:0/1
 对应不同的ID生成方式
 返回值为设备ID
 
-# GetDeviceName
-
-类型：函数
-
-获取设备名称
-
+> 注： 此func仍使用了回调函数便于dever们自定义 各位可以自行开发用法...
 # Screenshot
 
 |名称|类型|作用|传参|返回值|备注|
 |-|-|-|-|-|-|
-|CopyFrameBuf|func|通过复制缓冲区的方式截屏|截屏保存位置|/|/|
-|Enumerate|func|通过枚举缓冲区的方式截屏|截屏保存位置|/|/|
+|CopyFrameBuf|func|通过复制缓冲区的方式截屏|截屏保存位置,oled对象|/|/|
+|Enumerate|func|通过枚举缓冲区的方式截屏|截屏保存位置,oled对象|/|/|
+
+## 关于OLED对象
+>这是一个可选值 一般情况下会自动指定为`mpython.oled`
+
+为了 节省RAM/使FOS.Core具有普适性 我们选择将使用到的oled操作对象以 **「回调函数」** 的形式作为参数传入函数体
+
+> 关于回调函数一词解释：<https://blog.csdn.net/yushuaigee/article/details/86313697>
+
+此值需要满足以下3个条件：
+1. 是类 （必须满足此项）
+2. 含有类变量：buffer   且可以被函数正确识别操作（使用 func`CopyFrameBuf` 时 必须满足此项）
+3. 含有类函数：pixel    且可以被函数正确识别操作（使用 func`Enumerate` 时 必须满足此项）
+
 
 ## Enumerate
 
-包含两种截屏算法 但算法思想一样.
+包含两种截屏算法（速度最快：`fast`,RAM占用最小：`ram`） 但算法思想一样 仅修改了缓冲区的操作
 
 可以通过控制`./tools/ReplaceExpression.py`下的`constData["screenshodMethod"]`决定其使用算法

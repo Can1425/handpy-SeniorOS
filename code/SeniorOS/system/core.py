@@ -1,10 +1,9 @@
 import time
 import os
 import framebuf
+import network
+import gc
 from machine import unique_id
-# --SystemUniRuntime--
-eval('[/hashtag/]');gc=gc;wifi=wifi;oled=oled
-# --SystemUniRuntime--
 
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
@@ -61,17 +60,10 @@ class GetTime:
     Month=lambda:time.localtime()[1]
     Week=lambda:time.localtime()[6]
     Day =lambda:time.localtime()[2]
-    Hour=time.localtime()[3]
-    Min =time.localtime()[4]
+    Hour=lambda:time.localtime()[3]
+    Min =lambda:time.localtime()[4]
     Sec =lambda:time.localtime()[5]
-    if len(str(Hour)) < 2:
-        Hour = '0' + str(Hour)
-    else:
-        Hour = lambda:time.localtime()[3]
-    if len(str(Min)) < 2:
-        Min = '0' + str(Min)
-    else:
-        Min = lambda:time.localtime()[4]
+
 
 def time_disposal():
     global time_hour, time_min, sys_hour, sys_min
@@ -93,8 +85,10 @@ def FullCollect():
             return m
 
 # 获取设备ID
-def GetDeviceID(mode=0):
-    if mode==0:return "".join(str(wifi.sta.config('mac'))[2:len(str(wifi.sta.config('mac')))-1].split("\\x"))
+def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
+                mode=1
+        ):
+    if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
     elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
 
 # 支持2算法的截图
@@ -102,28 +96,27 @@ def GetDeviceID(mode=0):
 # 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
 # 这里Enumerate部分使用的算法取决于构建阶段 对本代码作EXPR操作时 constData["screenMethod"] 的值是 fast 还是 ram
 class Screenshot:
-    def CopyFramebuf(path):
+    def CopyFramebuf(path,oledObj=__import__("mpython").oled):
         bufb=bytearray(128*64)
         with open(path,"wb")as f:
             f.write(b"P4\n128 64\n")
             buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
-            buf.blit(oled.buffer,0,0)
+            buf.blit(oledObj.buffer,0,0)
             f.write(bufb)
-    def Enumerate(path):
-        # 史上最nb的截屏方法！真神奇！哈哈哈
-        if eval("[/Const('screenshotMethod')/]")=="fast":
+    def Enumerate(path,oledObj=__import__("mpython").oled):# 以「枚举」为核心 的算法
+        if eval("[/Const('screenshotMethod')/]")=="fast": # 速度优先
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')
                 for y in range(128):
                     row_data = bytearray(8) #缓冲区
-                    for x in range(64):row_data[x//8]|=(oled.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
+                    for x in range(64):row_data[x//8]|=(oledObj.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
                     f.write(row_data)
-        elif eval("[/Const('screenshotMethod')/]")=="ram":
+        elif eval("[/Const('screenshotMethod')/]")=="ram":# RAM邮箱
             buffer = bytearray(1024)  # 创建缓冲区
             # 获取屏幕像素状态
             for y in range(64):
                 for x in range(128):
-                    buffer[x//8+y*16]|=oled.pixel(x,y)<<7-(x%8)
+                    buffer[x//8+y*16]|=oledObj.pixel(x,y)<<7-(x%8)
             # 保存为PBM文件
             with open('screenshot.pbm', 'wb') as f:
                 # 写入PBM文件头

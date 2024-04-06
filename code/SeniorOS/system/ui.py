@@ -9,22 +9,6 @@ from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touch
 from mpython import button_a,button_b
 import gc
 import time,uos
-runtimeDict={
-        "oled":oled,"wifi":wifi(),
-        "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
-        "button_a":button_a,"button_b":button_b,
-        "ntptime":__import__('ntptime'),
-        "time":time,
-        "gc":gc,
-        "os":uos
-}
-
-# --SystemUniRuntime--
-eval("[/hashtag/]");wifi=wifi;oled=oled;ntptime=ntptime;time=time
-eval("[/hashtag/]");touchPad_P=touchPad_P;touchPad_Y=touchPad_Y;touchPad_N=touchPad_N;touchPad_O=touchPad_O;touchPad_T=touchPad_T;touchPad_H=touchPad_H
-eval("[/hashtag/]");button_a=button_a;button_b=button_b
-
-# --SystemUniRuntime--
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     try:

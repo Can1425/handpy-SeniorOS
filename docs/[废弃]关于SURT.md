@@ -1,3 +1,16 @@
+# README PLZ!
+
+此项是旧版FOS开发者因不熟悉Python内置对象使用方法而「虚构」出的一种架构方案/SDK
+
+该功能在 [COMMIT `ad864a3e`](https://gitee.com/can1425/mPython-SeniorOS/commit/ad864a3ee7ebe11970747619f3a00acfec6af809) 后便已完全不可调用
+
+在此COMMIT的临近几个COMMIT后将完全抹除其在代码中的存在痕迹
+
+特将此文档保留 警示用.
+
+> ~~技术力越强的破坏性越大啊 ccc~~
+
+
 # 介绍
 
 是Gxxk设计的一种代码机制 用于为各类系统内置组件/第三方app 提供一个 **标准**/**统一**/**简单** 的 **易接入** 的运行环境

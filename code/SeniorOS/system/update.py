@@ -1,9 +1,4 @@
-import uhashlib
-# 更新函数
-
-# --SURT--
-eval('[/hashtag/]');requests=urequests;os=os
-# --SURT--
+import uhashlib,os,urequests
 
 # lambda: 值查找键
 valueFindKey=lambda dictObj,value:{v : k for k, v in dictObj.items()}[value]
