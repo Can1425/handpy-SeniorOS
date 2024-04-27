@@ -31,7 +31,8 @@ class DataCtrl:
             f.write(dataValue)   
         if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
             self.data[dataName]=dataValue                
-        
+Data=DataCtrl("/SeniorOS/data/")
+
 # 文件/路径 格式工厂
 class File_Path_Factory:
 

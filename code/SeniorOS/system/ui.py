@@ -17,8 +17,7 @@ def UITime():
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     try:
-      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
-      oled.invert(int(data_ctrl.Get('light')))
+      oled.invert(int(Core.Data.Get('light')))
     except:
         pass
 
@@ -45,8 +44,7 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
 
 def ConsaniApp(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height, logo, logo_x):
     try:
-      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
-      oled.invert(int(data_ctrl.Get('light')))
+      oled.invert(int(Core.Data.Get('light')))
     except:
         pass
 
@@ -85,8 +83,7 @@ AutoCenter=lambda string:64-GetCharWidth(string)//2
 def app(app_title:str):
     oled.fill(0)
     try:
-      data_ctrl=Core.DataCtrl('/SeniorOS/data/')
-      oled.invert(int(data_ctrl.Get('light')))
+      oled.invert(int(Core.Data.Get('light')))
     except:
         pass
     oled.fill_rect(1, 0, 126, 16, 1)

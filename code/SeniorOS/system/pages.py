@@ -50,8 +50,7 @@ def ConfigureWLAN(ssid, password):
                 return False
 
 def wifi_page():
-    wifiConfigRead=Core.DataCtrl('/SeniorOS/data/')#初始化模块
-    wifiConfigRead=wifiConfigRead.Get('wifi')#读wifi配置文件
+    wifiConfigRead=Core.Data.Get('wifi')#读wifi配置文件
     wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
     #例如这样:
     #原wifi配置文件:
@@ -78,8 +77,6 @@ def wifi_page():
         #对于是否要集合为字典,待定#
         #现在3行内会显示,但不能超过3行(按程序设定不会显示)
         #即将上线换页功能
-
-    # 可恶的Gxxk，不得不妥协一下了     Gxxk/Reply：啊哈哈哈 标准啥的想改就改 有时没必要妥协
     oled.fill(0)
     oled.Bitmap(16, 20, bytearray([0X07,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XF8,0X00,0X7C,0X00,0X0F,0XFC,0X00, 0X00,0X00,0X00,0X00,0X00,0X01,0XFE,0X00,0XFE,0X00,0X1F,0XFC,0X00,0X00,0X00,0X00, 0X00,0X00,0X07,0XFF,0X01,0XFF,0X80,0X3C,0X00,0X00,0X00,0X01,0X00,0X00,0X00,0X0F, 0X07,0X83,0X83,0X80,0X38,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X1C,0X01,0XC3,0X81, 0X80,0X30,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X38,0X00,0XE3,0X00,0X00,0X30,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X38,0X00,0XE3,0X80,0X00,0X38,0X00,0X18,0X1F,0XE0, 0X0F,0XFC,0X3E,0X30,0X00,0X63,0XC0,0X00,0X3F,0X00,0X7E,0X1F,0XF1,0X9F,0XFC,0X7E, 0X70,0X00,0X71,0XF0,0X00,0X1F,0XF0,0XE7,0X1C,0X39,0X9C,0X0C,0XE0,0X70,0X00,0X70, 0XFE,0X00,0X07,0XF9,0XC3,0X18,0X19,0X98,0X0C,0XC0,0X70,0X00,0X70,0X1F,0X80,0X00, 0X79,0XC3,0X98,0X19,0X98,0X0C,0XC0,0X30,0X00,0X70,0X03,0X80,0X00,0X39,0XFF,0X98, 0X19,0X88,0X04,0XC0,0X30,0X00,0X60,0X01,0XC0,0X00,0X39,0XFF,0X18,0X19,0X80,0X00, 0XC0,0X38,0X00,0XE0,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X88,0X0C,0XC0,0X1C,0X01, 0XC2,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X8C,0X0C,0XC0,0X1E,0X03,0XC7,0X01,0XC0, 0X71,0XF0,0XC3,0X18,0X19,0X8E,0X0C,0XC0,0X0F,0XDF,0X83,0XC3,0X80,0XFF,0XE0,0X7F, 0X18,0X19,0X87,0XFC,0X40,0X07,0XFF,0X01,0XFF,0X00,0XFF,0XC0,0X3C,0X18,0X19,0X83, 0XFC,0X40,0X01,0XFC,0X00,0X7E,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
     for i in range(len(wifiSSID)):
@@ -208,11 +205,9 @@ def app():
     home_movement_x = 40
     app_num = 0
     time.sleep_ms(5)
-    DataCtrl=Core.DataCtrl('/SeniorOS/data')
     while not button_a.is_pressed():
         try:
-          data_ctrl=Core.DataCtrl('/SeniorOS/data/')
-          oled.invert(int(data_ctrl.Get('light')))
+          oled.invert(int(Core.Data.Get('light')))
         except:
             pass
         if home_movement_x >= 0 and home_movement_x <= 118:

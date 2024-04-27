@@ -7,6 +7,8 @@
 |dataFolderPath|str|.fos文件目录路径|/|/|/|
 |Write|func|写入数据|_见下_|全部.fos文件数据|/|
 
+> 在Core中 我们已将`DataCtrl`类 初始化为Data便于dever们使用
+
 ## DataCtrl.Write
 
 传参: 数据名,数据内容,一次性设置(singleUseSet)=False,需要重启生效(needReboot)=False
