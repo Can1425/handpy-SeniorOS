@@ -35,7 +35,7 @@ def ConfigureWLAN(ssid, password):
     oled.show()
     try:
         wifi.connectWiFi(ssid, password)
-        ntptime.settime(8, "time.windows.com")
+        ntptime.settime(8, "ntp.aliyun.com")
         oled.fill_rect(0, 48, 128, 16, 0)
         oled.DispChar(str('             配置成功'), 0, 48, 1)
         oled.show()
@@ -46,10 +46,13 @@ def ConfigureWLAN(ssid, password):
         oled.DispChar(str('             配置失败'), 0, 48, 1)
         oled.show()
         while True:
-            if button_a.is_pressed() or button_b.is_pressed():
+            if button_a.is_pressed():
                 return False
+            if button_b.is_pressed():
+                return True
 
 def wifi_page():
+    # Data=Core.DataCtrl("/SeniorOS/data/")
     wifiConfigRead=Core.Data.Get('wifi')#读wifi配置文件
     wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
     #例如这样:
@@ -144,8 +147,8 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Hour()), 30, 18, False)
-        UI.DisplayFont(SeniorOS.fonts.quantum, str(Core.GetTime.Min()), 64, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, Core.sys_hour, 30, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, Core.sys_min, 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
@@ -226,7 +229,7 @@ def app():
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
         oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
         oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
-        oled.DispChar(app_list[app_num],UI.AutoCenter(app_list[app_num]),12)
+        oled.DispChar(app_list[app_num],UI.AutoCenter(app_list[app_num]),45)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 46:
             app_num = 0

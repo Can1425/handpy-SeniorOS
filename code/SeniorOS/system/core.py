@@ -5,6 +5,11 @@ import network
 import gc
 from machine import unique_id
 
+time_hour = str(time.localtime()[3])
+time_min = str(time.localtime()[4])
+sys_hour = str(time.localtime()[3])
+sys_min = str(time.localtime()[4])
+
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
 # 初始化函数
@@ -20,8 +25,7 @@ class DataCtrl:
         #print(self.data)
     # 获取数据
     def Get(self,dataName):
-        with open("/SeniorOS/data/{}.fos".format(dataName),'r') as f:
-            return f.read()
+        return self.data[dataName]
     # 写入数据
     def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
         if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
@@ -65,13 +69,18 @@ class GetTime:
     Min =lambda:time.localtime()[4]
     Sec =lambda:time.localtime()[5]
 
-
 def time_disposal():
     global time_hour, time_min, sys_hour, sys_min
     time_hour = str(time.localtime()[3])
     time_min = str(time.localtime()[4])
-    sys_hour = str(time.localtime()[3])
-    sys_min = str(time.localtime()[4])
+    if len(time_hour) < 2:
+        sys_hour = '0' + time_hour
+    else:
+        sys_hour = time_hour
+    if len(time_min) < 2:
+        sys_min = '0' + time_min
+    else:
+        sys_min = time_min
 
 
 def FullCollect():
