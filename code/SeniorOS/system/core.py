@@ -14,7 +14,7 @@ class DataCtrl:
         self.data={}
         self.dataFolderPath=dataFolderPath
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.fos')]:
-            with open(dataFolderPath+i,'w',encoding='utf-8')as f:
+            with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.strip('.fos')]=f.read().strip('\r')
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         #print(self.data)
