@@ -1,7 +1,7 @@
 from mpython import *
-import SeniorOS.system.core as core
+import SeniorOS.system.core as syscore
 import SeniorOS.system.ui as ui
-import SeniorOS.apps.app_0 as core
+import SeniorOS.apps.app_0.core as core
 import SeniorOS.system.pages as pages
 
 time.sleep_ms(5)
@@ -27,10 +27,10 @@ while not button_a.is_pressed():
             pages.wifi_page()
         elif settings_num == 1:
             ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
-            core.core.time()
+            core.time()
         elif settings_num == 2:
             ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
-            core.core.collect()
+            syscore.FullCollect()
         elif settings_num == 3:
             ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
             pages.about()

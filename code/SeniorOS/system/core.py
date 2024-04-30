@@ -5,11 +5,6 @@ import network
 import gc
 from machine import unique_id
 
-time_hour = str(time.localtime()[3])
-time_min = str(time.localtime()[4])
-sys_hour = str(time.localtime()[3])
-sys_min = str(time.localtime()[4])
-
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
 # 初始化函数
@@ -133,3 +128,8 @@ class Screenshot:
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
 
+time_disposal()
+time_hour = str(time.localtime()[3])
+time_min = str(time.localtime()[4])
+sys_hour = str(time.localtime()[3])
+sys_min = str(time.localtime()[4])
