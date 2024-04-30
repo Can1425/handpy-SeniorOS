@@ -64,19 +64,20 @@ class GetTime:
     Min =lambda:time.localtime()[4]
     Sec =lambda:time.localtime()[5]
 
-def time_disposal():
+def time_disposal(mode='h'):
     global time_hour, time_min, sys_hour, sys_min
     time_hour = str(time.localtime()[3])
     time_min = str(time.localtime()[4])
-    if len(time_hour) < 2:
-        sys_hour = '0' + time_hour
-    else:
-        sys_hour = time_hour
-    if len(time_min) < 2:
-        sys_min = '0' + time_min
-    else:
-        sys_min = time_min
-
+    if mode == 'h':
+        if len(time_hour) < 2:
+            return '0' + time_hour
+        else:
+            pass
+    elif mode == 'm':
+        if len(time_min) < 2:
+            return '0' + time_min
+        else:
+            pass
 
 def FullCollect():
     # 反复进行collect函数直至达到极限
@@ -131,5 +132,5 @@ class Screenshot:
 time_disposal()
 time_hour = str(time.localtime()[3])
 time_min = str(time.localtime()[4])
-sys_hour = str(time.localtime()[3])
-sys_min = str(time.localtime()[4])
+sys_hour = time_disposal('h')
+sys_min = time_disposal('m')
