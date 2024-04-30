@@ -268,6 +268,54 @@ def about():
     UI.consani(0, 0, 0, 0, 0, 0, 128, 64)
 
 def wlanscan():#定义扫描wifi函数
+    import network
     wlan = network.WLAN()#定义类
     wlan.active(True)#打开
     return [i[0].decode() for i in network.WLAN().scan()]#返回
+
+def choosewifi():
+    oled.fill(0)
+    oled.DispChar("扫描wifi中,请稍等",0,0)
+    oled.show()
+    wifilist = wlanscan()
+    num=0
+    while len(wifilist)!=0:
+        oled.fill(0)
+        oled.DispChar("选择wifi:{}".format(wifilist[num]),0,0,1,True)
+        oled.DispChar("A:确认",0,48)
+        oled.show()
+        if eval("[/GetButtonExpr('py')/]"):
+            if num+1>len(wifilist):
+                num=0
+            else:
+                num+=1
+        elif eval("[/GetButtonExpr('on')/]"):
+            if num-1<0:
+                num=len(wifilist)-1
+            else:
+                num-=1
+        if eval("[/GetButtonExpr('a')/]"):
+            break
+    oled.fill(0)
+    oled.DispChar("请稍等",0,0)
+    oled.show()
+    time.sleep(2)#经典
+    oled.fill(0)
+    oled.DispChar("请输入您的WiFi密码",0,0)
+    oled.show()
+    time.sleep(3)
+    import network
+    wifi=network.WLAN()
+    pwd=input("请输入密码:")
+    try:
+        wifi.connectWiFi(wifilist[num],pwd)
+        oled.fill(0)
+        oled.DispChar("连接成功",0,0)
+        oled.show()
+        open("/SeniorOS/data/wifi.fos",'a+').write("\n{},{}".format(wifilist[num],pwd))
+        return True
+    except:
+        oled.fill(0)
+        oled.DispChar("连接失败",0,0)
+        oled.show()
+        return False

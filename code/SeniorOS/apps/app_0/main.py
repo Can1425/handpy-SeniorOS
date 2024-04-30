@@ -5,7 +5,7 @@ import SeniorOS.apps.app_0.core as core
 import SeniorOS.system.pages as pages
 
 time.sleep_ms(5)
-settings_list = ['重连网络', '同步时间', '清理内存', '系统信息', '- Flag OS -', '- End -', ' ']
+settings_list = ['重连网络', '同步时间', '清理内存', '系统信息','新增wifi连接', '- Flag OS -', '- End -', ' ']
 settings_num = 0
 while not button_a.is_pressed():
     if touchpad_o.is_pressed() and touchpad_n.is_pressed():
@@ -34,4 +34,7 @@ while not button_a.is_pressed():
         elif settings_num == 3:
             ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
             pages.about()
+        elif settings_num == 4:
+            ui.consani(64, 64, 0, 0, 0, 0, 128, 64)
+            pages.choosewifi()
 ui.consani(0, 0, 0, 0, 0, 0, 128, 64)
