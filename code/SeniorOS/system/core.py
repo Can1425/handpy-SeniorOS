@@ -72,12 +72,12 @@ def time_disposal(mode='h'):
         if len(time_hour) < 2:
             return '0' + time_hour
         else:
-            pass
+            return time_hour
     elif mode == 'm':
         if len(time_min) < 2:
             return '0' + time_min
         else:
-            pass
+            return time_min
 
 def FullCollect():
     # 反复进行collect函数直至达到极限
