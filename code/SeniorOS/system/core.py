@@ -64,21 +64,6 @@ class GetTime:
     Min =lambda:time.localtime()[4]
     Sec =lambda:time.localtime()[5]
 
-def time_disposal(mode='h'):
-    global time_hour, time_min, sys_hour, sys_min
-    time_hour = str(time.localtime()[3])
-    time_min = str(time.localtime()[4])
-    if mode == 'h':
-        if len(time_hour) < 2:
-            return '0' + time_hour
-        else:
-            return time_hour
-    elif mode == 'm':
-        if len(time_min) < 2:
-            return '0' + time_min
-        else:
-            return time_min
-
 def FullCollect():
     # 反复进行collect函数直至达到极限
     # 此代码来自 TaoLiSystem
@@ -128,6 +113,23 @@ class Screenshot:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
+
+                
+def time_disposal(mode='h'):
+    global time_hour, time_min, sys_hour, sys_min
+    time_hour = str(time.localtime()[3])
+    time_min = str(time.localtime()[4])
+    if mode == 'h':
+        if len(time_hour) < 2:
+            return '0' + time_hour
+        else:
+            return time_hour
+    elif mode == 'm':
+        if len(time_min) < 2:
+            return '0' + time_min
+        else:
+            return time_min
+
 
 time_disposal()
 time_hour = str(time.localtime()[3])

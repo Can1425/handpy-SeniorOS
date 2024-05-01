@@ -15,6 +15,9 @@ from mpython import button_a,button_b
 import gc
 import time,uos
 
+# 提供UI绘制所需的美观时间文本
+def UI_Time(GetTime):
+    return ('0' + GetTime() if len(GetTime()) < 2 else GetTime())
 
 # Gxxk留言：
 # 以后写设置面板记得注意 有关 SeniorOS/data/light.fos 的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
@@ -147,8 +150,8 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        UI.DisplayFont(SeniorOS.fonts.quantum, Core.sys_hour, 30, 18, False)
-        UI.DisplayFont(SeniorOS.fonts.quantum, Core.sys_min, 64, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, UI_Time(Core.GetTime.Hour()), 30, 18, False)
+        UI.DisplayFont(SeniorOS.fonts.quantum, UI_Time(Core.GetTime.Min()), 64, 18, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
