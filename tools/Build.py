@@ -8,7 +8,7 @@ buildDir="./build/"
 codeFile=[
     "SeniorOS/system/core.py",
     "SeniorOS/system/main.py",
-    "SeniorOS/system/ui.py",
+    "SeniorOS/system/daylight.py",
     "SeniorOS/system/pages.py",
     "SeniorOS/fonts/quantum.py",
     "SeniorOS/system/update.py",

@@ -10,10 +10,14 @@ from mpython import button_a,button_b
 import gc
 import time,uos
 
-def UITime():
+def UITime(pages:True):
     h=str(Core.GetTime.Hour())
     m=str(Core.GetTime.Min())
-    return ('0'+h if len(h)==1 else h) +':'+ ('0'+m if len(m)==1 else m)
+    if pages:
+       return ('0' + h if len(h)==1 else h) + ':' + ('0' + m if len(m)==1 else m)
+    else:
+        return ('0' + h if len(h)==1 else h) + ('0' + m if len(m)==1 else m)
+
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     try:
@@ -79,15 +83,16 @@ def GetCharWidth(s):
         strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
     return strWidth
 AutoCenter=lambda string:64-GetCharWidth(string)//2
+HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)//2-22
 
-def app(app_title:str):
+def app(appTitle:str):
     oled.fill(0)
     try:
       oled.invert(int(Core.Data.Get('light')))
     except:
         pass
     oled.fill_rect(1, 0, 126, 16, 1)
-    oled.DispChar(app_title, 5, 0, 2)
+    oled.DispChar(appTitle, 5, 0, 2)
     oled.DispChar(UITime(), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
