@@ -93,7 +93,7 @@ def app(appTitle:str):
         pass
     oled.fill_rect(1, 0, 126, 16, 1)
     oled.DispChar(appTitle, 5, 0, 2)
-    oled.DispChar(UITime(), 93, 0, 2)
+    oled.DispChar(UITime(True), 93, 0, 2)
     oled.hline(50, 62, 30, 1)
 
 def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
@@ -105,14 +105,37 @@ def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
         oled.blit(framebuf.FrameBuffer(bytearray(_d[0]), _d[2], _d[1],framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
 
+def Select(dispContent:list,appTitle:str):
+    selectNum = 0
+    while not button_a.is_pressed():
+        oled.rect(2, 4, 124, 16, 1)
+        app(appTitle)
+        oled.RoundRect(2, 2, 124, 60, 2, 1)
+        oled.DispChar(dispContent[selectNum], 5, 20, 1)
+        oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 45, 1)
+        oled.show()
+        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+            selectNum = selectNum + 1
+            if selectNum + 1 > len(dispContent):
+                selectNum = len(dispContent) - 1
+        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            selectNum = selectNum - 1
+            if selectNum < 0:
+                selectNum = 0
+        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            return selectNum
+    return
+
 def message(dispContent:list):
-    oled.fill(0)
-    oled.rect(1,1,127,60,1)
+    oled.rect(2, 2, 124, 16, 1)
     for i in range(len(dispContent)):
         oled.DispChar(dispContent[i], 5, 5+16*i, 1)
     # 然而这里实测只能放两排（
     oled.Dispchar("PY-明白", 42, 45)
     oled.show()
+    while not button_a.is_pressed():
+        if touchPad_P.is_pressed():
+            return
 
 def Tti(mode=True):
     """if mode is True then Draw the Left Transition animation

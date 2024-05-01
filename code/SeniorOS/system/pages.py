@@ -1,3 +1,6 @@
+from SeniorOS.apps.app_0 import *
+from SeniorOS.apps.app_1 import *
+
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.apps.logo as logo
@@ -22,8 +25,8 @@ import time,uos
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
-app_list = ['设置', '线上插件', '文件']
-app_tip = ['设置', '线上拓展插件', '文件操作']
+app_list = ['设置', '线上插件', '音乐']
+app_tip = ['设置', '线上拓展插件', '线上音乐']
 settingsPanelList = ['亮度', '音量', '日光模式']
 
 def ConfigureWLAN(ssid, password):
@@ -243,17 +246,7 @@ def app():
             class SeniorOSAPI:
                 Core=Core
                 DayLight=DayLight
-            __import__("SeniorOS.apps.app_" + str(app_num) + ".main",{
-                "SeniorOSAPI":SeniorOSAPI,
-                    "touchPad_P":touchPad_P,
-                    "touchPad_Y":touchPad_Y,
-                    "touchPad_T":touchPad_T,
-                    "touchPad_H":touchPad_H,
-                    "touchPad_O":touchPad_O,
-                    "touchPad_N":touchPad_N,
-                    "button_a":button_a,
-                    "button_b":button_b,
-            })
+            exec(str("app_"+ str(app_num) +"()"))
     DayLight.Tti()
     return home()
 
