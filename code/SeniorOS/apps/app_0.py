@@ -25,7 +25,9 @@ def app_0():
         oled.show()
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
             if settings_num == 0:
+                DayLight.ConsaniSideslip(True)
                 settings0Num = DayLight.Select(['重连网络', '同步时间', '新建网络配置'],"选择")
+                DayLight.ConsaniSideslip(False)
                 if settings0Num == 0:
                     DayLight.ConsaniSideslip(True)
                     wifi_page()
@@ -39,7 +41,9 @@ def app_0():
                     choosewifi()
                     DayLight.ConsaniSideslip(False)
             elif settings_num == 1:
+                DayLight.ConsaniSideslip(True)
                 settings1Num = DayLight.Select(['日光模式', '动效开关', '日光引擎信息'],"选择")
+                DayLight.ConsaniSideslip(False)
                 if settings1Num == 0:
                     DayLight.ConsaniSideslip(True)
                     app_0_daylightmode()
@@ -52,9 +56,20 @@ def app_0():
                     DayLight.About()
                     DayLight.ConsaniSideslip(False)
             elif settings_num == 2:
-                pass
+                DayLight.ConsaniSideslip(True)
+                settings3Num = DayLight.Select(['释放内存', '内存信息'],"选择")
+                DayLight.ConsaniSideslip(False)
+                if settings3Num == 0:
+                    DayLight.ConsaniSideslip(True)
+                    app_0_collect()
+                    DayLight.ConsaniSideslip(False)
+                elif settings0Num == 1:
+                    DayLight.ConsaniSideslip(True)
+                    DayLight.ConsaniSideslip(False)
             elif settings_num == 3:
-                pass
+                DayLight.ConsaniSideslip(True)
+                about()
+                DayLight.ConsaniSideslip(False)
             elif settings_num == 4:
                 pass
 

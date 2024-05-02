@@ -148,7 +148,7 @@ def ConsaniSideslip(side:True):
             oled.show()
             x = int((x - 3 * math.sqrt(t)))
             time.sleep_ms(t)
-        for count in range(10):
+        for count in range(7):
             oled.fill(0)
             oled.RoundRect(x, (-1), 130, 66, 2, 1)
             oled.show()
@@ -164,7 +164,7 @@ def ConsaniSideslip(side:True):
             x = int((x + 3 * math.sqrt(t)))
             t = t + -3
             time.sleep_ms(t)
-        for count in range(10):
+        for count in range(7):
             oled.fill(0)
             oled.RoundRect(x, (-1), 130, 66, 2, 1)
             oled.show()
@@ -269,7 +269,7 @@ def About():
         Core.DayLightMode()
         oled.DispChar(str('关于日光引擎'), 5, 5, 1)
         oled.DispChar("这是一个 GUI 框架，", 5, 20, 1)
-        oled.DispChar("负责渲染 SeniorOS 中的部分特有 GUI", 5,35 , 1)
-        oled.DispChar("鸣谢POLA在动画方面的巨大贡献", 5, 50, 1)
+        oled.DispChar("负责渲染部分特有 GUI", 5,35 , 1)
+        oled.DispChar("鸣谢POLA在的巨大贡献", 5, 50, 1)
         oled.show()
     return
