@@ -136,3 +136,9 @@ time_hour = str(time.localtime()[3])
 time_min = str(time.localtime()[4])
 sys_hour = time_disposal('h')
 sys_min = time_disposal('m')
+
+def DayLightMode():
+    try:
+        oled.invert(int(Core.Data.Get('light')))
+    except:
+        pass

@@ -17,6 +17,7 @@ from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touch
 from mpython import button_a,button_b
 import gc
 import time,uos
+import machine
 
 # Gxxk留言：
 # 以后写设置面板记得注意 有关 SeniorOS/data/light.fos 的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
@@ -47,11 +48,8 @@ def ConfigureWLAN(ssid, password):
         oled.fill_rect(0, 48, 128, 16, 0)
         oled.DispChar(str('             配置失败'), 0, 48, 1)
         oled.show()
-        while True:
-            if button_a.is_pressed():
-                return False
-            if button_b.is_pressed():
-                return True
+        time.sleep(2)
+        return True
 
 def wifi_page():
     # Data=Core.DataCtrl("/SeniorOS/data/")
@@ -108,7 +106,6 @@ def wifi_page():
 
 def CloudNotification():
     time.sleep(0.2)
-    DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
     DayLight.app('云端通知')
     try:
         oled.DispChar(str('正在从云端获取'), 5, 18, 2)
@@ -141,9 +138,20 @@ def CloudNotification():
     DayLight.Tti()
     return home()
 
-# TODO.
 def SettingPanel():
-    pass
+    time.sleep(0.2)
+    settings0Num = DayLight.Select(['日光模式', '释放内存', '重连网络', '软重启'],"快捷面板")
+    if settings0Num == 0:
+        app_0_daylightmode()
+    elif settings0Num == 1:
+        app_0_collect()
+    elif settings0Num == 2:
+        wifi_page
+    elif settings0Num == 3:
+        exec(machine.reset())
+    DayLight.Tti(False)
+    time.sleep_ms(5)
+    return home()
 
 def home():
     time.sleep_ms(20)
@@ -166,9 +174,10 @@ def home():
         
 
     if button_a.is_pressed():
+        DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
         CloudNotification()
     elif button_b.is_pressed():
-        DayLight.consani(128, 0, 128, 0, 0, 0, 128, 64)
+        time.sleep_ms(5)
         SettingPanel()
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
         DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
@@ -180,7 +189,7 @@ def select(options:list)->tuple:
     # 主循环
     while True:
         print("SeniorOS-[GxxkAPI]Target"+str(target))
-        # 绘制DayLight
+        # 绘制UI
         oled.DispChar(options[target], 0, 16, reverse=True) # 反色模式绘制选中内容
         try:
             oled.DispChar(options[target+1], 0, 32)
@@ -208,7 +217,7 @@ def app():
     global app_list, app_num
     home_movement_x = 40
     app_num = 0
-    time.sleep_ms(5)
+    time.sleep_ms(20)
     while not button_a.is_pressed():
         try:
           oled.invert(int(Core.Data.Get('light')))
@@ -242,12 +251,14 @@ def app():
             app_num = 2
         oled.show()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            DayLight.ConsaniApp(home_movement_x, 6, 36, 36, 0, 0, 128, 64, app_logo, home_movement_x + 5)
+            DayLight.ConsaniAppOpen(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
             class SeniorOSAPI:
                 Core=Core
                 DayLight=DayLight
             exec(str("app_"+ str(app_num) +"()"))
-    DayLight.Tti()
+            DayLight.ConsaniAppClose(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
+    oled.fill(0)
+    DayLight.ConsaniSideslip(False)
     return home()
 
 def about():
@@ -256,7 +267,6 @@ def about():
         oled.Bitmap(16, 20, bytearray([0X07,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XF8,0X00,0X7C,0X00,0X0F,0XFC,0X00, 0X00,0X00,0X00,0X00,0X00,0X01,0XFE,0X00,0XFE,0X00,0X1F,0XFC,0X00,0X00,0X00,0X00, 0X00,0X00,0X07,0XFF,0X01,0XFF,0X80,0X3C,0X00,0X00,0X00,0X01,0X00,0X00,0X00,0X0F, 0X07,0X83,0X83,0X80,0X38,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X1C,0X01,0XC3,0X81, 0X80,0X30,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X38,0X00,0XE3,0X00,0X00,0X30,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X38,0X00,0XE3,0X80,0X00,0X38,0X00,0X18,0X1F,0XE0, 0X0F,0XFC,0X3E,0X30,0X00,0X63,0XC0,0X00,0X3F,0X00,0X7E,0X1F,0XF1,0X9F,0XFC,0X7E, 0X70,0X00,0X71,0XF0,0X00,0X1F,0XF0,0XE7,0X1C,0X39,0X9C,0X0C,0XE0,0X70,0X00,0X70, 0XFE,0X00,0X07,0XF9,0XC3,0X18,0X19,0X98,0X0C,0XC0,0X70,0X00,0X70,0X1F,0X80,0X00, 0X79,0XC3,0X98,0X19,0X98,0X0C,0XC0,0X30,0X00,0X70,0X03,0X80,0X00,0X39,0XFF,0X98, 0X19,0X88,0X04,0XC0,0X30,0X00,0X60,0X01,0XC0,0X00,0X39,0XFF,0X18,0X19,0X80,0X00, 0XC0,0X38,0X00,0XE0,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X88,0X0C,0XC0,0X1C,0X01, 0XC2,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X8C,0X0C,0XC0,0X1E,0X03,0XC7,0X01,0XC0, 0X71,0XF0,0XC3,0X18,0X19,0X8E,0X0C,0XC0,0X0F,0XDF,0X83,0XC3,0X80,0XFF,0XE0,0X7F, 0X18,0X19,0X87,0XFC,0X40,0X07,0XFF,0X01,0XFF,0X00,0XFF,0XC0,0X3C,0X18,0X19,0X83, 0XFC,0X40,0X01,0XFC,0X00,0X7E,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 64, 18, 1)
         oled.DispChar("SeniorOS-by Can1425",5,45)
         oled.show()
-    DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
 
 def wlanscan():#定义扫描wifi函数
     import network
