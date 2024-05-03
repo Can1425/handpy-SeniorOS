@@ -130,26 +130,23 @@ def app_0_daylightmode():
     return
 
 def app_0_light():
-    b = int(Core.Data.Get('brightness'))
-    oled.contrast(b)
+    brightness = int(Core.Data.Get('brightness'))
     Core.DayLightMode()
     while not button_a.is_pressed():
-        oled.contrast(b)
+        oled.contrast(brightness)
         oled.fill(0)
         oled.DispChar(str('亮度调节'), 5, 5, 1)
         time.sleep_ms(5)
-        oled.DispChar("当前亮度"+ str(b), 5, 18, 1)
+        oled.DispChar("当前亮度"+ str(brightness), 5, 18, 1)
         oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            b = b + 5
-            if b > 255:
-                b = 255
-            oled.contrast(b)
+            brightness = brightness + 5
+            if brightness > 255:
+                brightness = 255
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            b = b - 5
-            if b < 0:
-                b = 0
-            oled.contrast(b)
-    oled.contrast(b)
-    Core.Data.Write('brightness',str(b),False,False)
+            brightness = brightness - 5
+            if brightness < 0:
+                brightness = 0
+    oled.contrast(brightness)
+    Core.Data.Write('brightness',str(brightness),False,False)
     return

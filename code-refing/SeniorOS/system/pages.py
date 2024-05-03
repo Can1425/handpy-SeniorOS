@@ -1,7 +1,6 @@
 from SeniorOS.apps.app_0 import *
 from SeniorOS.apps.app_1 import *
 from SeniorOS.apps.app_2 import *
-from SeniorOS.apps.app_3 import *
 
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
@@ -13,7 +12,6 @@ import urequests
 #import math
 #import gc
 import ntptime
-import network
 import SeniorOS.fonts.quantum
 from mpython import wifi,oled
 from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
@@ -26,19 +24,22 @@ import machine
 # 以后写设置面板记得注意 有关 SeniorOS/data/light.fos 的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
 # PS: 这是我改的 毕竟cfgfile又不给用户看
 # 你写了忘记改了是吧 - LP    Gxxk/Reply:emm 实际上是改了内置逻辑忘记改配置文件
-wifi=wifi()
+# wifi=wifi()
 plugins_list = []
 plugins_tip = []
-app_list = ['设置', '线上插件', '天气', '手电筒']
+app_list = ['设置', '线上插件', '音乐']
+app_tip = ['设置', '线上拓展插件', '线上音乐']
+settingsPanelList = ['亮度', '音量', '日光模式']
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
-    oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
+    oled.Bitmap(16, 20, bytearray([0X00,0X01,0X62,0X00,0X14,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0F,0XC0,0X00,0X0C,0X00,0X01,0XF8,0X3F,0X00,0X00,0X00,0X00,0X00,0X1F,0X80,0X00,0X00,0X00,0X03,0XFC,0X60,0X00,0X00,0X00,0X00,0X00,0X10,0X00,0X1C,0X00,0X00,0X06,0X06,0X60,0X00,0X00,0X00,0X00,0X00,0X10,0X1F,0X3F,0X19,0XF8,0XE6,0X07,0X60,0X00,0X00,0X00,0X00,0X00,0X1E,0X19,0XB1,0X9B,0X19,0X86,0X03,0X7C,0X00,0X00,0X00,0X00,0X00,0X0F,0XB1,0XB1,0X9B,0X19,0X06,0X03,0X3E,0X00,0X00,0X00,0X00,0X00,0X01,0XBF,0XB1,0X93,0X19,0X06,0X07,0X03,0X00,0X00,0X00,0X00,0X00,0X01,0XB0,0X31,0X93,0X1B,0X07,0X06,0X02,0X00,0X00,0X00,0X00,0X00,0X01,0XB0,0X31,0XB3,0X1B,0X03,0X9C,0X06,0X00,0X00,0X00,0X00,0X00,0X3F,0X3F,0X21,0XB3,0XF3,0X01,0XF8,0XFE,0X00,0X00,0X00,0X00,0X00,0X1C,0X0F,0X21,0X10,0XC0,0X00,0X60,0XF8,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 98, 20, 1)
     oled.fill_rect(0, 48, 128, 16, 0)
     oled.DispChar(str('              请稍等...'), 0, 48, 1)
     oled.show()
+    Core.wifi.connectWiFi(ssid, password,20)
     try:
-        wifi.connectWiFi(ssid, password)
+        Core.wifi.connectWiFi(ssid, password,10)
         ntptime.settime(8, "time.windows.com")
         oled.fill_rect(0, 48, 128, 16, 0)
         oled.DispChar(str('             配置成功'), 0, 48, 1)
@@ -90,6 +91,7 @@ def wifi_page():
     oled.show()
     while True:
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            print(wifiSSID[0] + ',' + wifiPWD[0])
             if ConfigureWLAN(wifiSSID[0],wifiPWD[0]):#保证至少有1个配置文件
                 return
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
@@ -148,7 +150,7 @@ def SettingPanel():
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 1:
         DayLight.ConsaniSideslip(True)
-        app_0_light()
+        app_0_()
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 2:
         DayLight.ConsaniSideslip(True)
@@ -235,7 +237,7 @@ def app():
           oled.invert(int(Core.Data.Get('light')))
         except:
             pass
-        if home_movement_x >= 0 and home_movement_x <= 175:
+        if home_movement_x >= 0 and home_movement_x <= 118:
             if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
                 home_movement_x = home_movement_x + 10
             elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
@@ -243,31 +245,24 @@ def app():
         else:
             if home_movement_x <= 0:
                 home_movement_x = 4
-            elif home_movement_x >= 175:
-                home_movement_x = 171
+            elif home_movement_x >= 118:
+                home_movement_x = 114
         oled.fill(0)
         oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 120), 6, 36, 36, 3, 1)
         oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
         oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 80 + 5, 12, logo.app_2, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 120 + 5, 12, logo.app_3, 25, 25, 1)
         oled.DispChar(app_list[app_num],DayLight.AutoCenter(app_list[app_num]),45)
         oled.hline(50, 62, 30, 1)
-        if home_movement_x >= 0 and home_movement_x <= 50:
+        if home_movement_x >= 0 and home_movement_x <= 46:
             app_num = 0
             app_logo = logo.app_0
-        elif home_movement_x >= 51 and home_movement_x <= 95:
+        elif home_movement_x >= 47 and home_movement_x <= 90:
             app_num = 1
             app_logo = logo.app_1
-        elif home_movement_x >= 96 and home_movement_x <= 130:
+        elif home_movement_x >= 90 and home_movement_x <= 118:
             app_num = 2
-            app_logo = logo.app_2
-        elif home_movement_x >= 131 and home_movement_x <= 175:
-            app_num = 3
-            app_logo = logo.app_3
         oled.show()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             DayLight.ConsaniAppOpen(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
@@ -283,7 +278,7 @@ def app():
 def about():
     oled.fill(0)
     while not button_a.is_pressed():
-        oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
+        oled.Bitmap(16, 20, bytearray([0X00,0X01,0X62,0X00,0X14,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0F,0XC0,0X00,0X0C,0X00,0X01,0XF8,0X3F,0X00,0X00,0X00,0X00,0X00,0X1F,0X80,0X00,0X00,0X00,0X03,0XFC,0X60,0X00,0X00,0X00,0X00,0X00,0X10,0X00,0X1C,0X00,0X00,0X06,0X06,0X60,0X00,0X00,0X00,0X00,0X00,0X10,0X1F,0X3F,0X19,0XF8,0XE6,0X07,0X60,0X00,0X00,0X00,0X00,0X00,0X1E,0X19,0XB1,0X9B,0X19,0X86,0X03,0X7C,0X00,0X00,0X00,0X00,0X00,0X0F,0XB1,0XB1,0X9B,0X19,0X06,0X03,0X3E,0X00,0X00,0X00,0X00,0X00,0X01,0XBF,0XB1,0X93,0X19,0X06,0X07,0X03,0X00,0X00,0X00,0X00,0X00,0X01,0XB0,0X31,0X93,0X1B,0X07,0X06,0X02,0X00,0X00,0X00,0X00,0X00,0X01,0XB0,0X31,0XB3,0X1B,0X03,0X9C,0X06,0X00,0X00,0X00,0X00,0X00,0X3F,0X3F,0X21,0XB3,0XF3,0X01,0XF8,0XFE,0X00,0X00,0X00,0X00,0X00,0X1C,0X0F,0X21,0X10,0XC0,0X00,0X60,0XF8,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 64, 18, 1)
         oled.show()
 
 def wlanscan():#定义扫描wifi函数

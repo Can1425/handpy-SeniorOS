@@ -1,11 +1,5 @@
 from mpython import *
 import time,uos
-import SeniorOS.system.core as Core
-import audio
-
-audio.stop()
-audio.player_init()
-
 def RenameCode():
     time.sleep(1.5)
     uos.rename('/main.py.bak','/main.py')
@@ -21,7 +15,7 @@ while True:
         pass
     if button_a.is_pressed():
         oled.fill(0)
-        oled.DispChar('启动至 SeniorOS',0,0)
+        oled.DispChar('0.5s后启动至 SeniorOS...',0,0)
         oled.show()
         time.sleep(0.5)
         from mpython import wifi
@@ -39,12 +33,11 @@ while True:
                 "os":uos
         }
         runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        oled.contrast(int(Core.Data.Get('brightness')))
         import SeniorOS.system.main
         break
     elif button_b.is_pressed():
         oled.fill(0)
-        oled.DispChar('启动至main.py',0,0)
+        oled.DispChar('0.5s后启动至main.py...',0,0)
         oled.show()
         time.sleep(0.5)
         break

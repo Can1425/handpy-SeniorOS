@@ -93,6 +93,7 @@ def ConsaniAppClose(xn, yn, w, wn, h, hn, rn, logo, logo_x):
     DayLightMode()
 
     try:
+        logo_x = 45
         r = 0
         x = 0
         y = 0

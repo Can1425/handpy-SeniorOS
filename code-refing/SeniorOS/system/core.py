@@ -4,7 +4,6 @@ import framebuf
 import network
 import gc
 from machine import unique_id
-from mpython import*
 # 适用于data下fos扩展名文件的信息读写操作
 # 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
 # 初始化函数
@@ -139,6 +138,36 @@ sys_min = time_disposal('m')
 
 def DayLightMode():
     try:
-        oled.invert(int(Data.Get('light')))
+        oled.invert(int(Core.Data.Get('light')))
     except:
         pass
+
+class wifi:
+    staObj= network.WLAN(network.STA_IF)
+    staObj.active(True)
+    def connectWiFi(ssid, passwd, timeout=114514):
+        if wifi.staObj.isconnected():
+            wifi.staObj.disconnect()
+        list = wifi.staObj.scan()
+        for i, wifi_info in enumerate(list):
+            try:
+                if wifi_info[0].decode() == ssid:
+                    wifi.staObj.connect(ssid, passwd)
+                    wifi_dbm = wifi_info[3]
+                    break
+            except UnicodeError:
+                wifi.staObj.connect(ssid, passwd)
+                wifi_dbm = '?'
+                break
+            if i == len(list) - 1:
+                raise OSError("SeniorOS - SSID invalid / failed to scan this wifi")
+        start = time.time()
+        print("Connection WiFi", end="")
+        while (wifi.staObj.ifconfig()[0] == '0.0.0.0'):
+            if time.ticks_diff(time.time(), start) > timeout:
+                print("")
+                raise OSError("SeniorOS - Timeout!,check your wifi password and keep your network unblocked")
+            print(".", end="")
+            time.sleep_ms(500)
+        print("")
+        print('SeniorOS - WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(wifi.staObj.ifconfig())))
