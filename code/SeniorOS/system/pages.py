@@ -277,7 +277,7 @@ def app():
             exec(str("app_"+ str(app_num) +"()"))
             DayLight.ConsaniAppClose(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
     oled.fill(0)
-    DayLight.consani(0, 64, 128, 0, 0, 0, 128, 64)
+    DayLight.consani(0,0,128,64,0,-64,128,64)
     return home()
 
 def about():
