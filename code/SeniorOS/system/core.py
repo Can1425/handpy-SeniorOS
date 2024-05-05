@@ -13,11 +13,13 @@ class DataCtrl:
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.fos')])
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.fos')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.strip('.fos')]=f.read().strip('\r')
+                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.fos')])
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
-        #print(self.data)
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data)
     # 获取数据
     def Get(self,dataName):
         return self.data[dataName]

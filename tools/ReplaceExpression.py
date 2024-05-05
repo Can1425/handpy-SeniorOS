@@ -16,7 +16,12 @@ constData={
     "screenshotMethod":"fast",
     "branch":projectBranch,
     "fullCommit":projectCommit,
-    "commit":projectShortCommit
+    "commit":projectShortCommit,
+
+}
+
+debugMessage={
+    "Core.DataCtrl.__init__":True
 }
 
 class Tools:
@@ -40,6 +45,9 @@ class Tools:
     def Const(name):
         global constData
         return constData[name]
+    def EnableDebugMsg(id):
+        global debugMessage
+        return "pass" if debugMessage[id] else "#" 
     hashtag="#"
 
 def ReplaceExpr(inputPath,outputPath=""):
