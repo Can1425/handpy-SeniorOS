@@ -10,6 +10,7 @@ from mpython import button_a,button_b
 import gc
 import uos
 import math
+import urequests
 
 def UITime(pages=True):
     h=str(Core.GetTime.Hour())

@@ -2,6 +2,7 @@ from SeniorOS.apps.app_0 import *
 from SeniorOS.apps.app_1 import *
 from SeniorOS.apps.app_2 import *
 from SeniorOS.apps.app_3 import *
+from SeniorOS.apps.app_4 import *
 
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
@@ -29,7 +30,7 @@ import machine
 wifi=wifi()
 plugins_list = []
 plugins_tip = []
-app_list = ['设置', '线上插件', '天气', '手电筒']
+app_list = ['设置', '线上插件', '天气', '手电筒', '即时诗词']
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
@@ -119,7 +120,6 @@ def CloudNotification():
         notifications = (_response.text.split(';'))
     except OSError as e:
         oled.DispChar('连接超时' if e.args[0]==113 else "发生了未知错误", 5, 18, 2)
-        oled.DispChar("OSError "+e.args[0], 5, 34, 2)
         oled.show()
         return
     except Exception as e:
@@ -161,7 +161,7 @@ def SettingPanel():
     elif settings0Num == 4:
         DayLight.ConsaniSideslip(True)
         exec(machine.reset())
-    DayLight.ConsaniSideslip(False)
+        DayLight.ConsaniSideslip(False)
     time.sleep_ms(5)
     return home()
 
@@ -169,7 +169,7 @@ def home():
     time.sleep_ms(20)
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
-        DayLight.DisplayFont(SeniorOS.fonts.quantum, DayLight.UITime(False), DayLight.HomeTimeAutoCenter(DayLight.UITime(False)), 18, False)
+        DayLight.DisplayFont(SeniorOS.fonts.quantum, DayLight.UITime(False), DayLight.HomeTimeAutoCenter(DayLight.UITime(False)), 20, False)
         oled.hline(50, 62, 30, 1)
         oled.show()
     
@@ -186,10 +186,11 @@ def home():
         
 
     if button_a.is_pressed():
-        DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        DayLight.ConsaniSideslip(False)
         CloudNotification()
+        DayLight.ConsaniSideslip(True)
     elif button_b.is_pressed():
-        time.sleep_ms(5)
+        DayLight.ConsaniSideslip(True)
         SettingPanel()
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
         DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
@@ -235,7 +236,7 @@ def app():
           oled.invert(int(Core.Data.Get('light')))
         except:
             pass
-        if home_movement_x >= 0 and home_movement_x <= 175:
+        if home_movement_x >= 0 and home_movement_x <= 224:
             if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
                 home_movement_x = home_movement_x + 10
             elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
@@ -243,17 +244,19 @@ def app():
         else:
             if home_movement_x <= 0:
                 home_movement_x = 4
-            elif home_movement_x >= 175:
-                home_movement_x = 171
+            elif home_movement_x >= 224:
+                home_movement_x = 220
         oled.fill(0)
         oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 120), 6, 36, 36, 3, 1)
+        oled.RoundRect((home_movement_x - 160), 6, 36, 36, 3, 1)
         oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
         oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
         oled.Bitmap(home_movement_x - 80 + 5, 12, logo.app_2, 25, 25, 1)
         oled.Bitmap(home_movement_x - 120 + 5, 12, logo.app_3, 25, 25, 1)
+        oled.Bitmap(home_movement_x - 160 + 5, 12, logo.app_4, 25, 25, 1)
         oled.DispChar(app_list[app_num],DayLight.AutoCenter(app_list[app_num]),45)
         oled.hline(50, 62, 30, 1)
         if home_movement_x >= 0 and home_movement_x <= 50:
@@ -268,6 +271,9 @@ def app():
         elif home_movement_x >= 131 and home_movement_x <= 175:
             app_num = 3
             app_logo = logo.app_3
+        elif home_movement_x >= 176 and home_movement_x <= 220:
+            app_num = 4
+            app_logo = logo.app_4
         oled.show()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             DayLight.ConsaniAppOpen(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
@@ -275,7 +281,7 @@ def app():
                 Core=Core
                 DayLight=DayLight
             exec(str("app_"+ str(app_num) +"()"))
-            DayLight.ConsaniAppClose(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
+            DayLight.ConsaniAppClose(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, 0)
     oled.fill(0)
     DayLight.consani(0,0,128,64,0,-64,128,64)
     return home()

@@ -130,7 +130,7 @@ def app_0_daylightmode():
     return
 
 def app_0_light():
-    b = int(Core.Data.Get('brightness'))
+    b = int(Core.Data.Get('luminance'))
     oled.contrast(b)
     Core.DayLightMode()
     while not button_a.is_pressed():
@@ -151,5 +151,5 @@ def app_0_light():
                 b = 0
             oled.contrast(b)
     oled.contrast(b)
-    Core.Data.Write('brightness',str(b),False,False)
+    Core.Data.Write('luminance',str(b),False,False)
     return
