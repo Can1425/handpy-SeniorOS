@@ -21,7 +21,7 @@ def UITime(pages=True):
 
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
-    DayLightMode()
+    UITools()
 
     try:
       consani_done_wait = 3
@@ -45,7 +45,7 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
     consani_done_wait = consani_done_wait + 3
 
 def ConsaniAppOpen(xn, yn, w, wn, h, hn, rn, logo, logo_x):
-    DayLightMode()
+    UITools()
 
     try:
         r = 0
@@ -91,7 +91,7 @@ def ConsaniAppOpen(xn, yn, w, wn, h, hn, rn, logo, logo_x):
         return
     
 def ConsaniAppClose(xn, yn, w, wn, h, hn, rn, logo, logo_x):
-    DayLightMode()
+    UITools
 
     try:
         r = 0
@@ -182,7 +182,7 @@ HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)//2-22
 
 def app(appTitle:str):
     oled.fill(0)
-    DayLightMode()
+    UITools()
     try:
         oled.invert(int(Core.Data.Get('light')))
     except:
@@ -221,8 +221,61 @@ def Select(dispContent:list,appTitle:str):
                 selectNum = 0
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             return selectNum
-    time.sleep_ms(5)
+    time.sleep_ms(10)
     return
+
+def ListOptions(dispContent:list):
+    UITools()
+    _list = 0
+    listNum = 0
+    oled.fill(0)
+    oled.RoundRect(2, 2, 124, 55, 2, 1)
+    oled.show()
+    while not button_a.is_pressed():
+        oled.fill(0)
+        oled.RoundRect(2, 2, 124, 55, 2, 1)
+        oled.DispChar(str(dispContent[_list]), 5, 8, 1)
+        oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 1)
+        oled.DispChar(str(dispContent[(_list + 2)]), 5, 38, 1)
+        oled.DispChar(''.join([str(listNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
+        oled.show()
+        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+            listNum = listNum + 1
+            if listNum > _list + 2:
+                _list = _list + 1
+                if listNum + 1 > len(dispContent):
+                    listNum = len(dispContent) - 1 
+                    _list = _list - 1
+        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            listNum = listNum - 1
+            if listNum < _list:
+                _list = _list - 1
+                if listNum < 0:
+                    listNum = 0
+                    _list = _list + 1
+        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            return listNum
+        if (listNum + 1) % 2 == 0 and _list + 1 % 2 == 1:
+            oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 2)
+            oled.show()
+        elif (listNum + 1) % 2 == 0 and _list + 1 % 2 == 0:
+            if (listNum + 1) % 4 == 0:
+                oled.DispChar(str(dispContent[_list]), 5, 8, 2)
+                oled.show()
+            else:
+                oled.DispChar(str(dispContent[_list + 2]), 5, 38, 2)
+                oled.show()
+        elif (listNum + 1) % 2 == 1 and _list + 1 % 2 == 1:
+            if (listNum + 1) % 3 == 0:
+                oled.DispChar(str(dispContent[_list + 2]), 5, 38, 2)
+                oled.show()
+            else:
+                oled.DispChar(str(dispContent[_list]), 5, 8, 2)
+                oled.show()
+        elif (listNum + 1) % 2 == 1 and _list + 1 % 2 == 0:
+            oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 2)
+            oled.show()
+
 
 def message(dispContent:list):
     oled.rect(2, 2, 124, 16, 1)
@@ -256,16 +309,17 @@ time=380ms
             oled.show()
             #time.sleep_ms(10)
 
-def DayLightMode():
+def UITools():
     try:
         oled.invert(int(Core.Data.Get('light')))
+        oled.contrast(int(Core.Data.Get('luminance')))
     except:
         pass
 
 def About():
     while not button_a.is_pressed():
         oled.fill(0)
-        Core.DayLightMode()
+        UITools()
         oled.DispChar(str('关于日光引擎'), 5, 5, 1)
         oled.DispChar("这是一个 GUI 框架，", 5, 20, 1)
         oled.DispChar("负责渲染部分特有 GUI", 5,35 , 1)

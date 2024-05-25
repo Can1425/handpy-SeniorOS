@@ -1,9 +1,12 @@
 from mpython import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
+import machine
+import esp32
+from SeniorOS.apps.app_4 import Poetry
 
 def app_0():
-    Core.DayLightMode()
+    DayLight.UITools()
     from SeniorOS.system.pages import about,wifi_page,choosewifi
     time.sleep_ms(5)
     settings_list = ['网络与时间', '界面与动效', '缓存与运存', '系统与设备']
@@ -34,7 +37,7 @@ def app_0():
                     DayLight.ConsaniSideslip(False)
                 elif settings0Num == 1:
                     DayLight.ConsaniSideslip(True)
-                    app_0_time()
+                    App0Time()
                     DayLight.ConsaniSideslip(False)
                 elif settings0Num == 2:
                     DayLight.ConsaniSideslip(True)
@@ -46,7 +49,7 @@ def app_0():
                 DayLight.ConsaniSideslip(False)
                 if settings1Num == 0:
                     DayLight.ConsaniSideslip(True)
-                    app_0_daylightmode()
+                    App0DayLightMode()
                     DayLight.ConsaniSideslip(False)
                 elif settings1Num == 1:
                     DayLight.ConsaniSideslip(True)
@@ -61,7 +64,7 @@ def app_0():
                 DayLight.ConsaniSideslip(False)
                 if settings3Num == 0:
                     DayLight.ConsaniSideslip(True)
-                    app_0_collect()
+                    App0Collect()
                     DayLight.ConsaniSideslip(False)
                 elif settings0Num == 1:
                     DayLight.ConsaniSideslip(True)
@@ -73,8 +76,8 @@ def app_0():
             elif settings_num == 4:
                 pass
 
-def app_0_time():
-    Core.DayLightMode()
+def App0Time():
+    DayLight.UITools()
     try:
         oled.fill(0)
         oled.DispChar(str('请稍等'), 5, 5, 1)
@@ -90,9 +93,9 @@ def app_0_time():
         oled.DispChar(str('失败'), 5, 45, 1)
         oled.show()
         
-def app_0_collect():
+def App0Collect():
     oled.fill(0)
-    Core.DayLightMode()
+    DayLight.UITools()
     try:
         oled.DispChar(str('请稍等'), 5, 5, 1)
         time.sleep_ms(5)
@@ -107,10 +110,10 @@ def app_0_collect():
         oled.DispChar(str('失败'), 5, 45, 1)
         oled.show()
 
-def app_0_daylightmode():
+def App0DayLightMode():
     while not button_a.is_pressed():
         oled.fill(0)
-        Core.DayLightMode()
+        DayLight.UITools()
         oled.DispChar(str('日光模式'), 5, 5, 1)
         time.sleep_ms(5)
         if Core.Data.Get('light') == "1":
@@ -129,10 +132,10 @@ def app_0_daylightmode():
             oled.show()
     return
 
-def app_0_light():
+def App0Light():
     b = int(Core.Data.Get('luminance'))
     oled.contrast(b)
-    Core.DayLightMode()
+    DayLight.UITools()
     while not button_a.is_pressed():
         oled.contrast(b)
         oled.fill(0)
@@ -153,3 +156,39 @@ def app_0_light():
     oled.contrast(b)
     Core.Data.Write('luminance',str(b),False,False)
     return
+
+def App0PowerOptions():
+    options = DayLight.ListOptions(['软重启', '关闭显示器', '休眠'])
+    if options == 0:
+        DayLight.ConsaniSideslip(True)
+        exec(machine.reset())
+        DayLight.ConsaniSideslip(False)
+    elif options == 1:
+        DayLight.ConsaniSideslip(True)
+        oled.poweroff()
+        if button_b.is_pressed():
+            oled.poweron()
+        return
+        DayLight.ConsaniSideslip(False)
+    elif options == 2:
+        DayLight.ConsaniSideslip(True)
+        esp32.wake_on_touch(True)
+        oled.fill(0)
+        oled.DispChar('休眠状态已启动', 5, 0, 1)
+        oled.contrast(0)
+        oled.invert(0)
+        Poetry()
+        try:
+            oled.DispChar(poetry[0], 5, 18, 1)
+            oled.DispChar(poetry[1], 5, 34, 1)
+            oled.DispChar('轻触任意触摸键退出', 5, 50, 1)
+        except:
+            try:
+                oled.DispChar(poetry[0], 5, 18, 1)
+                oled.DispChar('轻触任意触摸键退出', 5, 50, 1)
+            except:
+                pass
+        oled.show()
+        machine.lightsleep()
+        DayLight.UITools()
+        DayLight.ConsaniSideslip(False)

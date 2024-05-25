@@ -20,7 +20,7 @@ def app_4():
                 oled.DispChar(poetry[0], 5, 18, 1)
                 oled.DispChar('TH - 刷新', 5, 50, 1)
             except:
-                oled.DispChar('诗词走丢啦！', 5, 50, 1)
+                oled.DispChar('诗词走丢啦！', 5, 18, 1)
                 oled.DispChar('TH - 刷新', 5, 50, 1)
         oled.show()
     return

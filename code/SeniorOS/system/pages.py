@@ -141,26 +141,26 @@ def CloudNotification():
 
 def SettingPanel():
     time.sleep(0.2)
-    settings0Num = DayLight.Select(['日光模式','亮度调节', '释放内存', '重连网络', '软重启'],"快捷面板")
+    settings0Num = DayLight.Select(['电源选项', '日光模式','亮度调节', '释放内存', '重连网络'],"快捷面板")
     if settings0Num == 0:
         DayLight.ConsaniSideslip(True)
-        app_0_daylightmode()
+        App0PowerOptions()
         DayLight.ConsaniSideslip(False)
-    elif settings0Num == 1:
+    if settings0Num == 1:
         DayLight.ConsaniSideslip(True)
-        app_0_light()
+        App0DayLightMode()
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 2:
         DayLight.ConsaniSideslip(True)
-        app_0_collect()
+        App0Light
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 3:
         DayLight.ConsaniSideslip(True)
-        wifi_page
+        App0Collect
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 4:
         DayLight.ConsaniSideslip(True)
-        exec(machine.reset())
+        wifi_page
         DayLight.ConsaniSideslip(False)
     time.sleep_ms(5)
     return home()
@@ -192,9 +192,12 @@ def home():
     elif button_b.is_pressed():
         DayLight.ConsaniSideslip(True)
         SettingPanel()
+        DayLight.ConsaniSideslip(False)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
         DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
         app()
+        DayLight.consani(0,0,128,64,0,-64,128,64)
+
 
 def select(options:list)->tuple:
     print("SeniorOS-[GxxkAPI]进入选择器界面")
@@ -281,10 +284,8 @@ def app():
                 Core=Core
                 DayLight=DayLight
             exec(str("app_"+ str(app_num) +"()"))
-            DayLight.ConsaniAppClose(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, 0)
-    oled.fill(0)
-    DayLight.consani(0,0,128,64,0,-64,128,64)
-    return home()
+            DayLight.ConsaniAppClose(45, 6, 128, 36, 64, 36, 3, app_logo, 0)
+    return
 
 def about():
     oled.fill(0)

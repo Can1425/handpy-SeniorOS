@@ -115,9 +115,3 @@ class Screenshot:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
-
-def DayLightMode():
-    try:
-        oled.invert(int(Data.Get('light')))
-    except:
-        pass
