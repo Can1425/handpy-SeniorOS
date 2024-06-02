@@ -238,6 +238,7 @@ def ListOptions(dispContent:list):
         oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 1)
         oled.DispChar(str(dispContent[(_list + 2)]), 5, 38, 1)
         oled.DispChar(''.join([str(listNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
+        oled.hline(50, 62, 30, 1)
         oled.show()
         if touchPad_O.is_pressed() and touchPad_N.is_pressed():
             listNum = listNum + 1
