@@ -1,6 +1,7 @@
 from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
+import SeniorOS.system.typer as Typer
 #import framebuf
 #import font.dvsmb_21
 import urequests
@@ -266,7 +267,7 @@ def choosewifi():
     time.sleep(3)
     import network
     wifi=network.WLAN()
-    pwd=input("请输入密码:")
+    pwd=Typer.main()
     try:
         wifi.connectWiFi(wifilist[num],pwd)
         oled.fill(0)
