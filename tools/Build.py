@@ -12,6 +12,7 @@ codeFile=[
     "SeniorOS/system/pages.py",
     "SeniorOS/fonts/quantum.py",
     "SeniorOS/system/update.py",
+    "SeniorOS/system/typer.py",
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置

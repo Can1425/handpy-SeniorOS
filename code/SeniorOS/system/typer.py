@@ -92,12 +92,12 @@ def typeOfPM():
     return PM[y][x]
 def main():
     text = ''
-    while not button_b.is_pressed():
+    while not button_a.is_pressed():
         oled.fill(0)
         oled.DispChar(text, 0, 0)
         oled.DispChar("字母/数字(P)",0,16)
         oled.DispChar("符号(Y)",0,32)
-        oled.DispChar("删除(N) 完成(B)",0,48)
+        oled.DispChar("删除(N) 完成(A)",0,48)
         oled.hline(0,16,128,1)
         oled.show()
         if touchpad_p.is_pressed():text+=typeOfNL()
