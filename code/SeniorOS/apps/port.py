@@ -23,8 +23,8 @@ def app():
         else:
             if home_movement_x <= 0:
                 home_movement_x = 4
-            elif home_movement_x >= 274:
-                home_movement_x = 270
+            elif home_movement_x >= 280:
+                home_movement_x = 275
         oled.fill(0)
         oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
         oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
@@ -55,7 +55,7 @@ def app():
         elif home_movement_x >= 176 and home_movement_x <= 220:
             app_num = 4
             app_logo = logo.app_4
-        elif home_movement_x >= 221 and home_movement_x <= 270:
+        elif home_movement_x >= 221 and home_movement_x <= 275:
             app_num = 5
             app_logo = logo.app_5
         oled.show()

@@ -104,3 +104,4 @@ def main():
         elif touchpad_y.is_pressed():text+=typeOfPM()
         elif touchpad_n.is_pressed():text=text[:-1]
     return text
+

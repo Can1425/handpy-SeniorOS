@@ -19,156 +19,170 @@ def UITime(pages=True):
              (':' if pages else "") + \
             ('0' + m if len(m)==1 else m)
 
+def OffConsin():
+    oled.fill(0)
+    oled.show()
+    time.sleep_ms(600)
+    return
 
 def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     UITools()
-
-    try:
-      consani_done_wait = 3
-      oled.fill(0)
-      for _ in range(7):
-          oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
-          oled.fill(0)
-          consani_done_x = (consani_done_x - consani_start_x) // 2
-          consani_done_y = (consani_done_y - consani_start_y) // 2
-          consani_done_wide = (consani_start_wide + consani_done_wide) // 2
-          consani_done_height = (consani_start_height + consani_done_height) // 2
-          oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
-          oled.show()
-    except:
-        oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
-        oled.show()
-        return
-    if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-        return
-    time.sleep_ms(consani_done_wait)
-    consani_done_wait = consani_done_wait + 3
+    consani_done_wait = 3
+    if int(Core.Data.Get('dynamicEffect')) == 1:
+        try:
+            oled.fill(0)
+            for _ in range(7):
+                oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
+                oled.fill(0)
+                consani_done_x = (consani_done_x - consani_start_x) // 2
+                consani_done_y = (consani_done_y - consani_start_y) // 2
+                consani_done_wide = (consani_start_wide + consani_done_wide) // 2
+                consani_done_height = (consani_start_height + consani_done_height) // 2
+                oled.RoundRect(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, 2, 1)
+                oled.show()
+        except:
+            oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
+            oled.show()
+            return
+        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            return
+        time.sleep_ms(consani_done_wait)
+        consani_done_wait = consani_done_wait + 3
+    else:
+        OffConsin()
 
 def ConsaniAppOpen(xn, yn, w, wn, h, hn, rn, logo, logo_x):
     UITools()
+    if int(Core.Data.Get('dynamicEffect')) == 1:
+        try:
+            r = 0
+            x1 = xn
+            y1 = yn
+            w1 = wn
+            h1 = hn
+            r1 = rn
+            t = 1
+            oled.RoundRect(x1, y1, w1, h1, r1, 1)
+            oled.show()
+            for count in range(2):
+                oled.fill(0)
+                oled.RoundRect(x1, y1, w1, h1, r1, 1)
+                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
+                oled.show()
+                x1 = x1 - t * t
+                y1 = y1 - t * t
+                w1 = w1 + 2 * (t * t)
+                h1 = h1 + 2 * (t * t)
+                r1 = r + t * t
+                t = t + 1
+            for count in range(7):
+                x = x1
+                y = y1
+                w = w1
+                h = h1
+                r = r1
+                oled.fill(0)
+                oled.RoundRect(x1, y1, w1, h1, r1, 1)
+                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
+                oled.show()
+                x1 = (x1 - 0) // 2
+                y1 = (y1 - 0) // 2
+                w1 = (128 + w1) // 2
+                h1 = (64 + h1) // 2
+                r1 = (r - 0) // 2
+                logo_x = (logo_x + 52) //2
+                time.sleep_ms(15)
+        except:
+            oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
+            oled.show()
+            return
+    else:
+        OffConsin()
 
-    try:
-        r = 0
-        x1 = xn
-        y1 = yn
-        w1 = wn
-        h1 = hn
-        r1 = rn
-        t = 1
-        oled.RoundRect(x1, y1, w1, h1, r1, 1)
-        oled.show()
-        for count in range(2):
-            oled.fill(0)
-            oled.RoundRect(x1, y1, w1, h1, r1, 1)
-            oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
-            oled.show()
-            x1 = x1 - t * t
-            y1 = y1 - t * t
-            w1 = w1 + 2 * (t * t)
-            h1 = h1 + 2 * (t * t)
-            r1 = r + t * t
-            t = t + 1
-        for count in range(7):
-            x = x1
-            y = y1
-            w = w1
-            h = h1
-            r = r1
-            oled.fill(0)
-            oled.RoundRect(x1, y1, w1, h1, r1, 1)
-            oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
-            oled.show()
-            x1 = (x1 - 0) // 2
-            y1 = (y1 - 0) // 2
-            w1 = (128 + w1) // 2
-            h1 = (64 + h1) // 2
-            r1 = (r - 0) // 2
-            logo_x = (logo_x + 52) //2
-            time.sleep_ms(15)
-    except:
-        oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
-        oled.show()
-        return
-    
 def ConsaniAppClose(xn, yn, w, wn, h, hn, rn, logo, logo_x):
     UITools
-
-    try:
-        r = 0
-        x = 0
-        y = 0
-        w = 128
-        h = 64
-        r = rn
-        t = 1
-        x1 = 0
-        y1 = 0
-        w1 = 128
-        h1 = 64
-        for count in range(7):
-            oled.fill(0)
-            oled.RoundRect(x1, y1, w, h, r, 1)
-            oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
+    if int(Core.Data.Get('dynamicEffect')) == 1:
+        try:
+            r = 0
+            x = 0
+            y = 0
+            w = 128
+            h = 64
+            r = rn
+            t = 1
+            x1 = 0
+            y1 = 0
+            w1 = 128
+            h1 = 64
+            for count in range(7):
+                oled.fill(0)
+                oled.RoundRect(x1, y1, w, h, r, 1)
+                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
+                oled.show()
+                x1 = (x1 - 0) // 2
+                y1 = (y1 - 0) // 2
+                w1 = (128 + w1) // 2
+                h1 = (64 + h1) // 2
+                r1 = (r - 0) // 2
+                x = x1
+                y = y1
+                w = w1
+                h = h1
+                r = r1
+                time.sleep_ms(15)
+            for count in range(7):
+                oled.fill(0)
+                oled.RoundRect(x, y, w, h, r, 1)
+                oled.show()
+                x = (xn + x) // 2
+                y = (yn + y) // 2
+                w = (wn + w) // 2
+                h = (hn + h) // 2
+                r = (rn + r) // 2
+                logo_x = logo_x * 2
+                time.sleep_ms(15)
+        except:
+            oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
             oled.show()
-            x1 = (x1 - 0) // 2
-            y1 = (y1 - 0) // 2
-            w1 = (128 + w1) // 2
-            h1 = (64 + h1) // 2
-            r1 = (r - 0) // 2
-            x = x1
-            y = y1
-            w = w1
-            h = h1
-            r = r1
-            time.sleep_ms(15)
-        for count in range(7):
-            oled.fill(0)
-            oled.RoundRect(x, y, w, h, r, 1)
-            oled.show()
-            x = (xn + x) // 2
-            y = (yn + y) // 2
-            w = (wn + w) // 2
-            h = (hn + h) // 2
-            r = (rn + r) // 2
-            logo_x = logo_x * 2
-            time.sleep_ms(15)
-    except:
-        oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
-        oled.show()
-        return
+            return
+    else:
+        OffConsin()
     
 def ConsaniSideslip(side:True):
-    t = 10
-    if side:
-        x = 128
-        for count in range(3):
-            oled.fill(0)
-            oled.RoundRect(x, (-1), 130, 66, 2, 1)
-            oled.show()
-            x = int((x - 3 * math.sqrt(t)))
-            time.sleep_ms(t)
-        for count in range(7):
-            oled.fill(0)
-            oled.RoundRect(x, (-1), 130, 66, 2, 1)
-            oled.show()
-            x = x // 2
-            t = t + 3
-            time.sleep_ms(t)
+    if int(Core.Data.Get('dynamicEffect')) == 1:
+        t = 10
+        if side:
+            x = 128
+            for count in range(3):
+                oled.fill(0)
+                oled.RoundRect(x, (-1), 130, 66, 2, 1)
+                oled.show()
+                x = int((x - 3 * math.sqrt(t)))
+                time.sleep_ms(t)
+            for count in range(7):
+                oled.fill(0)
+                oled.RoundRect(x, (-1), 130, 66, 2, 1)
+                oled.show()
+                x = x // 2
+                t = t + 3
+                time.sleep_ms(t)
+        else:
+            x = 0
+            for count in range(3):
+                oled.fill(0)
+                oled.RoundRect(x, (-1), 130, 66, 2, 1)
+                oled.show()
+                x = int((x + 3 * math.sqrt(t)))
+                t = t + -3
+                time.sleep_ms(t)
+            for count in range(7):
+                oled.fill(0)
+                oled.RoundRect(x, (-1), 130, 66, 2, 1)
+                oled.show()
+                x = x + (128 - x) // 2
+                time.sleep_ms(t)
     else:
-        x = 0
-        for count in range(3):
-            oled.fill(0)
-            oled.RoundRect(x, (-1), 130, 66, 2, 1)
-            oled.show()
-            x = int((x + 3 * math.sqrt(t)))
-            t = t + -3
-            time.sleep_ms(t)
-        for count in range(7):
-            oled.fill(0)
-            oled.RoundRect(x, (-1), 130, 66, 2, 1)
-            oled.show()
-            x = x + (128 - x) // 2
-            time.sleep_ms(t)
+        OffConsin()
 
 def GetCharWidth(s):
     strWidth = 0
@@ -187,10 +201,8 @@ def app(appTitle:str):
         oled.invert(int(Core.Data.Get('light')))
     except:
         pass
-    oled.fill_rect(1, 0, 126, 16, 1)
-    oled.DispChar(appTitle, 5, 0, 2)
-    oled.DispChar(UITime(True), 93, 0, 2)
-    oled.hline(50, 62, 30, 1)
+    oled.DispChar(appTitle, 5, 0, 1)
+    oled.DispChar(UITime(True), 93, 0, 1)
 
 def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
     _start = _x
@@ -205,8 +217,8 @@ def Select(dispContent:list,appTitle:str):
     selectNum = 0
     while not button_a.is_pressed():
         oled.rect(2, 4, 124, 16, 1)
-        app(appTitle)
-        oled.RoundRect(2, 2, 124, 55, 2, 1)
+        oled.DispChar(appTitle, 5, 5, 1)
+        oled.DispChar(UITime(True), 93, 5, 1)
         oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), 20, 1)
         oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
         oled.DispChar('TH-确认', 5, 40, 1)
@@ -229,86 +241,45 @@ def ListOptions(dispContent:list):
     _list = 0
     listNum = 0
     oled.fill(0)
-    oled.RoundRect(2, 2, 124, 55, 2, 1)
+    oled.fill_rect(1, 0, 126, 16, 1)
     oled.show()
     while not button_a.is_pressed():
         oled.fill(0)
         oled.RoundRect(2, 2, 124, 55, 2, 1)
-        oled.DispChar(str(dispContent[_list]), 5, 8, 1)
-        oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 1)
-        oled.DispChar(str(dispContent[(_list + 2)]), 5, 38, 1)
         oled.DispChar(''.join([str(listNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
-        oled.hline(50, 62, 30, 1)
+        try:
+            oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
+            oled.DispChar(str(dispContent[(listNum + 1)]), 5, 23, 1)
+            oled.DispChar(str(dispContent[(listNum + 2)]), 5, 38, 1)
+        except:
+            try:
+                oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
+                oled.DispChar(str(dispContent[(listNum + 1)]), 5, 23, 1)
+            except:
+                oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
         oled.show()
         if touchPad_O.is_pressed() and touchPad_N.is_pressed():
             listNum = listNum + 1
-            if listNum > _list + 2:
-                _list = _list + 1
-                if listNum + 1 > len(dispContent):
-                    listNum = len(dispContent) - 1 
-                    _list = _list - 1
+            if listNum + 1 > len(dispContent):
+                listNum = listNum
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
             listNum = listNum - 1
-            if listNum < _list:
-                _list = _list - 1
-                if listNum < 0:
-                    listNum = 0
-                    _list = _list + 1
+            if listNum < listNum:
+                listNum = 0
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             return listNum
-        if (listNum + 1) % 2 == 0 and _list + 1 % 2 == 1:
-            oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 2)
-            oled.show()
-        elif (listNum + 1) % 2 == 0 and _list + 1 % 2 == 0:
-            if (listNum + 1) % 4 == 0:
-                oled.DispChar(str(dispContent[_list]), 5, 8, 2)
-                oled.show()
-            else:
-                oled.DispChar(str(dispContent[_list + 2]), 5, 38, 2)
-                oled.show()
-        elif (listNum + 1) % 2 == 1 and _list + 1 % 2 == 1:
-            if (listNum + 1) % 3 == 0:
-                oled.DispChar(str(dispContent[_list + 2]), 5, 38, 2)
-                oled.show()
-            else:
-                oled.DispChar(str(dispContent[_list]), 5, 8, 2)
-                oled.show()
-        elif (listNum + 1) % 2 == 1 and _list + 1 % 2 == 0:
-            oled.DispChar(str(dispContent[(_list + 1)]), 5, 23, 2)
-            oled.show()
 
 
-def message(dispContent:list):
-    oled.rect(2, 2, 124, 16, 1)
-    for i in range(len(dispContent)):
-        oled.DispChar(dispContent[i], 5, 5+16*i, 1)
-    # 然而这里实测只能放两排（
-    oled.Dispchar("PY-明白", 42, 45)
-    oled.show()
-    while not button_a.is_pressed():
-        if touchPad_P.is_pressed():
-            return
-
-def Tti(mode=True):
-    """if mode is True then Draw the Left Transition animation
-Else Draw the Left Transition animation
-time=380ms
-"""
-    ckt=128
-    ckr=0
-    if mode:
-        for i in range(10):
-            ckt=ckt/2
-            ckr=ckr + ckt
-            oled.fill_rect(0, 0,round(ckr), 64, 0)
-            oled.show()
-            #time.sleep_ms(10)
-    else:
-        for i in range(10):
-            ckt=ckt/2
-            oled.fill_rect(int(ckt), 0, 128, 64, 0)
-            oled.show()
-            #time.sleep_ms(10)
+def message(content:str):
+    content = content + "   按A键确认   "
+    while not button_a.is_pressed:
+        oled.fill(0)
+        oled.fill_rect(1, 0, 126, 16, 1)
+        oled.DispChar(content, 0, 0, 2)
+        oled.show()
+        time.sleep(0.2)
+        content = content[1:] + content[0]
+    OffConsin()
 
 def UITools():
     try:

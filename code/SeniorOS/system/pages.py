@@ -38,6 +38,7 @@ def ConfigureWLAN(ssid, password):
         oled.fill_rect(0, 48, 128, 16, 0)
         oled.DispChar(str('             配置成功'), 0, 48, 1)
         oled.show()
+        DayLight.message("Welcome to SeniorOS")
         time.sleep(2)
         return True
     except:
@@ -47,7 +48,7 @@ def ConfigureWLAN(ssid, password):
         time.sleep(2)
         return True
 
-def wifi_page():
+def WifiPages():
     # Data=Core.DataCtrl("/SeniorOS/data/")
     wifiConfigRead=Core.Data.Get('wifi')#读wifi配置文件
     wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
@@ -131,7 +132,7 @@ def CloudNotification():
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
     DayLight.Tti()
-    return home()
+    return Home()
 
 def SettingPanel():
     time.sleep(0.2)
@@ -154,17 +155,15 @@ def SettingPanel():
         DayLight.ConsaniSideslip(False)
     elif settings0Num == 4:
         DayLight.ConsaniSideslip(True)
-        wifi_page()
+        WifiPages()
         DayLight.ConsaniSideslip(False)
-    time.sleep_ms(5)
+    DayLight.OffConsin()
     return
 
-def home():
-    time.sleep_ms(20)
+def Home():
     while not eval("[/GetButtonExpr('thab')/]"):
         oled.fill(0)
         DayLight.DisplayFont(SeniorOS.fonts.quantum, DayLight.UITime(False), DayLight.HomeTimeAutoCenter(DayLight.UITime(False)), 20, False)
-        oled.hline(50, 62, 30, 1)
         oled.show()
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
@@ -177,7 +176,6 @@ def home():
         while not eval("[/GetButtonExpr('pythonab')/]"):pass
         if eval("[/GetButtonExpr('pn')/]"):
             return True
-        
 
     if button_a.is_pressed():
         DayLight.ConsaniSideslip(False)
@@ -240,23 +238,7 @@ def choosewifi():
     oled.show()
     wifilist = wlanscan()
     num=0
-    while len(wifilist)!=0:
-        oled.fill(0)
-        oled.DispChar("选择wifi:{}".format(wifilist[num]),0,0,1,True)
-        oled.DispChar("A:确认",0,48)
-        oled.show()
-        if eval("[/GetButtonExpr('py')/]"):
-            if num+1>len(wifilist):
-                num=0
-            else:
-                num+=1
-        elif eval("[/GetButtonExpr('on')/]"):
-            if num-1<0:
-                num=len(wifilist)-1
-            else:
-                num-=1
-        if eval("[/GetButtonExpr('a')/]"):
-            break
+    num = DayLight.ListOptions(wifilist)
     oled.fill(0)
     oled.DispChar("请稍等",0,0)
     oled.show()
