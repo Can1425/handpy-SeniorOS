@@ -197,10 +197,6 @@ HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)//2-22
 def app(appTitle:str):
     oled.fill(0)
     UITools()
-    try:
-        oled.invert(int(Core.Data.Get('light')))
-    except:
-        pass
     oled.DispChar(appTitle, 5, 0, 1)
     oled.DispChar(UITime(True), 93, 0, 1)
 
@@ -213,15 +209,27 @@ def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
         oled.blit(framebuf.FrameBuffer(bytearray(_d[0]), _d[2], _d[1],framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
 
-def Select(dispContent:list,appTitle:str):
+def Select(dispContent:list, y:int, window:False, appTitle:str):
+    UITools()
     selectNum = 0
+
+    if appTitle == "None":
+        pass
+    else:
+        if window == False:
+            app(appTitle)
+        else:
+            oled.DispChar(appTitle, 5, 5, 1)
+            oled.DispChar(UITime(True), 93, 5, 1)
+    oled.show()
     while not button_a.is_pressed():
-        oled.rect(2, 4, 124, 16, 1)
-        oled.DispChar(appTitle, 5, 5, 1)
-        oled.DispChar(UITime(True), 93, 5, 1)
-        oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), 20, 1)
+        oled.fill_rect(0, 20, 128, 45, 0)
+        oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
         oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
-        oled.DispChar('TH-确认', 5, 40, 1)
+        if window == True:
+            oled.RoundRect(2, y - 26, 124, 55, 2, 1)
+        else:
+            pass
         oled.show()
         if touchPad_O.is_pressed() and touchPad_N.is_pressed():
             selectNum = selectNum + 1
@@ -233,42 +241,49 @@ def Select(dispContent:list,appTitle:str):
                 selectNum = 0
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             return selectNum
-    time.sleep_ms(10)
+        time.sleep_ms(300)
+    time.sleep_ms(300)
     return
 
-def ListOptions(dispContent:list):
+def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
+    # 请不要在激活 appTitle 时设置 window = True
     UITools()
     _list = 0
     listNum = 0
     oled.fill(0)
-    oled.fill_rect(1, 0, 126, 16, 1)
+    if appTitle == "None":
+        pass
+    else:
+        app(appTitle)
     oled.show()
     while not button_a.is_pressed():
-        oled.fill(0)
-        oled.RoundRect(2, 2, 124, 55, 2, 1)
+        oled.fill_rect(0, 20, 128, 45, 0)
         oled.DispChar(''.join([str(listNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
         try:
-            oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
-            oled.DispChar(str(dispContent[(listNum + 1)]), 5, 23, 1)
-            oled.DispChar(str(dispContent[(listNum + 2)]), 5, 38, 1)
+            oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+            oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
+            oled.DispChar(str(dispContent[(listNum + 2)]), 5, y + 30, 1)
         except:
             try:
-                oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
-                oled.DispChar(str(dispContent[(listNum + 1)]), 5, 23, 1)
+                oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+                oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
             except:
-                oled.DispChar(str(dispContent[listNum]), 5, 8, 2)
+                oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+        if window == True:
+            oled.RoundRect(2, y - 6, 124, 55, 2, 1)
+        else:
+            pass
         oled.show()
         if touchPad_O.is_pressed() and touchPad_N.is_pressed():
             listNum = listNum + 1
             if listNum + 1 > len(dispContent):
-                listNum = listNum
+                listNum = len(dispContent) - 1
         if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
             listNum = listNum - 1
-            if listNum < listNum:
+            if listNum < 0:
                 listNum = 0
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             return listNum
-
 
 def message(content:str):
     content = content + "   按A键确认   "

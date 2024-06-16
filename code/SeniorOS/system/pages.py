@@ -2,6 +2,7 @@ from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
+import SeniorOS.system.home as HomeStyle
 #import framebuf
 #import font.dvsmb_21
 import urequests
@@ -10,7 +11,6 @@ import urequests
 #import gc
 import ntptime
 import network
-import SeniorOS.fonts.quantum
 from mpython import wifi,oled
 from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 from mpython import button_a,button_b
@@ -131,29 +131,32 @@ def CloudNotification():
         oled.DispChar(notifications[2], 5, 32)
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
-    DayLight.Tti()
-    return Home()
+    return
 
 def SettingPanel():
     time.sleep(0.2)
-    settings0Num = DayLight.Select(['电源选项', '日光模式','亮度调节', '释放内存', '重连网络'],"快捷面板")
+    settings0Num = DayLight.Select(['桌面风格', '电源选项', '日光模式','亮度调节', '释放内存', '重连网络'], 28, True, "设置面板")
     if settings0Num == 0:
+        DayLight.ConsaniSideslip(True)
+        HomeStyle.HomeStyleSet()
+        DayLight.ConsaniSideslip(False)
+    elif settings0Num == 1:
         DayLight.ConsaniSideslip(True)
         App0PowerOptions()
         DayLight.ConsaniSideslip(False)
-    if settings0Num == 1:
+    elif settings0Num == 2:
         DayLight.ConsaniSideslip(True)
         App0DayLightMode()
         DayLight.ConsaniSideslip(False)
-    elif settings0Num == 2:
+    elif settings0Num == 3:
         DayLight.ConsaniSideslip(True)
         App0Light()
         DayLight.ConsaniSideslip(False)
-    elif settings0Num == 3:
+    elif settings0Num == 4:
         DayLight.ConsaniSideslip(True)
         App0Collect()
         DayLight.ConsaniSideslip(False)
-    elif settings0Num == 4:
+    elif settings0Num == 5:
         DayLight.ConsaniSideslip(True)
         WifiPages()
         DayLight.ConsaniSideslip(False)
@@ -162,9 +165,10 @@ def SettingPanel():
 
 def Home():
     while not eval("[/GetButtonExpr('thab')/]"):
-        oled.fill(0)
-        DayLight.DisplayFont(SeniorOS.fonts.quantum, DayLight.UITime(False), DayLight.HomeTimeAutoCenter(DayLight.UITime(False)), 20, False)
-        oled.show()
+        if int(Core.Data.Get('home')) == 1:
+            HomeStyle.Style1()
+        if int(Core.Data.Get('home')) == 2:
+            HomeStyle.Style2()
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
         oled.fill(0)
@@ -189,7 +193,6 @@ def Home():
         DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
         app()
         DayLight.consani(0,0,128,64,0,-64,128,64)
-
 
 def select(options:list)->tuple:
     print("SeniorOS-[GxxkAPI]进入选择器界面")
@@ -238,7 +241,7 @@ def choosewifi():
     oled.show()
     wifilist = wlanscan()
     num=0
-    num = DayLight.ListOptions(wifilist)
+    num = DayLight.ListOptions(wifilist, 8, True, "None")
     oled.fill(0)
     oled.DispChar("请稍等",0,0)
     oled.show()

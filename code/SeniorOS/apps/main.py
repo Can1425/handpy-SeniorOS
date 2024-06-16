@@ -31,7 +31,7 @@ def app_0():
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
             if settings_num == 0:
                 DayLight.ConsaniSideslip(True)
-                settings0Num = DayLight.Select(['重连网络', '同步时间', '新建网络配置'],"选择")
+                settings0Num = DayLight.Select(['重连网络', '同步时间', '新建网络配置'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings0Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -47,7 +47,7 @@ def app_0():
                     DayLight.ConsaniSideslip(False)
             elif settings_num == 1:
                 DayLight.ConsaniSideslip(True)
-                settings1Num = DayLight.Select(['日光模式', '动效开关', '日光引擎信息'],"选择")
+                settings1Num = DayLight.Select(['日光模式', '动效开关', '日光引擎信息'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings1Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -63,7 +63,7 @@ def app_0():
                     DayLight.ConsaniSideslip(False)
             elif settings_num == 2:
                 DayLight.ConsaniSideslip(True)
-                settings3Num = DayLight.Select(['释放内存', '内存信息'],"选择")
+                settings3Num = DayLight.Select(['释放内存', '内存信息'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings3Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -161,7 +161,7 @@ def App0Light():
     return
 
 def App0PowerOptions():
-    options = DayLight.ListOptions(['软重启', '关闭显示器', '休眠'])
+    options = DayLight.ListOptions(['软重启', '关闭显示器', '休眠'], 8, True, "None")
     if options == 0:
         DayLight.ConsaniSideslip(True)
         exec(machine.reset())
@@ -254,7 +254,7 @@ def app_1():
             plugins_num = len(plugins_list) - 1
             time.sleep(0.5)
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'])
+            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, True, "None")
             if options == 0:
                 DayLight.ConsaniSideslip(True)
                 DayLight.app('线上插件')
@@ -276,7 +276,7 @@ def app_1():
 def app_2():
     get = os.listdir()
     while not button_a.is_pressed():
-        options = DayLight.ListOptions(get)
+        options = DayLight.ListOptions(get, 20, False, "侧载运行器")
         DayLight.ConsaniSideslip(True)
         exec(Core.Data.Get(options))
         DayLight.ConsaniSideslip(False)
