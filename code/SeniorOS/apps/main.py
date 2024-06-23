@@ -23,7 +23,7 @@ def app_0():
             settings_num = settings_num - 1
             if settings_num < 0:
                 settings_num = 0
-        DayLight.app("Setting")
+        DayLight.app("设置")
         oled.DispChar(str(settings_tip[settings_num]), 5, 18, 1, True)
         oled.DispChar(str(settings_list[settings_num]), 5, 45, 1)
         oled.DispChar(''.join([str(settings_num + 1),'/',str(len(settings_list))]), 105, 45, 1)
@@ -203,17 +203,17 @@ def App0DynamicEffectSwitch():
         DayLight.UITools()
         oled.DispChar(str('动效开关'), 5, 5, 1)
         time.sleep_ms(5)
-        if Core.Data.Get('dynamicEffect') == "1":
+        if Core.Data.Get('VastSea_switch') == "1":
             get = '开启'
         else:
             get = '关闭'
         oled.DispChar(get, 5, 18, 1)
         oled.show()
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            Core.Data.Write('dynamicEffect','1',False,False)
+            Core.Data.Write('VastSea_switch','1',False,False)
             oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            Core.Data.Write('dynamicEffect','0',False,False)
+            Core.Data.Write('VastSea_switch','0',False,False)
             oled.show()
     return
 #-----------------------------------------------------------------------------------#
@@ -277,9 +277,6 @@ def app_2():
     get = os.listdir()
     while not button_a.is_pressed():
         options = DayLight.ListOptions(get, 20, False, "侧载运行器")
-        DayLight.ConsaniSideslip(True)
-        exec(Core.Data.Get(options))
-        DayLight.ConsaniSideslip(False)
 #-----------------------------------------------------------------------------------#
 def app_3():
     w1 = get_seni_weather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")

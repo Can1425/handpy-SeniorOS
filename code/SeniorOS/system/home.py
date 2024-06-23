@@ -19,25 +19,21 @@ def HomeStyleSet():
         oled.DispChar(str('P-默认，Y-经典'), 5, 18, 1)
         oled.show()
         if touchPad_P.is_pressed():
-            Style1()
-            oled.DispChar(str('桌面风格'), 5, 5, 1)
-            oled.DispChar(str('TH-确认'), 5, 40, 1)
-            oled.show()
-            for count in range(100000):
-                if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-                    Core.Data.Write('home','1',False,False)
-                    return
+            Select(1)
         elif touchPad_Y.is_pressed():
-            Style2()
-            oled.DispChar(str('桌面风格'), 5, 5, 1)
-            oled.DispChar(str('TH-确认'), 5, 40, 1)
-            oled.show()
-            for count in range(100000):
-                if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-                    Core.Data.Write('home','2',False,False)
-                    return
-        oled.show()
+            Select(2)
     return
+
+def Select(styleNum):
+    exec("import" + str(styleNum))
+    oled.DispChar(str('桌面风格'), 5, 5, 1)
+    oled.DispChar(str('TH-确认'), 5, 40, 1)
+    oled.show()
+    for count in range(100000):
+        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            Core.Data.Write('home',str(styleNum),False,False)
+            return
+
 #-----------------------------------------------------------------------------------#
 
 def Style1():

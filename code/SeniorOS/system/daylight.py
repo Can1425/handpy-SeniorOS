@@ -1,4 +1,5 @@
 import SeniorOS.system.core as Core
+import SeniorOS.apps.logo as Logo
 import ntptime
 import network
 import time
@@ -19,16 +20,16 @@ def UITime(pages=True):
              (':' if pages else "") + \
             ('0' + m if len(m)==1 else m)
 
-def OffConsin():
+def VastSeaOff():
     oled.fill(0)
     oled.show()
-    time.sleep_ms(600)
+    time.sleep_ms(400)
     return
 
-def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
+def Consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     UITools()
     consani_done_wait = 3
-    if int(Core.Data.Get('dynamicEffect')) == 1:
+    if int(Core.Data.Get('VastSea_switch')) == 1:
         try:
             oled.fill(0)
             for _ in range(7):
@@ -51,105 +52,9 @@ def consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
     else:
         OffConsin()
 
-def ConsaniAppOpen(xn, yn, w, wn, h, hn, rn, logo, logo_x):
-    UITools()
-    if int(Core.Data.Get('dynamicEffect')) == 1:
-        try:
-            r = 0
-            x1 = xn
-            y1 = yn
-            w1 = wn
-            h1 = hn
-            r1 = rn
-            t = 1
-            oled.RoundRect(x1, y1, w1, h1, r1, 1)
-            oled.show()
-            for count in range(2):
-                oled.fill(0)
-                oled.RoundRect(x1, y1, w1, h1, r1, 1)
-                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
-                oled.show()
-                x1 = x1 - t * t
-                y1 = y1 - t * t
-                w1 = w1 + 2 * (t * t)
-                h1 = h1 + 2 * (t * t)
-                r1 = r + t * t
-                t = t + 1
-            for count in range(7):
-                x = x1
-                y = y1
-                w = w1
-                h = h1
-                r = r1
-                oled.fill(0)
-                oled.RoundRect(x1, y1, w1, h1, r1, 1)
-                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
-                oled.show()
-                x1 = (x1 - 0) // 2
-                y1 = (y1 - 0) // 2
-                w1 = (128 + w1) // 2
-                h1 = (64 + h1) // 2
-                r1 = (r - 0) // 2
-                logo_x = (logo_x + 52) //2
-                time.sleep_ms(15)
-        except:
-            oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
-            oled.show()
-            return
-    else:
-        OffConsin()
-
-def ConsaniAppClose(xn, yn, w, wn, h, hn, rn, logo, logo_x):
-    UITools
-    if int(Core.Data.Get('dynamicEffect')) == 1:
-        try:
-            r = 0
-            x = 0
-            y = 0
-            w = 128
-            h = 64
-            r = rn
-            t = 1
-            x1 = 0
-            y1 = 0
-            w1 = 128
-            h1 = 64
-            for count in range(7):
-                oled.fill(0)
-                oled.RoundRect(x1, y1, w, h, r, 1)
-                oled.Bitmap(logo_x, 20, logo, 25, 25, 1)
-                oled.show()
-                x1 = (x1 - 0) // 2
-                y1 = (y1 - 0) // 2
-                w1 = (128 + w1) // 2
-                h1 = (64 + h1) // 2
-                r1 = (r - 0) // 2
-                x = x1
-                y = y1
-                w = w1
-                h = h1
-                r = r1
-                time.sleep_ms(15)
-            for count in range(7):
-                oled.fill(0)
-                oled.RoundRect(x, y, w, h, r, 1)
-                oled.show()
-                x = (xn + x) // 2
-                y = (yn + y) // 2
-                w = (wn + w) // 2
-                h = (hn + h) // 2
-                r = (rn + r) // 2
-                logo_x = logo_x * 2
-                time.sleep_ms(15)
-        except:
-            oled.DispChar(' :( 我们遇到了一些问题，将在 3 秒后返回', 5, 25, 1, True)
-            oled.show()
-            return
-    else:
-        OffConsin()
     
 def ConsaniSideslip(side:True):
-    if int(Core.Data.Get('dynamicEffect')) == 1:
+    if int(Core.Data.Get('VastSea_switch')) == 1:
         t = 10
         if side:
             x = 128
@@ -191,6 +96,7 @@ def GetCharWidth(s):
         if charData is None:continue
         strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
     return strWidth
+
 AutoCenter=lambda string:64-GetCharWidth(string)//2
 HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)//2-22
 
@@ -295,6 +201,86 @@ def message(content:str):
         time.sleep(0.2)
         content = content[1:] + content[0]
     OffConsin()
+
+class VastSea:
+    speed = 3 #3,6,12
+    class AppsPage:
+        def Open(nowX1, nowX2, nowX3, nowX4, nowY1, nowY2, nowY3, nowY4, appNum:int):
+            if int(Core.Data.Get('VastSea_switch')) == 1:
+                appList = Core.Data.Get("app").split(',')
+                # nowX1 = 30
+                # nowX2 = 85
+                # nowX3 = AutoCenter(appList[appNum])
+                # nowX4 = 46
+                # nowY1 = 25
+                # nowY2 = 25
+                # nowY3 = 48
+                # nowY4 = 10
+                oled.DispChar(str('〔'), nowX1, nowY1, 1)
+                oled.DispChar(str('〕'), nowX2, nowY2, 1)
+                oled.DispChar(appList[appNum], nowX3, nowY3, 1)
+                oled.show()
+                for count in range(VastSea.speed):
+                    nowX1 = nowX1 - (6 * (12/VastSea.speed))
+                    nowX2 = nowX2 + (6 * (12/VastSea.speed))
+                    nowX3 = nowX3 - (nowX3 // (VastSea.speed / 2))
+                    print(nowX3)
+                    nowY1 = nowY1 - (3 * (12/VastSea.speed))
+                    nowY2 = nowY2 - (3 * (12/VastSea.speed))
+                    nowY3 = nowY3 - (4 * (12/VastSea.speed))
+                    # nowY4 = nowY4 + (6 * (12/VastSea.speed))
+                    oled.fill(0)
+                    oled.DispChar(appList[appNum], int(nowX3), int(nowY3), 1)
+                    oled.DispChar('〔', int(nowX1), int(nowY1), 1)
+                    oled.DispChar('〕', int(nowX2), int(nowY2), 1)
+                    oled.show()
+                oled.fill(0)
+            else:
+                VastSeaOff()
+        def Close(nowX1, nowX2, nowX3, nowX4, nowY1, nowY2, nowY3, nowY4, appNum:int):
+            if int(Core.Data.Get('VastSea_switch')) == 1:
+                appList = Core.Data.Get("app").split(',')
+                # nowX1 = -40
+                # nowX2 = 157
+                # nowX3 = 1
+                # nowX4 = None
+                # nowY1 = -11
+                # nowY2 = -11
+                # nowY3 = 0
+                # nowY4 = None
+                oled.DispChar(str('〔'), nowX1, nowY1, 1)
+                oled.DispChar(str('〕'), nowX2, nowY2, 1)
+                oled.DispChar(appList[appNum], nowX3, nowY3, 1)
+                oled.show()
+                for count in range(VastSea.speed):
+                    nowX1 = nowX1 + (6 * (12/VastSea.speed))
+                    nowX2 = nowX2 - (6 * (12/VastSea.speed))
+                    nowX3 = nowX3 + (nowX3 * (VastSea.speed / 2))
+                    nowY1 = nowY1 + (3 * (12/VastSea.speed))
+                    nowY2 = nowY2 + (3 * (12/VastSea.speed))
+                    nowY3 = nowY3 + (4 * (12/VastSea.speed))
+                    # nowY4 = nowY4 - (6 * (12/VastSea.speed))
+                    oled.fill(0)
+                    oled.DispChar(appList[appNum], int(nowX3), int(nowY3), 1)
+                    oled.DispChar('〔', int(nowX1), int(nowY1), 1)
+                    oled.DispChar('〕', int(nowX2), int(nowY2), 1)
+                    oled.show()
+                oled.fill(0)
+            else:
+                VastSeaOff()
+    class SeniorMove:
+        def Line(nowX:int, nowY:int, nowLength:int, newX:int, newY:int, newLength:int):
+            oled.hline(nowX, nowY, nowLength, 1)
+            oled.show()
+            for count in range(VastSea.speed):
+                nowX = nowX + ((newX-nowX) // VastSea.speed)
+                nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
+                nowLength = nowLength + ((newLength - nowLength) // VastSea.speed)
+                oled.fill(0)
+                oled.hline(nowX, nowY, nowLength, 1)
+                oled.DispChar(str(nowX), 0, 32, 1)
+                oled.DispChar(str(nowY), 0, 48, 1)
+                oled.show()
 
 def UITools():
     try:

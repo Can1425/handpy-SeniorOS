@@ -123,7 +123,7 @@ def CloudNotification():
             oled.DispChar('发生了未知错误', 5, 18, 2)
             oled.DispChar(str(e), 5, 34,auto_return=True)
             oled.show()
-        DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
+        DayLight.Consani(0, 0, 0, 0, 0, 0, 128, 64)
         return
     while not button_a.is_pressed():
         DayLight.app('云端通知')
@@ -190,9 +190,9 @@ def Home():
         SettingPanel()
         DayLight.ConsaniSideslip(False)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
-        DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
-        app()
-        DayLight.consani(0,0,128,64,0,-64,128,64)
+        DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, -128, 128)
+        App()
+        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 0, -180, 128)
 
 def select(options:list)->tuple:
     print("SeniorOS-[GxxkAPI]进入选择器界面")
