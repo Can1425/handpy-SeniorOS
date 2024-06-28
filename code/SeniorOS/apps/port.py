@@ -94,9 +94,9 @@ def App():
         oled.show()
         AppDynamic()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            DayLight.VastSea.AppsPage.Open(30,85,DayLight.AutoCenter(appList[appNum]),46,25,25,48,10,appNum)
-            exec(str("app_"+ str(appNum) +"()"))
-            DayLight.VastSea.AppsPage.Close(-40,157,1,None,-11,-11,0,None,appNum)
+            DayLight.VastSea.SeniorMove.Text(appList[appNum], DayLight.AutoCenter(appList[appNum]), 48, - DayLight.AutoCenter(appList[appNum]) // DayLight.VastSea.speed, 40)
+            exec(str("App"+ str(appNum) +"()"))
+            DayLight.VastSea.SeniorMove.Text(appList[appNum], 2, 0, DayLight.AutoCenter(appList[appNum]) + DayLight.AutoCenter(appList[appNum])//2, -134)
             if operationalJudgment == 0:
                 try:
                     exec("oled.Bitmap(select1X, 10, logo.app_" + str(appNum + 1) + ", 25, 25, 1)")

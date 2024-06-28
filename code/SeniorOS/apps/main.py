@@ -7,7 +7,7 @@ import os
 import json
 import urequests
 #-----------------------------------------------------------------------------------#
-def app_0():
+def App0():
     DayLight.UITools()
     from SeniorOS.system.pages import about,WifiPages,choosewifi
     time.sleep_ms(5)
@@ -217,7 +217,7 @@ def App0DynamicEffectSwitch():
             oled.show()
     return
 #-----------------------------------------------------------------------------------#
-def app_1():
+def App1():
     plugins_num = 0
     while not button_a.is_pressed():
         gc.enable()
@@ -272,100 +272,11 @@ def app_1():
                     oled.DispChar(str(plugins_tip2[plugins_num]), 5, 18, 1, True)
                     oled.show()
                 DayLight.ConsaniSideslip(False)
-#-----------------------------------------------------------------------------------#
-def app_2():
-    get = os.listdir()
-    while not button_a.is_pressed():
-        options = DayLight.ListOptions(get, 20, False, "侧载运行器")
-#-----------------------------------------------------------------------------------#
-def app_3():
-    w1 = get_seni_weather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
-    w2 = get_seni_weather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")
-    oled.fill(0)
-    while not button_a.is_pressed():
-        DayLight.app('天气')
-        oled.DispChar(str((''.join([str(x) for x in [w1["results"][0]["location"]["name"], '   ', w1["results"][0]["daily"][0]["text_day"], '   ', w1["results"][0]["daily"][0]["low"], '  - ', w1["results"][0]["daily"][0]["high"], ' 度']]))), 5, 18, 1)
-        oled.DispChar(str(('运动指数 : ' + str(w2["results"][0]["suggestion"]["sport"]["brief"]))), 5, 34, 1)
-        oled.DispChar(str(('紫外线指数 : ' + str(w2["results"][0]["suggestion"]["uv"]["brief"]))), 5, 50, 1)
-        oled.show()
-    return
-
-def get_seni_weather(_url, _location):
-    _url = _url + "&location=" + _location.replace(" ", "%20")
-    response = urequests.get(_url)
-    json = response.json()
-    response.close()
-    return json
-
-
-def get_seni_weather(_url, _location):
-    _url = _url + "&location=" + _location.replace(" ", "%20")
-    response = urequests.get(_url)
-    json = response.json()
-    response.close()
-    return json
-#-----------------------------------------------------------------------------------#
-image_picture = Image()
-
-def app_4():
-    num = 1
-    while not button_a.is_pressed():
-        DayLight.app('手电筒')
-        if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            num = 1
-        if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            num = 0
-        if num == 1:
-            oled.blit(image_picture.load('face/System/Dot_full.pbm', 0), 48, 20)
-            oled.show()
-            rgb.fill((int(255), int(255), int(255)))
-            rgb.write()
-            time.sleep_ms(1)
-        else:
-            oled.blit(image_picture.load('face/System/Dot_empty.pbm', 0), 48, 20)
-            oled.show()
-            rgb.fill( (0, 0, 0) )
-            rgb.write()
-    num = 0
-    rgb.fill( (0, 0, 0) )
-    rgb.write()
-    time.sleep_ms(1)
-    return
-#-----------------------------------------------------------------------------------#
-poetry = None
-def app_5():
-    Poetry()
-    while not button_a.is_pressed():
-        oled.fill(0)
-        DayLight.app('即时诗词')
-        if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            Poetry()
-        try:
-            oled.DispChar(poetry[0], 5, 18, 1)
-            oled.DispChar(poetry[1], 5, 34, 1)
-            oled.DispChar('TH - 刷新', 5, 50, 1)
-        except:
-            try:
-                oled.DispChar(poetry[0], 5, 18, 1)
-                oled.DispChar('TH - 刷新', 5, 50, 1)
-            except:
-                oled.DispChar('诗词走丢啦！', 5, 18, 1)
-                oled.DispChar('TH - 刷新', 5, 50, 1)
-        oled.show()
-    return
-
-def Poetry():
-    global poetry
-    try:
-        _response = urequests.get(str(Core.Data.Get('poetrySource')), headers={})
-        poetry = (_response.text.split('，'))
-        return
-    except:
-        return
 #--------------------------------------------------------------------------------#
-from mpython import*
-import os
-import time
+def App2():
+    path='/'
+    fileviewer(path)
+
 def IsFile(f):
     print(f)
     if os.stat(f)[0]<20000:return "目录"
@@ -493,9 +404,6 @@ def fileviewer(initpath:str):
             elif key=="P":
                 num-=1
                 if num<0:num=DIRlen-1
-def app_6():
-    path='/'
-    fileviewer(path)
 #鸣谢名单
 #程序设计---LP_OVER/emofalling
 #界面设计---LP_OVER
@@ -504,3 +412,87 @@ def app_6():
 #感谢各位的付出!
 #fileviewer  -by LP_OVER/emofalling
 #-------------------------------------------------------------------------------------------#
+def App3():
+    w1 = get_seni_weather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
+    w2 = get_seni_weather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")
+    oled.fill(0)
+    while not button_a.is_pressed():
+        DayLight.app('天气')
+        oled.DispChar(str((''.join([str(x) for x in [w1["results"][0]["location"]["name"], '   ', w1["results"][0]["daily"][0]["text_day"], '   ', w1["results"][0]["daily"][0]["low"], '  - ', w1["results"][0]["daily"][0]["high"], ' 度']]))), 5, 18, 1)
+        oled.DispChar(str(('运动指数 : ' + str(w2["results"][0]["suggestion"]["sport"]["brief"]))), 5, 34, 1)
+        oled.DispChar(str(('紫外线指数 : ' + str(w2["results"][0]["suggestion"]["uv"]["brief"]))), 5, 50, 1)
+        oled.show()
+    return
+
+def get_seni_weather(_url, _location):
+    _url = _url + "&location=" + _location.replace(" ", "%20")
+    response = urequests.get(_url)
+    json = response.json()
+    response.close()
+    return json
+
+
+def get_seni_weather(_url, _location):
+    _url = _url + "&location=" + _location.replace(" ", "%20")
+    response = urequests.get(_url)
+    json = response.json()
+    response.close()
+    return json
+#-----------------------------------------------------------------------------------#
+image_picture = Image()
+
+def App4():
+    num = 1
+    while not button_a.is_pressed():
+        DayLight.app('手电筒')
+        if touchpad_p.is_pressed() and touchpad_y.is_pressed():
+            num = 1
+        if touchpad_o.is_pressed() and touchpad_n.is_pressed():
+            num = 0
+        if num == 1:
+            oled.blit(image_picture.load('face/System/Dot_full.pbm', 0), 48, 20)
+            oled.show()
+            rgb.fill((int(255), int(255), int(255)))
+            rgb.write()
+            time.sleep_ms(1)
+        else:
+            oled.blit(image_picture.load('face/System/Dot_empty.pbm', 0), 48, 20)
+            oled.show()
+            rgb.fill( (0, 0, 0) )
+            rgb.write()
+    num = 0
+    rgb.fill( (0, 0, 0) )
+    rgb.write()
+    time.sleep_ms(1)
+    return
+#-----------------------------------------------------------------------------------#
+def App5():
+    Poetry()
+    while not button_a.is_pressed():
+        oled.fill(0)
+        DayLight.app('即时诗词')
+        if touchpad_t.is_pressed() and touchpad_h.is_pressed():
+            Poetry()
+        try:
+            oled.DispChar(poetry[0], 5, 18, 1)
+            oled.DispChar(poetry[1], 5, 34, 1)
+            oled.DispChar('TH - 刷新', 5, 50, 1)
+        except:
+            try:
+                oled.DispChar(poetry[0], 5, 18, 1)
+                oled.DispChar('TH - 刷新', 5, 50, 1)
+            except:
+                oled.DispChar('诗词走丢啦！', 5, 18, 1)
+                oled.DispChar('TH - 刷新', 5, 50, 1)
+        oled.show()
+    return
+
+def Poetry():
+    global poetry
+    try:
+        _response = urequests.get(str(Core.Data.Get('poetry_source')), headers={})
+        poetry = (_response.text.split('，'))
+        return
+    except:
+        return
+#-----------------------------------------------------------------------------------#
