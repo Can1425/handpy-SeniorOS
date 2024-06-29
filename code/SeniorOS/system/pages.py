@@ -190,9 +190,9 @@ def Home():
         SettingPanel()
         DayLight.ConsaniSideslip(False)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
-        DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, -128, 128)
+        DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, 0, -128, 128, -128)
         App()
-        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 0, -180, 128)
+        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 0, 46, 128, 46)
 
 def select(options:list)->tuple:
     print("SeniorOS-[GxxkAPI]进入选择器界面")

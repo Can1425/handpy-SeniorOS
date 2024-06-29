@@ -196,25 +196,28 @@ def message(content:str):
         content = content[1:] + content[0]
 
 class VastSea:
-    speed = 3 #3,6,12
+    speed = int(Core.Data.Get('VastSea_speed')) #3,6,12
     def Off():
         oled.fill(0)
         oled.show()
         time.sleep_ms(VastSea.speed * 90)
         return
     class SeniorMove:
-        def Line(nowX:int, nowY:int, nowLength:int, newX:int, newY:int, newLength:int):
+        def Line(nowX1:int, nowY1:int, nowX2:int, nowY2:int, newX1:int, newY1:int, newX2:int, newY2:int):
+            oled.line(nowX1, nowY1, nowX2, nowY2, 1)
+            oled.show()
             if int(Core.Data.Get('VastSea_switch')) == 1:
-                oled.hline(nowX, nowY, nowLength, 1)
-                oled.show()
-                for count in range(VastSea.speed):
-                    nowX = nowX + ((newX-nowX) // VastSea.speed)
-                    nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
-                    nowLength = nowLength + ((newLength - nowLength) // VastSea.speed)
+                for count in range(3):
+                    nowX1 = nowX1 + ((newX1-nowX1) // VastSea.speed)
+                    nowY1 = nowY1 - ((nowY1-newY1) // VastSea.speed + (newY1 - newY1//2))
+                    nowX2 = nowX2 + ((newX2-nowX2) // VastSea.speed)
+                    nowY2 = nowY2 - ((nowY2-newY2) // VastSea.speed + (newY2 - newY2//2))
                     oled.fill(0)
-                    oled.hline(nowX, nowY, nowLength, 1)
-                    # oled.DispChar(str(nowX), 0, 32, 1)
-                    # oled.DispChar(str(nowY), 0, 48, 1)
+                    oled.line(nowX1, nowY1, nowX2, nowY2, 1)
+                    # oled.DispChar(str(nowX1), 0, 32, 1)
+                    # oled.DispChar(str(nowY1), 0, 48, 1)
+                    # oled.DispChar(str(nowX2), 50, 32, 1)
+                    # oled.DispChar(str(nowY2), 50, 48, 1)
                     oled.show()
             else:
                 VastSea.Off()
