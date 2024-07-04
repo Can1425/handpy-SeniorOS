@@ -11,27 +11,15 @@ def App0():
     DayLight.UITools()
     from SeniorOS.system.pages import about,WifiPages,choosewifi
     time.sleep_ms(5)
-    settings_list = ['网络与时间', '界面与动效', '缓存与运存', '系统与设备']
-    settings_tip = ['联网相关设置及信息', '界面动效参数及设置', '应用缓存与设备内存', '系统设备信息及更新']
+    settingsList = ['网络与时间', '界面与动效', '缓存与运存', '系统与设备']
+    settingsTip = ['联网相关设置及信息', '界面动效参数及设置', '应用缓存与设备内存', '系统设备信息及更新']
     settings_num = 0
     while not button_a.is_pressed():
-        if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            settings_num = settings_num + 1
-            if settings_num + 1 > len(settings_list):
-                settings_num = len(settings_list) - 1
-        if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            settings_num = settings_num - 1
-            if settings_num < 0:
-                settings_num = 0
-        DayLight.app("设置")
-        oled.DispChar(str(settings_tip[settings_num]), 5, 18, 1, True)
-        oled.DispChar(str(settings_list[settings_num]), 5, 45, 1)
-        oled.DispChar(''.join([str(settings_num + 1),'/',str(len(settings_list))]), 105, 45, 1)
-        oled.show()
+        settingsNum = DayLight.Select.Style2(settingsList, settingsTip, 18, False, "设置")
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            if settings_num == 0:
+            if settingsNum == 0:
                 DayLight.ConsaniSideslip(True)
-                settings0Num = DayLight.Select(['重连网络', '同步时间', '新建网络配置'], 28, True, "选择")
+                settings0Num = DayLight.Select.Style1(['重连网络', '同步时间', '新建网络配置'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings0Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -45,9 +33,9 @@ def App0():
                     DayLight.ConsaniSideslip(True)
                     choosewifi()
                     DayLight.ConsaniSideslip(False)
-            elif settings_num == 1:
+            elif settingsNum == 1:
                 DayLight.ConsaniSideslip(True)
-                settings1Num = DayLight.Select(['日光模式', '动效开关', '日光引擎信息'], 28, True, "选择")
+                settings1Num = DayLight.Select.Style1(['日光模式', '动效开关', '日光引擎信息'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings1Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -61,9 +49,9 @@ def App0():
                     DayLight.ConsaniSideslip(True)
                     DayLight.About()
                     DayLight.ConsaniSideslip(False)
-            elif settings_num == 2:
+            elif settingsNum == 2:
                 DayLight.ConsaniSideslip(True)
-                settings3Num = DayLight.Select(['释放内存', '内存信息'], 28, True, "选择")
+                settings3Num = DayLight.Select.Style1(['释放内存', '内存信息'], 28, True, "选择")
                 DayLight.ConsaniSideslip(False)
                 if settings3Num == 0:
                     DayLight.ConsaniSideslip(True)
@@ -72,11 +60,11 @@ def App0():
                 elif settings0Num == 1:
                     DayLight.ConsaniSideslip(True)
                     DayLight.ConsaniSideslip(False)
-            elif settings_num == 3:
+            elif settingsNum == 3:
                 DayLight.ConsaniSideslip(True)
                 about()
                 DayLight.ConsaniSideslip(False)
-            elif settings_num == 4:
+            elif settingsNum == 4:
                 pass
 
 def App0Time():
@@ -226,33 +214,17 @@ def App1():
         oled.DispChar(str('正在尝试获取插件信息'), 5, 18, 1, True)
         oled.show()
         _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/list.fos', headers={})
-        plugins_list = (_response.text.split(';'))
+        pluginsList = (_response.text.split(';'))
         _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/tip.fos', headers={})
-        plugins_tip = (_response.text.split(';'))
+        pluginsTip = (_response.text.split(';'))
         _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/web-app/tip.fos', headers={})
-        plugins_tip2 = (_response.text.split(';'))
+        pluginsTip2 = (_response.text.split(';'))
         print(len(plugins_list))
         print(plugins_tip)
         gc.collect()
         break
     while not button_a.is_pressed():
-        DayLight.app('线上插件')
-        oled.DispChar(str(('作者:' + str(plugins_tip[plugins_num]))), 5, 18, 1, True)
-        oled.DispChar(str(plugins_list[plugins_num]), 5, 45, 1)
-        oled.DispChar(str((''.join([str(x) for x in [plugins_num + 1, '/', len(plugins_list)]]))), 105, 45, 1)
-        oled.show()
-        if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            plugins_num = plugins_num - 1
-            time.sleep(0.5)
-        if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            plugins_num = plugins_num + 1
-            time.sleep(0.5)
-        if plugins_num < 0:
-            plugins_num = 0
-            time.sleep(0.5)
-        if plugins_num +1  > len(plugins_list):
-            plugins_num = len(plugins_list) - 1
-            time.sleep(0.5)
+        settingsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
             options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, True, "None")
             if options == 0:

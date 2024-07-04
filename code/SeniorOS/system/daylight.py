@@ -109,41 +109,73 @@ def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
         oled.blit(framebuf.FrameBuffer(bytearray(_d[0]), _d[2], _d[1],framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
         _x += _d[2]
 
-def Select(dispContent:list, y:int, window:False, appTitle:str):
-    UITools()
-    selectNum = 0
-
-    if appTitle == "None":
-        pass
-    else:
-        if window == False:
-            app(appTitle)
-        else:
-            oled.DispChar(appTitle, 5, 5, 1)
-            oled.DispChar(UITime(True), 93, 5, 1)
-    oled.show()
-    while not button_a.is_pressed():
-        oled.fill_rect(0, 20, 128, 45, 0)
-        oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
-        oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
-        if window == True:
-            oled.RoundRect(2, y - 26, 124, 55, 2, 1)
-        else:
+class Select:
+    def Style1(dispContent:list, y:int, window:bool = False, appTitle = None):
+        UITools()
+        selectNum = 0
+        if appTitle == None:
             pass
+        else:
+            if window == False:
+                app(appTitle)
+            else:
+                oled.DispChar(appTitle, 5, 5, 1)
+                oled.DispChar(UITime(True), 93, 5, 1)
         oled.show()
-        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            selectNum = selectNum + 1
-            if selectNum + 1 > len(dispContent):
-                selectNum = len(dispContent) - 1
-        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            selectNum = selectNum - 1
-            if selectNum < 0:
-                selectNum = 0
-        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            return selectNum
+        while not button_a.is_pressed():
+            oled.fill_rect(0, 20, 128, 45, 0)
+            oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
+            oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
+            if window == True:
+                oled.RoundRect(2, y - 26, 124, 55, 2, 1)
+            else:
+                pass
+            oled.show()
+            if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+                selectNum = selectNum + 1
+                if selectNum + 1 > len(dispContent):
+                    selectNum = len(dispContent) - 1
+            if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+                selectNum = selectNum - 1
+                if selectNum < 0:
+                    selectNum = 0
+            if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+                return selectNum
+            time.sleep_ms(300)
         time.sleep_ms(300)
-    time.sleep_ms(300)
-    return
+        return
+    def Style2(dispContent:list, tip:list, y:int, window:bool=False, appTitle = None):
+        UITools()
+        selectNum = 0
+        if appTitle == None:
+            pass
+        else:
+            if window == False:
+                app(appTitle)
+            else:
+                oled.DispChar(appTitle, 5, 5, 1)
+                oled.DispChar(UITime(True), 93, 5, 1)
+        oled.show()
+        while not button_a.is_pressed():
+            if window == True:
+                oled.RoundRect(2, y - 18, 124, 55, 2, 1)
+            else:
+                pass
+            oled.show()
+            if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+                selectNum = selectNum + 1
+                if selectNum + 1 > len(dispContent):
+                    selectNum = len(dispContent) - 1
+            if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+                selectNum = selectNum - 1
+                if selectNum < 0:
+                    selectNum = 0
+            if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+                return selectNum
+            oled.DispChar(tip[selectNum], 5, y, 1, True)
+            oled.DispChar(dispContent[selectNum], 5, y + 27, 1)
+            oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 45, 1)
+            oled.show()
 
 def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
     # 请不要在激活 appTitle 时设置 window = True

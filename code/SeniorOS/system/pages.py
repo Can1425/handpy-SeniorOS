@@ -160,7 +160,7 @@ def SettingPanel():
         DayLight.ConsaniSideslip(True)
         WifiPages()
         DayLight.ConsaniSideslip(False)
-    DayLight.OffConsin()
+    DayLight.VastSea.Off()
     return
 
 def Home():
