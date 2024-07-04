@@ -103,26 +103,10 @@ SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操�
 
 ### 创建并激活虚拟环境
 ```bash
-python -m venv .venv
-.venv/Scripts/Activate.ps1
-# 如果您使用cmd.exe作为终端 请使用以下代码：
-.venv/Scripts/activate.bat
-# Linux用户根据以上代码以此类推 可以使用以下代码：
-.venv/Scripts/activate
-```
-
-### 安装编译器
-
-这是本作唯一的一个需要配置的外部编译器，接下来请在终端中输入以下代码 便会安装完成.
-```python
-pip install mpy-cross-v5
-```
-
-### 安装Build.py前置
-
-Build.py需要使用Gitpython库来保证正常运行，请在终端中运行以下代码安装GitPython.
-```python
-pip install GitPython
+# 如果是 Linux 系统：
+bash initBuildEnv.sh
+# 如果是 Windows 系统：
+./initBuildEnv.bat
 ```
 
 ### 构建
