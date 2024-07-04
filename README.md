@@ -102,6 +102,8 @@ SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操�
 但在此之前，您需要进行一些简单的环境配置
 
 ### 创建并激活虚拟环境
+
+快速环境搭建工具由 @CycleBai 提供。
 ```bash
 # 如果是 Linux 系统：
 bash initBuildEnv.sh
