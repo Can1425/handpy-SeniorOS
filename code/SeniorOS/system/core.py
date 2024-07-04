@@ -1,75 +1,139 @@
-import time
 import os
 import framebuf
 import network
 import gc
+import time
 from machine import unique_id
-from mpython import*
-# 适用于data下fos扩展名文件的信息读写操作
-# 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
-# 初始化函数
+from mpython import *
+
 class DataCtrl:
-    # 初始化函数，传入文件夹路径
-    def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
-        self.data={}
-        self.dataFolderPath=dataFolderPath
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.fos')])
-        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.fos')]:
-            with open(dataFolderPath+i,'r',encoding='utf-8')as f:
-                self.data[i.strip('.fos')]=f.read().strip('\r')
-                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.fos')])
-        # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data)
-    # 获取数据
-    def Get(self,dataName):
+    """
+    控制数据操作的类，支持读取和写入特定格式文件（.fos）。
+
+    Attributes:
+        data (dict): 存储数据的字典。
+        dataFolderPath (str): 数据文件夹路径。
+
+    Methods:
+        __init__(dataFolderPath: str): 初始化函数，读取所有 .fos 文件到内存。
+        Get(dataName: str) -> str: 根据数据名称获取数据值。
+        Write(dataName: str, dataValue: str, singleUseSet: bool = False, needReboot: bool = False) -> None:
+            写入数据到文件，并更新内存中的数据值。
+    """
+    def __init__(self, dataFolderPath: str):
+        self.data = {}
+        self.dataFolderPath = dataFolderPath
+        for file_name in os.listdir(dataFolderPath):
+            if file_name.endswith('.fos'):
+                with open(os.path.join(dataFolderPath, file_name), 'r', encoding='utf-8') as f:
+                    self.data[file_name[:-4]] = f.read().strip('\r')
+
+    def Get(self, dataName: str) -> str:
+        """根据数据名称获取数据值。"""
         return self.data[dataName]
-    # 写入数据
-    def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
-        if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
-            self.data[dataName]=dataValue
+
+    def Write(self, dataName: str, dataValue: str, singleUseSet: bool = False, needReboot: bool = False) -> None:
+        """
+        写入数据到文件，并更新内存中的数据值。
+
+        Args:
+            dataName (str): 数据名称。
+            dataValue (str): 数据值。
+            singleUseSet (bool, optional): 是否只是临时设置数据，不写入文件。默认为False。
+            needReboot (bool, optional): 是否需要重启后生效。默认为False。
+        """
+        if singleUseSet:
+            self.data[dataName] = dataValue
             return
-        with open(self.dataFolderPath+dataName+'.fos','w',encoding='utf-8') as f:
-            f.write(dataValue)   
-        if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
-            self.data[dataName]=dataValue                
-Data=DataCtrl("/SeniorOS/data/")
+        with open(os.path.join(self.dataFolderPath, dataName + '.fos'), 'w', encoding='utf-8') as f:
+            f.write(dataValue)
+        if not needReboot:
+            self.data[dataName] = dataValue
 
-# 文件/路径 格式工厂
 class File_Path_Factory:
+    """
+    处理文件和路径操作的工厂类。
 
-    # 将所有的斜杠替换为反斜杠 便于统一路径
-    def Replace2Backslash(path):
-        return path.replace("\\","/")
+    Methods:
+        Replace2Backslash(path: str) -> str: 将路径中的斜杠替换为反斜杠。
+        FileIsExist(filePath: str) -> bool: 检查文件是否存在。
+        IsDir(filePath: str) -> bool: 判断路径指向的是否是目录。
+    """
+    @staticmethod
+    def Replace2Backslash(path: str) -> str:
+        """将路径中的斜杠替换为反斜杠。"""
+        return path.replace("\\", "/")
 
-    # 判断文件是否存在
-    # 传入一绝对路径 返回1布尔值
-    def FileIsExist(filePath:str)->bool:
-        filePath=File_Path_Factory.Format.Replace2Backslash(filePath)
-        if filePath[-1] in os.listdir("/"+filePath[:-1]):return True
-        else:return False
+    @staticmethod
+    def FileIsExist(filePath: str) -> bool:
+        """检查文件是否存在。"""
+        filePath = File_Path_Factory.Replace2Backslash(filePath)
+        return os.path.isfile(filePath)
 
-    # 判断路径指向的文件对象是否是目录
-    # 传入一绝对路径 返回1布尔值
-    def IsDir(filePath:str)->bool:
-        # 检查st_mode(第一项)中文件类型位
-        try:return os.stat(filePath)[0] & 0o170000 == 0o040000
-        # 如异常代表路径无效或不是目录
-        except:return False
+    @staticmethod
+    def IsDir(filePath: str) -> bool:
+        """判断路径指向的是否是目录。"""
+        try:
+            return os.stat(filePath)[0] & 0o170000 == 0o040000
+        except OSError:
+            return False
 
-# 获取日期 ByGxxk
 class GetTime:
-    Year=lambda:time.localtime()[0]
-    Month=lambda:time.localtime()[1]
-    Week=lambda:time.localtime()[6]
-    Day =lambda:time.localtime()[2]
-    Hour=lambda:time.localtime()[3]
-    Min =lambda:time.localtime()[4]
-    Sec =lambda:time.localtime()[5]
+    """
+    获取时间相关信息的静态类。
 
-def FullCollect():
-    # 反复进行collect函数直至达到极限
-    # 此代码来自 TaoLiSystem
-    m=gc.mem_free()
+    Methods:
+        Year() -> int: 获取当前年份。
+        Month() -> int: 获取当前月份。
+        Week() -> int: 获取当前星期几（0-6）。
+        Day() -> int: 获取当前日期。
+        Hour() -> int: 获取当前小时。
+        Min() -> int: 获取当前分钟。
+        Sec() -> int: 获取当前秒数。
+    """
+    @staticmethod
+    def Year() -> int:
+        """获取当前年份。"""
+        return time.localtime()[0]
+
+    @staticmethod
+    def Month() -> int:
+        """获取当前月份。"""
+        return time.localtime()[1]
+
+    @staticmethod
+    def Week() -> int:
+        """获取当前星期几（0-6）。"""
+        return time.localtime()[6]
+
+    @staticmethod
+    def Day() -> int:
+        """获取当前日期。"""
+        return time.localtime()[2]
+
+    @staticmethod
+    def Hour() -> int:
+        """获取当前小时。"""
+        return time.localtime()[3]
+
+    @staticmethod
+    def Min() -> int:
+        """获取当前分钟。"""
+        return time.localtime()[4]
+
+    @staticmethod
+    def Sec() -> int:
+        """获取当前秒数。"""
+        return time.localtime()[5]
+
+def FullCollect() -> int:
+    """
+    执行垃圾回收，直到内存不再变化，并返回最终的空闲内存大小。
+
+    Returns:
+        int: 最终的空闲内存大小。
+    """
+    m = gc.mem_free()
     while True:
         gc.collect()
         if m != gc.mem_free():
@@ -77,41 +141,68 @@ def FullCollect():
         else:
             return m
 
-# 获取设备ID
-def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
-                mode=1
-        ):
-    if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
-    elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
+def GetDeviceID(wifiStaObj: network.WLAN = network.WLAN(network.STA_IF), mode: int = 1) -> str:
+    """
+    获取设备唯一标识符（MAC地址或者唯一ID）。
 
-# 支持2算法的截图
-# 分别为 直接复制缓冲区数据(CopyFrameBuf) 和 枚举缓冲区数据(Enumerate)
-# 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
-# 这里Enumerate部分使用的算法取决于构建阶段 对本代码作EXPR操作时 constData["screenMethod"] 的值是 fast 还是 ram
+    Args:
+        wifiStaObj (network.WLAN, optional): WLAN对象，默认为STA模式。
+        mode (int, optional): 获取模式，0为MAC地址，1为唯一ID。默认为1。
+
+    Returns:
+        str: 设备唯一标识符。
+    """
+    if mode == 0:
+        return str(wifiStaObj.config('mac'))[2:-1].replace("\\x", "")
+    elif mode == 1:
+        return str(unique_id())[2:-1].replace("\\x", "")
+
 class Screenshot:
-    def CopyFramebuf(path,oledObj=__import__("mpython").oled):
-        bufb=bytearray(128*64)
-        with open(path,"wb")as f:
+    """
+    截图操作相关的静态类，支持不同的截图算法。
+
+    Methods:
+        CopyFramebuf(path: str, oledObj) -> None: 复制帧缓冲区数据到文件。
+        Enumerate(path: str, oledObj) -> None: 枚举缓冲区数据并保存到文件，支持两种算法。
+    """
+    @staticmethod
+    def CopyFramebuf(path: str, oledObj=__import__("mpython").oled) -> None:
+        """
+        复制帧缓冲区数据到文件。
+
+        Args:
+            path (str): 保存截图的文件路径。
+            oledObj: 带有缓冲区的对象，默认为 mpython.oled。
+        """
+        buf = bytearray(128 * 64)
+        with open(path, "wb") as f:
             f.write(b"P4\n128 64\n")
-            buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
-            buf.blit(oledObj.buffer,0,0)
-            f.write(bufb)
-    def Enumerate(path,oledObj=__import__("mpython").oled):# 以「枚举」为核心 的算法
-        if eval("[/Const('screenshotMethod')/]")=="fast": # 速度优先
+            buf = framebuf.FrameBuffer(buf, 128, 64, framebuf.MONO_HLSB)
+            buf.blit(oledObj.buffer, 0, 0)
+            f.write(buf)
+
+    @staticmethod
+    def Enumerate(path: str, oledObj=__import__("mpython").oled) -> None:
+        """
+        枚举缓冲区数据并保存到文件，支持两种算法。
+
+        Args:
+            path (str): 保存截图的文件路径。
+            oledObj: 带有缓冲区的对象，默认为 mpython.oled。
+        """
+        if ConstData.screenMethod == "fast":
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')
                 for y in range(128):
-                    row_data = bytearray(8) #缓冲区
-                    for x in range(64):row_data[x//8]|=(oledObj.pixel(x, y))<<7-(x%8) #循环 算偏移量 然后转格式 写到缓冲区内
+                    row_data = bytearray(8)
+                    for x in range(64):
+                        row_data[x // 8] |= (oledObj.pixel(x, y)) << 7 - (x % 8)
                     f.write(row_data)
-        elif eval("[/Const('screenshotMethod')/]")=="ram":# RAM优先
-            buffer = bytearray(1024)  # 创建缓冲区
-            # 获取屏幕像素状态
+        elif ConstData.screenMethod == "ram":
+            buffer = bytearray(1024)
             for y in range(64):
                 for x in range(128):
-                    buffer[x//8+y*16]|=oledObj.pixel(x,y)<<7-(x%8)
-            # 保存为PBM文件
+                    buffer[x // 8 + y * 16] |= oledObj.pixel(x, y) << 7 - (x % 8)
             with open('screenshot.pbm', 'wb') as f:
-                # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
-                f.write(buffer)  # 将缓冲区数据写入PBM文件
+                f.write(buffer)
