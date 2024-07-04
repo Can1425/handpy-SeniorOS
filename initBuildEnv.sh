@@ -9,7 +9,22 @@ while true; do
   case "$choice" in
     y|Y ) 
       echo "OK"
-      python -m venv .venv
+      while true; do
+	  read -p "Are you using Python 2 or Python 3? (2/3): " choice
+	  case "$choice" in
+	    "2" ) 
+	      python -m venv .venv
+	      break
+	      ;;
+	    "3" ) 
+	      python3 -m venv .venv
+	      break
+	      ;;
+	    * ) 
+	      echo "Invalid Input, please enter 2 or 3."
+	      ;;
+	  esac
+	done
       . .venv/Scripts/activate
       break
       ;;
