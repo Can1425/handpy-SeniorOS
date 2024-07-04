@@ -1,10 +1,10 @@
 @echo off
 echo Senior OS Build Runtime Quick Initialization Tool
-echo    - By @Mask:
+echo    - By @CycleBai
 echo    - Released Under MIT license.
 
 :CREATE_VENV
-set /p choice="Do you want to create Python Virtual Environments? (Y/n): "
+set /p choice="Do you want to create a Python Virtual Environment? (Y/n): "
 if /i "%choice%"=="y" (
     echo OK
     :PYTHON_VERSION
@@ -25,7 +25,7 @@ if /i "%choice%"=="y" (
     goto CREATE_VENV
 )
 
-echo Python Virtual Environments create finished or canceled, start install Python library...
+echo Python Virtual Environment creation finished or canceled, start installing Python libraries...
 
 :INSTALL_LIB
 set /p pip_version="Are you using Pip 2 or Pip 3? (2/3): "
@@ -40,9 +40,9 @@ if "%pip_version%"=="2" (
     goto INSTALL_LIB
 )
 
-echo [INFO] Successful initialization SeniorOS Build Environment.
+echo [INFO] Successfully initialized SeniorOS Build Environment.
 echo.
-echo Now can execute the following commands:
+echo Now you can execute the following commands:
 echo  - Build SeniorOS for Python 2: python ./tools/Build.py
 echo  - Build SeniorOS for Python 3: python3 ./tools/Build.py
 
