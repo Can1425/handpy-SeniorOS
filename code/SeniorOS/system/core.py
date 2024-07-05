@@ -79,18 +79,7 @@ class File_Path_Factory:
             return False
 
 class GetTime:
-    """
-    获取时间相关信息的静态类。
-
-    Methods:
-        Year() -> int: 获取当前年份。
-        Month() -> int: 获取当前月份。
-        Week() -> int: 获取当前星期几（0-6）。
-        Day() -> int: 获取当前日期。
-        Hour() -> int: 获取当前小时。
-        Min() -> int: 获取当前分钟。
-        Sec() -> int: 获取当前秒数。
-    """
+    """获取时间相关信息的静态类。"""
     @staticmethod
     def Year() -> int:
         """获取当前年份。"""
@@ -127,12 +116,7 @@ class GetTime:
         return time.localtime()[5]
 
 def FullCollect() -> int:
-    """
-    执行垃圾回收，直到内存不再变化，并返回最终的空闲内存大小。
-
-    Returns:
-        int: 最终的空闲内存大小。
-    """
+    """执行垃圾回收，直到内存不再变化，并返回最终的空闲内存大小。"""
     m = gc.mem_free()
     while True:
         gc.collect()
@@ -144,10 +128,6 @@ def FullCollect() -> int:
 def GetDeviceID(wifiStaObj: network.WLAN = network.WLAN(network.STA_IF), mode: int = 1) -> str:
     """
     获取设备唯一标识符（MAC地址或者唯一ID）。
-
-    Args:
-        wifiStaObj (network.WLAN, optional): WLAN对象，默认为STA模式。
-        mode (int, optional): 获取模式，0为MAC地址，1为唯一ID。默认为1。
 
     Returns:
         str: 设备唯一标识符。

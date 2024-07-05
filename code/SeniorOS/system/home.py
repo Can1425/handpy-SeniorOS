@@ -23,12 +23,7 @@ def HomeStyleSet() -> None:
             Select(2)
 
 def Select(styleNum: int) -> None:
-    """
-    根据传入的styleNum选择桌面风格，并保存用户选择。
-
-    Args:
-    - styleNum (int): 桌面风格编号，1表示默认风格，2表示经典风格。
-    """
+    """根据传入的styleNum选择桌面风格，并保存用户选择。"""
     exec("import style" + str(styleNum))  # 动态导入对应的桌面风格模块
     oled.DispChar('桌面风格', 5, 5, 1)
     oled.DispChar('TH-确认', 5, 40, 1)

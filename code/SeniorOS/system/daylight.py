@@ -125,12 +125,7 @@ AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
 HomeTimeAutoCenter = lambda string: 64 - GetCharWidth(string) // 2 - 22
 
 def app(appTitle: str) -> None:
-    """
-    显示应用程序标题和当前时间。
-
-    Args:
-    appTitle: 应用程序标题。
-    """
+    """显示应用程序标题和当前时间。"""
     oled.fill(0)
     UITools()
     oled.DispChar(appTitle, 5, 0, 1)
@@ -196,18 +191,7 @@ def Select(dispContent:list, y:int, window:False, appTitle:str):
     return
 
 def ListOptions(dispContent: list, y: int, window: bool, appTitle: str) -> int:
-    """
-    显示列表选项，并返回用户选择的索引。
-
-    Args:
-    dispContent: 要显示的内容列表。
-    y: y坐标。
-    window: 是否显示窗口。
-    appTitle: 应用程序标题。
-
-    Returns:
-    int: 用户选择的索引。
-    """
+    """显示列表选项，并返回用户选择的索引。"""
     UITools()
     listNum: int = 0
     oled.fill(0)
@@ -242,12 +226,7 @@ def ListOptions(dispContent: list, y: int, window: bool, appTitle: str) -> int:
             return listNum
 
 def message(content: str) -> None:
-    """
-    显示消息，并等待用户按下按钮。
-
-    Args:
-    content: 要显示的消息内容。
-    """
+    """显示消息，并等待用户按下按钮。"""
     content += "   按A键确认   "
     while not button_a.is_pressed:
         oled.fill(0)
@@ -258,44 +237,18 @@ def message(content: str) -> None:
         content = content[1:] + content[0]
 
 class VastSea:
-    """
-    描述某个功能或状态。
-
-    Attributes:
-    speed: 动作速度设置，可以是3, 6, 12中的一个。
-    """
     speed: int = int(Core.Data.Get('VastSea_speed'))  # 3, 6, 12
 
     @staticmethod
     def Off() -> None:
-        """关闭某个功能或状态。"""
         oled.fill(0)
         oled.show()
         time.sleep_ms(VastSea.speed * 90)
 
     class SeniorMove:
-        """
-        描述某个移动操作。
-
-        Methods:
-        Line: 绘制线条并执行移动操作。
-        Text: 显示文本并执行移动操作。
-        """
         @staticmethod
         def Line(nowX1: int, nowY1: int, nowX2: int, nowY2: int, newX1: int, newY1: int, newX2: int, newY2: int) -> None:
-            """
-            绘制线条并执行移动操作。
-
-            Args:
-            nowX1: 起始x坐标。
-            nowY1: 起始y坐标。
-            nowX2: 结束x坐标。
-            nowY2: 结束y坐标。
-            newX1: 目标x坐标。
-            newY1: 目标y坐标。
-            newX2: 目标x坐标。
-            newY2: 目标y坐标。
-            """
+            """绘制线条并执行移动操作。"""
             oled.line(nowX1, nowY1, nowX2, nowY2, 1)
             oled.show()
             if int(Core.Data.Get('VastSea_switch')) == 1:
@@ -314,16 +267,7 @@ class VastSea:
 
         @staticmethod
         def Text(text, nowX: int, nowY: int, newX: int, newY: int) -> None:
-            """
-            显示文本并执行移动操作。
-
-            Args:
-            text: 要显示的文本。
-            nowX: 起始x坐标。
-            nowY: 起始y坐标。
-            newX: 目标x坐标。
-            newY: 目标y坐标。
-            """
+            """显示文本并执行移动操作。"""
             if int(Core.Data.Get('VastSea_switch')) == 1:
                 oled.DispChar(str(text), nowX, nowY)
                 oled.show()
