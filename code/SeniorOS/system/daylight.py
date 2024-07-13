@@ -1,4 +1,5 @@
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 import SeniorOS.apps.logo as Logo
 import ntptime
 import network
@@ -23,7 +24,7 @@ def UITime(pages=True):
 def Consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_height, consani_start_x, consani_start_y, consani_start_wide, consani_start_height):
     UITools()
     consani_done_wait = 3
-    if int(Core.Data.Get('VastSea_switch')) == 1:
+    if Data.System.VastSeaSwitch == 1:
         try:
             oled.fill(0)
             for _ in range(7):
@@ -48,7 +49,7 @@ def Consani(consani_done_x, consani_done_y, consani_done_wide, consani_done_heig
 
     
 def ConsaniSideslip(side:True):
-    if int(Core.Data.Get('VastSea_switch')) == 1:
+    if Data.System.VastSeaSwitch == 1:
         t = 10
         if side:
             x = 128
@@ -92,7 +93,7 @@ def GetCharWidth(s):
     return strWidth
 
 AutoCenter=lambda string:64-GetCharWidth(string)//2
-HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)//2-22
+HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)
 
 def app(appTitle:str):
     oled.fill(0)
@@ -228,22 +229,21 @@ def message(content:str):
         content = content[1:] + content[0]
 
 class VastSea:
-    speed = int(Core.Data.Get('VastSea_speed')) #3,6,12
     def Off():
         oled.fill(0)
         oled.show()
-        time.sleep_ms(VastSea.speed * 90)
+        time.sleep_ms(Data.System.VastSeaSpeed * 90)
         return
     class SeniorMove:
         def Line(nowX1:int, nowY1:int, nowX2:int, nowY2:int, newX1:int, newY1:int, newX2:int, newY2:int):
             oled.line(nowX1, nowY1, nowX2, nowY2, 1)
             oled.show()
-            if int(Core.Data.Get('VastSea_switch')) == 1:
+            if Data.System.VastSeaSwitch == 1:
                 for count in range(3):
-                    nowX1 = nowX1 + ((newX1-nowX1) // VastSea.speed)
-                    nowY1 = nowY1 - ((nowY1-newY1) // VastSea.speed + (newY1 - newY1//2))
-                    nowX2 = nowX2 + ((newX2-nowX2) // VastSea.speed)
-                    nowY2 = nowY2 - ((nowY2-newY2) // VastSea.speed + (newY2 - newY2//2))
+                    nowX1 = nowX1 + ((newX1-nowX1) // Data.System.VastSeaSpeed)
+                    nowY1 = nowY1 - ((nowY1-newY1) // Data.System.VastSeaSpeed + (newY1 - newY1//2))
+                    nowX2 = nowX2 + ((newX2-nowX2) // Data.System.VastSeaSpeed)
+                    nowY2 = nowY2 - ((nowY2-newY2) // Data.System.VastSeaSpeed + (newY2 - newY2//2))
                     oled.fill(0)
                     oled.line(nowX1, nowY1, nowX2, nowY2, 1)
                     # oled.DispChar(str(nowX1), 0, 32, 1)
@@ -257,12 +257,12 @@ class VastSea:
             time.sleep_ms(300)
 
         def Text(text, nowX:int, nowY:int, newX:int, newY:int):
-            if int(Core.Data.Get('VastSea_switch')) == 1:
+            if Data.System.VastSeaSwitch == 1:
                 oled.DispChar(str(text), nowX, nowY)
                 oled.show()
-                for count in range(VastSea.speed):
-                    nowX = nowX + ((newX-nowX) // VastSea.speed)
-                    nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
+                for count in range(Data.System.VastSeaSpeed):
+                    nowX = nowX + ((newX-nowX) // Data.System.VastSeaSpeed)
+                    nowY = nowY - ((nowY-newY) // Data.System.VastSeaSpeed + (newY - newY//2))
                     oled.fill(0)
                     oled.DispChar(str(text), nowX, nowY)
                     # oled.DispChar(str(nowX), 0, 32, 1)
@@ -275,8 +275,8 @@ class VastSea:
 
 def UITools():
     try:
-        oled.invert(int(Core.Data.Get('light')))
-        oled.contrast(int(Core.Data.Get('luminance')))
+        oled.invert(Data.System.lightMode)
+        oled.contrast(Data.System.luminance)
     except:
         pass
 

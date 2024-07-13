@@ -4,6 +4,7 @@ from mpython import button_a,button_b
 from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 import time
 
 import SeniorOS.fonts.quantum
@@ -31,7 +32,7 @@ def Select(styleNum):
     oled.show()
     for count in range(100000):
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            Core.Data.Write('home',str(styleNum),False,False)
+            Core.DataVariable.Write('home',str(styleNum),False,False)
             return
 
 #-----------------------------------------------------------------------------------#

@@ -1,6 +1,7 @@
 from mpython import *
 import time,uos
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 import audio
 
 audio.stop()
@@ -38,7 +39,7 @@ while True:
                 "os":uos
         }
         runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        oled.contrast(int(Core.Data.Get('luminance')))
+        oled.contrast(Data.System.luminance)
         import SeniorOS.system.main
         break
     elif button_b.is_pressed():

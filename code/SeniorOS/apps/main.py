@@ -1,5 +1,6 @@
 from mpython import *
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 import SeniorOS.system.daylight as DayLight
 import machine
 import esp32
@@ -107,25 +108,25 @@ def App0DayLightMode():
         DayLight.UITools()
         oled.DispChar(str('日光模式'), 5, 5, 1)
         time.sleep_ms(5)
-        if Core.Data.Get('light') == "1":
+        if Data.lightMode == "1":
             get = '开启'
         else:
             get = '关闭'
         oled.DispChar(get, 5, 18, 1)
         oled.show()
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            Core.Data.Write('light','1',False,False)
+            Core.DataVariable.Write('lightmode','1',False,False)
             oled.invert(1)
             oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            Core.Data.Write('light','0',False,False)
+            Core.DataVariable.Write('lightmode','0',False,False)
             oled.invert(0)
             oled.show()
     return
 
 def App0Light():
-    b = int(Core.Data.Get('luminance'))
-    oled.contrast(b)
+    luminance = Data.System.luminance
+    oled.contrast(luminance)
     DayLight.UITools()
     while not button_a.is_pressed():
         oled.contrast(b)
@@ -135,17 +136,17 @@ def App0Light():
         oled.DispChar("当前亮度"+ str(b), 5, 18, 1)
         oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            b = b + 5
-            if b > 255:
-                b = 255
+            luminance = luminance + 5
+            if luminance > 255:
+                luminance = 255
             oled.contrast(b)
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            b = b - 5
-            if b < 0:
-                b = 0
-            oled.contrast(b)
-    oled.contrast(b)
-    Core.Data.Write('luminance',str(b),False,False)
+            luminance = luminance - 5
+            if luminance < 0:
+                luminance = 0
+            oled.contrast(luminance)
+    oled.contrast(luminance)
+    Core.DataVariable.Write('luminance',str(luminance),False,False)
     return
 
 def App0PowerOptions():
@@ -191,17 +192,17 @@ def App0DynamicEffectSwitch():
         DayLight.UITools()
         oled.DispChar(str('动效开关'), 5, 5, 1)
         time.sleep_ms(5)
-        if Core.Data.Get('VastSea_switch') == "1":
+        if Data.System.VastSea_switch == 1:
             get = '开启'
         else:
             get = '关闭'
         oled.DispChar(get, 5, 18, 1)
         oled.show()
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            Core.Data.Write('VastSea_switch','1',False,False)
+            Core.DataVariable.Write('VastSea_switch','1',False,False)
             oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            Core.Data.Write('VastSea_switch','0',False,False)
+            Core.DataVariable.Write('VastSea_switch','0',False,False)
             oled.show()
     return
 #-----------------------------------------------------------------------------------#
@@ -462,7 +463,7 @@ def App5():
 def Poetry():
     global poetry
     try:
-        _response = urequests.get(str(Core.Data.Get('poetry_source')), headers={})
+        _response = urequests.get(Data.LocalApps.poetrySource, headers={})
         poetry = (_response.text.split('，'))
         return
     except:

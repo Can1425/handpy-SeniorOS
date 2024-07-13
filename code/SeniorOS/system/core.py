@@ -13,11 +13,11 @@ class DataCtrl:
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.fos')])
-        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.fos')]:
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.sros')])
+        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
-                self.data[i.strip('.fos')]=f.read().strip('\r')
-                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.fos')])
+                self.data[i.strip('.sros')]=f.read().strip('\r')
+                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.sros')])
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data)
     # 获取数据
@@ -28,11 +28,11 @@ class DataCtrl:
         if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
             self.data[dataName]=dataValue
             return
-        with open(self.dataFolderPath+dataName+'.fos','w',encoding='utf-8') as f:
+        with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
             f.write(dataValue)   
         if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
             self.data[dataName]=dataValue                
-Data=DataCtrl("/SeniorOS/data/")
+DataVariable=DataCtrl("/SeniorOS/data/variable/")
 
 # 文件/路径 格式工厂
 class File_Path_Factory:

@@ -4,18 +4,18 @@ import SeniorOS.apps.logo as logo
 import SeniorOS.system.daylight as DayLight
 from SeniorOS.apps.main import *
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 
 appNum = 0
-appList = Core.Data.Get("app").split(',')
 operationalJudgment = 0
 
 def AppDynamic():
-    global waitTime, select1X, select2X, select3X, select4X, appList, appNum, operationalJudgment
+    global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment
     if touchpad_p.is_pressed() and touchpad_y.is_pressed():
         operationalJudgment = 0
         appNum = appNum + 1
-        if appNum + 1 > len(appList):
-            appNum = len(appList) - 1
+        if appNum + 1 > len(Data.System.localAppName):
+            appNum = len(Data.System.localAppName) - 1
             return
         waitTime = 5
         select1X = -77
@@ -90,13 +90,13 @@ def App():
         oled.DispChar(str('〕'), 85, 20, 1)
         oled.DispChar(str('>'), 120, 48, 1)
         oled.DispChar(str('<'), 1, 48, 1)
-        oled.DispChar(appList[appNum],DayLight.AutoCenter(appList[appNum]), 48, 1)
+        oled.DispChar(Data.System.localAppName[appNum],DayLight.AutoCenter(Data.System.localAppName[appNum]), 48, 1)
         oled.show()
         AppDynamic()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            DayLight.VastSea.SeniorMove.Text(appList[appNum], DayLight.AutoCenter(appList[appNum]), 48, - DayLight.AutoCenter(appList[appNum]) // DayLight.VastSea.speed, 40)
+            DayLight.VastSea.SeniorMove.Text(Data.System.localAppName[appNum], DayLight.AutoCenter(Data.System.localAppName[appNum]), 48, - DayLight.AutoCenter(Data.System.localAppName[appNum]) // DayLight.Data.System.VastSeaSpeed, 40)
             exec(str("App"+ str(appNum) +"()"))
-            DayLight.VastSea.SeniorMove.Text(appList[appNum], 2, 0, DayLight.AutoCenter(appList[appNum]) + DayLight.AutoCenter(appList[appNum])//2, -134)
+            DayLight.VastSea.SeniorMove.Text(Data.System.localAppName[appNum], 2, 0, DayLight.AutoCenter(Data.System.localAppName[appNum]) + DayLight.AutoCenter(Data.System.localAppName[appNum])//2, -134)
             if operationalJudgment == 0:
                 try:
                     exec("oled.Bitmap(select1X, 10, logo.app_" + str(appNum + 1) + ", 25, 25, 1)")
