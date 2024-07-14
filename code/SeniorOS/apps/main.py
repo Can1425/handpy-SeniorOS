@@ -10,63 +10,46 @@ import urequests
 #-----------------------------------------------------------------------------------#
 def App0():
     DayLight.UITools()
-    from SeniorOS.system.pages import about,WifiPages,choosewifi
+    from SeniorOS.system.pages import About,WifiPages,choosewifi
+    import SeniorOS.style.port as Style
     time.sleep_ms(5)
-    settingsList = ['网络与时间', '界面与动效', '缓存与运存', '系统与设备']
-    settingsTip = ['联网相关设置及信息', '界面动效参数及设置', '应用缓存与设备内存', '系统设备信息及更新']
-    settings_num = 0
+
+    Settings0 = {
+        0: WifiPages,
+        1: App0Time,
+        2: choosewifi
+    }
+
+    Settings1 = {
+        0: App0DayLightMode,
+        1: App0DynamicEffectSwitch,
+        2: Style.HomeStyleSet,
+        3: Style.BarStyleSet,
+        4: DayLight.About,
+    }
+
+    Settings2 = {
+        0: App0Collect,
+        1: App0Collect,
+    }
+
+    Settings3 = {
+        0: About,
+        1: About,
+    }
+
     while not button_a.is_pressed():
-        settingsNum = DayLight.Select.Style2(settingsList, settingsTip, 18, False, "设置")
+        settingsNum = DayLight.Select.Style2(Data.LocalApps.App0.list, Data.LocalApps.App0.tip, 18, False, "设置")
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-            if settingsNum == 0:
-                DayLight.ConsaniSideslip(True)
-                settings0Num = DayLight.Select.Style1(['重连网络', '同步时间', '新建网络配置'], 28, True, "选择")
-                DayLight.ConsaniSideslip(False)
-                if settings0Num == 0:
-                    DayLight.ConsaniSideslip(True)
-                    WifiPages()
-                    DayLight.ConsaniSideslip(False)
-                elif settings0Num == 1:
-                    DayLight.ConsaniSideslip(True)
-                    App0Time()
-                    DayLight.ConsaniSideslip(False)
-                elif settings0Num == 2:
-                    DayLight.ConsaniSideslip(True)
-                    choosewifi()
-                    DayLight.ConsaniSideslip(False)
-            elif settingsNum == 1:
-                DayLight.ConsaniSideslip(True)
-                settings1Num = DayLight.Select.Style1(['日光模式', '动效开关', '日光引擎信息'], 28, True, "选择")
-                DayLight.ConsaniSideslip(False)
-                if settings1Num == 0:
-                    DayLight.ConsaniSideslip(True)
-                    App0DayLightMode()
-                    DayLight.ConsaniSideslip(False)
-                elif settings1Num == 1:
-                    DayLight.ConsaniSideslip(True)
-                    App0DynamicEffectSwitch()
-                    DayLight.ConsaniSideslip(False)
-                elif settings1Num == 2:
-                    DayLight.ConsaniSideslip(True)
-                    DayLight.About()
-                    DayLight.ConsaniSideslip(False)
-            elif settingsNum == 2:
-                DayLight.ConsaniSideslip(True)
-                settings3Num = DayLight.Select.Style1(['释放内存', '内存信息'], 28, True, "选择")
-                DayLight.ConsaniSideslip(False)
-                if settings3Num == 0:
-                    DayLight.ConsaniSideslip(True)
-                    App0Collect()
-                    DayLight.ConsaniSideslip(False)
-                elif settings0Num == 1:
-                    DayLight.ConsaniSideslip(True)
-                    DayLight.ConsaniSideslip(False)
-            elif settingsNum == 3:
-                DayLight.ConsaniSideslip(True)
-                about()
-                DayLight.ConsaniSideslip(False)
-            elif settingsNum == 4:
-                pass
+            options = eval('DayLight.Select.Style1(Data.LocalApps.App0.list' + str(settingsNum) + ', 28, True, "选择")')
+            if options == 0:
+                Settings0.get(options)()
+            elif options == 1:
+                Settings1.get(options)()
+            if options == 2:
+                Settings2.get(options)()
+            if options == 3:
+                Settings3.get(options)()
 
 def App0Time():
     DayLight.UITools()
@@ -108,18 +91,18 @@ def App0DayLightMode():
         DayLight.UITools()
         oled.DispChar(str('日光模式'), 5, 5, 1)
         time.sleep_ms(5)
-        if Data.lightMode == "1":
+        if Data.System.lightMode == "1":
             get = '开启'
         else:
             get = '关闭'
         oled.DispChar(get, 5, 18, 1)
         oled.show()
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            Core.DataVariable.Write('lightmode','1',False,False)
+            Core.DataOperation.Write('lightMode','1',False,False)
             oled.invert(1)
             oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            Core.DataVariable.Write('lightmode','0',False,False)
+            Core.DataOperation.Write('lightMode','0',False,False)
             oled.invert(0)
             oled.show()
     return
@@ -129,11 +112,11 @@ def App0Light():
     oled.contrast(luminance)
     DayLight.UITools()
     while not button_a.is_pressed():
-        oled.contrast(b)
+        oled.contrast(luminance)
         oled.fill(0)
         oled.DispChar(str('亮度调节'), 5, 5, 1)
         time.sleep_ms(5)
-        oled.DispChar("当前亮度"+ str(b), 5, 18, 1)
+        oled.DispChar("当前亮度"+ str(luminance), 5, 18, 1)
         oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
             luminance = luminance + 5
@@ -146,24 +129,23 @@ def App0Light():
                 luminance = 0
             oled.contrast(luminance)
     oled.contrast(luminance)
-    Core.DataVariable.Write('luminance',str(luminance),False,False)
+    Core.DataOperation.Write('luminance',str(luminance),False,False)
     return
 
 def App0PowerOptions():
     options = DayLight.ListOptions(['软重启', '关闭显示器', '休眠'], 8, True, "None")
     if options == 0:
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.Off()
         exec(machine.reset())
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.Off()
     elif options == 1:
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.Off()
         oled.poweroff()
         if button_b.is_pressed():
             oled.poweron()
         return
-        DayLight.ConsaniSideslip(False)
     elif options == 2:
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.Off()
         esp32.wake_on_touch(True)
         oled.fill(0)
         oled.DispChar('休眠状态已启动', 5, 0, 1)
@@ -184,7 +166,7 @@ def App0PowerOptions():
                 pass
         machine.lightsleep()
         DayLight.UITools()
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.Off()
 
 def App0DynamicEffectSwitch():
     while not button_a.is_pressed():
@@ -192,17 +174,17 @@ def App0DynamicEffectSwitch():
         DayLight.UITools()
         oled.DispChar(str('动效开关'), 5, 5, 1)
         time.sleep_ms(5)
-        if Data.System.VastSea_switch == 1:
+        if Data.System.VastSeaSwitch == 1:
             get = '开启'
         else:
             get = '关闭'
         oled.DispChar(get, 5, 18, 1)
         oled.show()
         if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-            Core.DataVariable.Write('VastSea_switch','1',False,False)
+            Core.DataOperation.Write('VastSeaSwitch','1',False,False)
             oled.show()
         if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-            Core.DataVariable.Write('VastSea_switch','0',False,False)
+            Core.DataOperation.Write('VastSeaSwitch','0',False,False)
             oled.show()
     return
 #-----------------------------------------------------------------------------------#
@@ -229,7 +211,7 @@ def App1():
         if touchpad_t.is_pressed() and touchpad_h.is_pressed():
             options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, True, "None")
             if options == 0:
-                DayLight.ConsaniSideslip(True)
+                DayLight.VastSea.Off()
                 DayLight.app('线上插件')
                 oled.DispChar(str('请稍等，正在获取源码'), 5, 18, 1, True)
                 oled.DispChar(str('如A键无法退出，重启'), 5, 45, 1, True)
@@ -237,14 +219,14 @@ def App1():
                 _response = urequests.get((''.join([str(x) for x in ['https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/web-app/', plugins_num + 1, '.fos']])), headers={})
                 oled.fill(0)
                 exec(_response.text)
-                DayLight.ConsaniSideslip(False)
+                DayLight.VastSea.Off()
             if options == 1:
-                DayLight.ConsaniSideslip(True)
+                DayLight.VastSea.Off()
                 while not button_a.is_pressed():
                     DayLight.app(str(plugins_list[plugins_num]))
                     oled.DispChar(str(plugins_tip2[plugins_num]), 5, 18, 1, True)
                     oled.show()
-                DayLight.ConsaniSideslip(False)
+                DayLight.VastSea.Off()
 #--------------------------------------------------------------------------------#
 def App2():
     path='/'

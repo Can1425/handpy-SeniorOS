@@ -2,7 +2,7 @@ from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
-import SeniorOS.system.home as HomeStyle
+import SeniorOS.style.home as HomeStyle
 import SeniorOS.data.main as Data
 import SeniorOS.data.map as Map
 #import framebuf
@@ -28,23 +28,15 @@ wifi=wifi()
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
-    oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
-    oled.fill_rect(0, 48, 128, 16, 0)
-    oled.DispChar("尝试连接...", DayLight.AutoCenter("尝试连接..."), 48, 1)
+    oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
     oled.show()
     try:
         wifi.connectWiFi(ssid, password)
         ntptime.settime(8, "time.windows.com")
-        oled.fill_rect(0, 48, 128, 16, 0)
-        oled.DispChar("欢迎", DayLight.AutoCenter("欢迎"), 48, 1)
-        oled.show()
         DayLight.message("Welcome to SeniorOS")
         time.sleep(2)
         return True
     except:
-        oled.fill_rect(0, 48, 128, 16, 0)
-        oled.DispChar("连接失败，将以无网状态进入", DayLight.AutoCenter("连接失败，将以无网状态进入"), 48, 1)
-        oled.show()
         time.sleep(2)
         return True
 
@@ -77,7 +69,6 @@ def CloudNotification():
             oled.DispChar('发生了未知错误', 5, 18, 2)
             oled.DispChar(str(e), 5, 34,auto_return=True)
             oled.show()
-        DayLight.Consani(0, 0, 0, 0, 0, 0, 128, 64)
         return
     while not button_a.is_pressed():
         DayLight.app('云端通知')
@@ -91,19 +82,18 @@ def SettingPanel():
     time.sleep(0.2)
     while not button_a.is_pressed():
         options = DayLight.Select.Style1(['桌面风格', '电源选项', '日光模式','亮度调节', '释放内存'], 28, True, "设置面板")
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.Off()
         if options == None:
             pass
         else:
             Map.SettingPanel.get(options)()
-        time.sleep(0.2)
-        DayLight.ConsaniSideslip(False)
-    DayLight.VastSea.Off()
+        DayLight.VastSea.Off()
+        return
     return
 
 def Home():
     while not eval("[/GetButtonExpr('thab')/]"):
-        Map.Home.get(Data.System.homeStyle)()
+        Map.HomePage.get(Data.System.homeStyleNum)()
         
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
@@ -118,13 +108,13 @@ def Home():
             return True
 
     if button_a.is_pressed():
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.SeniorMove.Text("云端通知",-30,-50,20,-50)
         CloudNotification()
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.SeniorMove.Text("云端通知",5,4,-20,50)
     elif button_b.is_pressed():
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.SeniorMove.Text("设置面板",300,-50,-120,-50)
         SettingPanel()
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.SeniorMove.Text("设置面板",5,4,120,50)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
         DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, 0, -128, 128, -128)
         App()
@@ -159,10 +149,10 @@ def select(options:list)->tuple:
         elif target==len(options):
             target=0
 
-def about():
+def About():
     oled.fill(0)
     while not button_a.is_pressed():
-        oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
+        oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
         oled.show()
 
 def wlanscan():#定义扫描wifi函数
