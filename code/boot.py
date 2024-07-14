@@ -1,6 +1,7 @@
 from mpython import *
 import time,uos
 import SeniorOS.system.core as Core
+import SeniorOS.data.main as Data
 import audio
 
 audio.stop()
@@ -15,7 +16,6 @@ while True:
     oled.DispChar('A - SeniorOS',0,16)
     oled.DispChar('B - main.py',0,32)
     oled.DispChar("TH - REPL",0,48)
-    oled.hline(50, 62, 30, 1)
     oled.show()
     while not eval("[/GetButtonExpr('thab')/]"):
         pass
@@ -39,12 +39,12 @@ while True:
                 "os":uos
         }
         runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        oled.contrast(int(Core.Data.Get('brightness')))
+        oled.contrast(Data.System.luminance)
         import SeniorOS.system.main
         break
     elif button_b.is_pressed():
         oled.fill(0)
-        oled.DispChar('启动至main.py',0,0)
+        oled.DispChar('启动至 main.py',0,0)
         oled.show()
         time.sleep(0.5)
         break

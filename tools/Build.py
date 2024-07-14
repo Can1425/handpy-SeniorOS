@@ -10,8 +10,18 @@ codeFile=[
     "SeniorOS/system/main.py",
     "SeniorOS/system/daylight.py",
     "SeniorOS/system/pages.py",
-    "SeniorOS/fonts/quantum.py",
+    "SeniorOS/fonts/misans.py",
+    "SeniorOS/fonts/misans_16.py",
     "SeniorOS/system/update.py",
+    "SeniorOS/system/typer.py",
+    "SeniorOS/apps/logo.py",
+    "SeniorOS/apps/main.py",
+    "SeniorOS/apps/port.py",
+    "SeniorOS/data/map.py",
+    "SeniorOS/data/lib.py",
+    "SeniorOS/style/bar.py",
+    "SeniorOS/style/home.py",
+    "SeniorOS/style/port.py",
     "boot.py"
 ]
 # TODO:实现自动生成目录树 无需手动提供文件位置

@@ -1,12 +1,10 @@
-from SeniorOS.apps.app_0 import *
-from SeniorOS.apps.app_1 import *
-from SeniorOS.apps.app_2 import *
-from SeniorOS.apps.app_3 import *
-from SeniorOS.apps.app_4 import *
-
+from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
-import SeniorOS.apps.logo as logo
+import SeniorOS.system.typer as Typer
+import SeniorOS.style.home as HomeStyle
+import SeniorOS.data.main as Data
+import SeniorOS.data.map as Map
 #import framebuf
 #import font.dvsmb_21
 import urequests
@@ -15,7 +13,6 @@ import urequests
 #import gc
 import ntptime
 import network
-import SeniorOS.fonts.quantum
 from mpython import wifi,oled
 from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 from mpython import button_a,button_b
@@ -28,83 +25,27 @@ import machine
 # PS: 这是我改的 毕竟cfgfile又不给用户看
 # 你写了忘记改了是吧 - LP    Gxxk/Reply:emm 实际上是改了内置逻辑忘记改配置文件
 wifi=wifi()
-plugins_list = []
-plugins_tip = []
-app_list = ['设置', '线上插件', '天气', '手电筒', '即时诗词']
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
-    oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
-    oled.fill_rect(0, 48, 128, 16, 0)
-    oled.DispChar(str('              请稍等...'), 0, 48, 1)
+    oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
     oled.show()
     try:
         wifi.connectWiFi(ssid, password)
         ntptime.settime(8, "time.windows.com")
-        oled.fill_rect(0, 48, 128, 16, 0)
-        oled.DispChar(str('             配置成功'), 0, 48, 1)
-        oled.show()
+        DayLight.message("Welcome to SeniorOS")
         time.sleep(2)
         return True
     except:
-        oled.fill_rect(0, 48, 128, 16, 0)
-        oled.DispChar(str('             配置失败'), 0, 48, 1)
-        oled.show()
         time.sleep(2)
         return True
 
-def wifi_page():
-    # Data=Core.DataCtrl("/SeniorOS/data/")
-    wifiConfigRead=Core.Data.Get('wifi')#读wifi配置文件
-    wifiConfig=wifiConfigRead.split('\n')#读WiFi配置，以\n分隔
-    #例如这样:
-    #原wifi配置文件:
-    '''
-    wifi1,wifi1pwd
-    wifi2,wifi2pwd
-    '''
-    #解析后wifi配置文件
-    #['wifi1,wifi1pwd','wifi2,wifi2pwd']
-    wifiSSID=[]
-    wifiPWD=[]
-    for i in range(len(wifiConfig)):
-        cfg=wifiConfig[i].split(',')
-        wifiSSID.append(cfg[0])
-        wifiPWD.append(cfg[1])
-
-        #这里就是把解析后WiFi配置文件再解析一次
-        #例如:
-        #wificfg=['wifi1,wifi1pwd','wifi2,wifi2pwd']
-        #解析后:
-        #wifissid=['wifi1','wifi2']
-        #wifipwd=['wifi1pwd','wifi2pwd']
-        #对于这玩意是不是要写成单独的函数,待定#
-        #对于是否要集合为字典,待定#
-        #现在3行内会显示,但不能超过3行(按程序设定不会显示)
-        #即将上线换页功能
+def WifiPages():
     oled.fill(0)
-    #oled.Bitmap(16, 20, bytearray([0X07,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XF8,0X00,0X7C,0X00,0X0F,0XFC,0X00, 0X00,0X00,0X00,0X00,0X00,0X01,0XFE,0X00,0XFE,0X00,0X1F,0XFC,0X00,0X00,0X00,0X00, 0X00,0X00,0X07,0XFF,0X01,0XFF,0X80,0X3C,0X00,0X00,0X00,0X01,0X00,0X00,0X00,0X0F, 0X07,0X83,0X83,0X80,0X38,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X1C,0X01,0XC3,0X81, 0X80,0X30,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X38,0X00,0XE3,0X00,0X00,0X30,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X38,0X00,0XE3,0X80,0X00,0X38,0X00,0X18,0X1F,0XE0, 0X0F,0XFC,0X3E,0X30,0X00,0X63,0XC0,0X00,0X3F,0X00,0X7E,0X1F,0XF1,0X9F,0XFC,0X7E, 0X70,0X00,0X71,0XF0,0X00,0X1F,0XF0,0XE7,0X1C,0X39,0X9C,0X0C,0XE0,0X70,0X00,0X70, 0XFE,0X00,0X07,0XF9,0XC3,0X18,0X19,0X98,0X0C,0XC0,0X70,0X00,0X70,0X1F,0X80,0X00, 0X79,0XC3,0X98,0X19,0X98,0X0C,0XC0,0X30,0X00,0X70,0X03,0X80,0X00,0X39,0XFF,0X98, 0X19,0X88,0X04,0XC0,0X30,0X00,0X60,0X01,0XC0,0X00,0X39,0XFF,0X18,0X19,0X80,0X00, 0XC0,0X38,0X00,0XE0,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X88,0X0C,0XC0,0X1C,0X01, 0XC2,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X8C,0X0C,0XC0,0X1E,0X03,0XC7,0X01,0XC0, 0X71,0XF0,0XC3,0X18,0X19,0X8E,0X0C,0XC0,0X0F,0XDF,0X83,0XC3,0X80,0XFF,0XE0,0X7F, 0X18,0X19,0X87,0XFC,0X40,0X07,0XFF,0X01,0XFF,0X00,0XFF,0XC0,0X3C,0X18,0X19,0X83, 0XFC,0X40,0X01,0XFC,0X00,0X7E,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
-    for i in range(len(wifiSSID)):
-        if i<4:oled.DispChar(wifiSSID[i],0,i*16)
-    #oled.Bitmap(16, 20, bytearray([0X07,0XFC,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0XF8,0X00,0X7C,0X00,0X0F,0XFC,0X00, 0X00,0X00,0X00,0X00,0X00,0X01,0XFE,0X00,0XFE,0X00,0X1F,0XFC,0X00,0X00,0X00,0X00, 0X00,0X00,0X07,0XFF,0X01,0XFF,0X80,0X3C,0X00,0X00,0X00,0X01,0X00,0X00,0X00,0X0F, 0X07,0X83,0X83,0X80,0X38,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X1C,0X01,0XC3,0X81, 0X80,0X30,0X00,0X00,0X00,0X01,0X80,0X00,0X00,0X38,0X00,0XE3,0X00,0X00,0X30,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X38,0X00,0XE3,0X80,0X00,0X38,0X00,0X18,0X1F,0XE0, 0X0F,0XFC,0X3E,0X30,0X00,0X63,0XC0,0X00,0X3F,0X00,0X7E,0X1F,0XF1,0X9F,0XFC,0X7E, 0X70,0X00,0X71,0XF0,0X00,0X1F,0XF0,0XE7,0X1C,0X39,0X9C,0X0C,0XE0,0X70,0X00,0X70, 0XFE,0X00,0X07,0XF9,0XC3,0X18,0X19,0X98,0X0C,0XC0,0X70,0X00,0X70,0X1F,0X80,0X00, 0X79,0XC3,0X98,0X19,0X98,0X0C,0XC0,0X30,0X00,0X70,0X03,0X80,0X00,0X39,0XFF,0X98, 0X19,0X88,0X04,0XC0,0X30,0X00,0X60,0X01,0XC0,0X00,0X39,0XFF,0X18,0X19,0X80,0X00, 0XC0,0X38,0X00,0XE0,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X88,0X0C,0XC0,0X1C,0X01, 0XC2,0X01,0XC0,0X00,0X39,0X80,0X18,0X19,0X8C,0X0C,0XC0,0X1E,0X03,0XC7,0X01,0XC0, 0X71,0XF0,0XC3,0X18,0X19,0X8E,0X0C,0XC0,0X0F,0XDF,0X83,0XC3,0X80,0XFF,0XE0,0X7F, 0X18,0X19,0X87,0XFC,0X40,0X07,0XFF,0X01,0XFF,0X00,0XFF,0XC0,0X3C,0X18,0X19,0X83, 0XFC,0X40,0X01,0XFC,0X00,0X7E,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
-    oled.DispChar('       请选择 WiFi 配置', 0, 48, 1)
+    DayLight.VastSea.Off()
+    wifiNum = DayLight.ListOptions(Data.User.wifiName, 18, False, '请选择配置')
     oled.show()
-    while True:
-        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            if ConfigureWLAN(wifiSSID[0],wifiPWD[0]):#保证至少有1个配置文件
-                return
-        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            try:
-                if ConfigureWLAN(wifiSSID[1],wifiPWD[1]):
-                    return
-            except:
-                return
-        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            try:
-                if ConfigureWLAN(wifiSSID[2],wifiPWD[2]):
-                    return
-            except:
-                return
+    ConfigureWLAN(Data.User.wifiName[wifiNum], Data.User.wifiPassword[wifiNum])
 
 def CloudNotification():
     time.sleep(0.2)
@@ -128,7 +69,6 @@ def CloudNotification():
             oled.DispChar('发生了未知错误', 5, 18, 2)
             oled.DispChar(str(e), 5, 34,auto_return=True)
             oled.show()
-        DayLight.consani(0, 0, 0, 0, 0, 0, 128, 64)
         return
     while not button_a.is_pressed():
         DayLight.app('云端通知')
@@ -136,42 +76,25 @@ def CloudNotification():
         oled.DispChar(notifications[2], 5, 32)
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
-    DayLight.Tti()
-    return home()
+    return
 
 def SettingPanel():
     time.sleep(0.2)
-    settings0Num = DayLight.Select(['电源选项', '日光模式','亮度调节', '释放内存', '重连网络'],"快捷面板")
-    if settings0Num == 0:
-        DayLight.ConsaniSideslip(True)
-        App0PowerOptions()
-        DayLight.ConsaniSideslip(False)
-    if settings0Num == 1:
-        DayLight.ConsaniSideslip(True)
-        App0DayLightMode()
-        DayLight.ConsaniSideslip(False)
-    elif settings0Num == 2:
-        DayLight.ConsaniSideslip(True)
-        App0Light
-        DayLight.ConsaniSideslip(False)
-    elif settings0Num == 3:
-        DayLight.ConsaniSideslip(True)
-        App0Collect
-        DayLight.ConsaniSideslip(False)
-    elif settings0Num == 4:
-        DayLight.ConsaniSideslip(True)
-        wifi_page
-        DayLight.ConsaniSideslip(False)
-    time.sleep_ms(5)
-    return home()
+    while not button_a.is_pressed():
+        options = DayLight.Select.Style1(['桌面风格', '电源选项', '日光模式','亮度调节', '释放内存'], 28, True, "设置面板")
+        DayLight.VastSea.Off()
+        if options == None:
+            pass
+        else:
+            Map.SettingPanel.get(options)()
+        DayLight.VastSea.Off()
+        return
+    return
 
-def home():
-    time.sleep_ms(20)
+def Home():
     while not eval("[/GetButtonExpr('thab')/]"):
-        oled.fill(0)
-        DayLight.DisplayFont(SeniorOS.fonts.quantum, DayLight.UITime(False), DayLight.HomeTimeAutoCenter(DayLight.UITime(False)), 20, False)
-        oled.hline(50, 62, 30, 1)
-        oled.show()
+        Map.HomePage.get(Data.System.homeStyleNum)()
+        
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
         oled.fill(0)
@@ -183,21 +106,19 @@ def home():
         while not eval("[/GetButtonExpr('pythonab')/]"):pass
         if eval("[/GetButtonExpr('pn')/]"):
             return True
-        
 
     if button_a.is_pressed():
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.SeniorMove.Text("云端通知",-30,-50,20,-50)
         CloudNotification()
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.SeniorMove.Text("云端通知",5,4,-20,50)
     elif button_b.is_pressed():
-        DayLight.ConsaniSideslip(True)
+        DayLight.VastSea.SeniorMove.Text("设置面板",300,-50,-120,-50)
         SettingPanel()
-        DayLight.ConsaniSideslip(False)
+        DayLight.VastSea.SeniorMove.Text("设置面板",5,4,120,50)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
-        DayLight.consani(0, 64, 128, 64, 0, 0, 128, 64)
-        app()
-        DayLight.consani(0,0,128,64,0,-64,128,64)
-
+        DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, 0, -128, 128, -128)
+        App()
+        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 0, 46, 128, 46)
 
 def select(options:list)->tuple:
     print("SeniorOS-[GxxkAPI]进入选择器界面")
@@ -228,69 +149,10 @@ def select(options:list)->tuple:
         elif target==len(options):
             target=0
 
-
-def app():
-    global app_list, app_num
-    home_movement_x = 40
-    app_num = 0
-    time.sleep_ms(20)
-    while not button_a.is_pressed():
-        try:
-          oled.invert(int(Core.Data.Get('light')))
-        except:
-            pass
-        if home_movement_x >= 0 and home_movement_x <= 224:
-            if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-                home_movement_x = home_movement_x + 10
-            elif touchPad_O.is_pressed() and touchPad_N.is_pressed():
-                home_movement_x = home_movement_x + -10
-        else:
-            if home_movement_x <= 0:
-                home_movement_x = 4
-            elif home_movement_x >= 224:
-                home_movement_x = 220
-        oled.fill(0)
-        oled.RoundRect(home_movement_x, 6, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 40), 6, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 80), 6, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 120), 6, 36, 36, 3, 1)
-        oled.RoundRect((home_movement_x - 160), 6, 36, 36, 3, 1)
-        oled.Bitmap(home_movement_x + 5, 12, logo.app_0, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 40 + 5, 12, logo.app_1, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 80 + 5, 12, logo.app_2, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 120 + 5, 12, logo.app_3, 25, 25, 1)
-        oled.Bitmap(home_movement_x - 160 + 5, 12, logo.app_4, 25, 25, 1)
-        oled.DispChar(app_list[app_num],DayLight.AutoCenter(app_list[app_num]),45)
-        oled.hline(50, 62, 30, 1)
-        if home_movement_x >= 0 and home_movement_x <= 50:
-            app_num = 0
-            app_logo = logo.app_0
-        elif home_movement_x >= 51 and home_movement_x <= 95:
-            app_num = 1
-            app_logo = logo.app_1
-        elif home_movement_x >= 96 and home_movement_x <= 130:
-            app_num = 2
-            app_logo = logo.app_2
-        elif home_movement_x >= 131 and home_movement_x <= 175:
-            app_num = 3
-            app_logo = logo.app_3
-        elif home_movement_x >= 176 and home_movement_x <= 220:
-            app_num = 4
-            app_logo = logo.app_4
-        oled.show()
-        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            DayLight.ConsaniAppOpen(home_movement_x, 6, 128, 36, 64, 36, 3, app_logo, home_movement_x + 5)
-            class SeniorOSAPI:
-                Core=Core
-                DayLight=DayLight
-            exec(str("app_"+ str(app_num) +"()"))
-            DayLight.ConsaniAppClose(45, 6, 128, 36, 64, 36, 3, app_logo, 0)
-    return
-
-def about():
+def About():
     oled.fill(0)
     while not button_a.is_pressed():
-        oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X00,0X10,0X00,0X00,0X00,0X00,0X03,0XF0,0X00,0X00,0X60,0X00,0X00,0XFE,0X0F,0XE0,0X00,0X00,0X07,0XF0,0X00,0X00,0X00,0X00,0X01,0XEF,0X0C,0X00,0X00,0X00,0X0C,0X00,0X00,0X00,0X00,0X00,0X03,0X83,0X98,0X00,0X00,0X00,0X0C,0X00,0XF1,0XF8,0X63,0XE0,0XE3,0X01,0X98,0X00,0X00,0X00,0X0E,0X03,0XF9,0XFC,0X67,0XF1,0XE6,0X00,0XDC,0X00,0X00,0X00,0X07,0XE3,0X19,0X8E,0X66,0X33,0X06,0X00,0XCF,0XC0,0X00,0X00,0X01,0XE3,0XF9,0X86,0X4C,0X13,0X06,0X00,0XC1,0XE0,0X00,0X00,0X00,0X37,0XF9,0X86,0XCC,0X33,0X03,0X01,0X80,0X60,0X00,0X00,0X00,0X36,0X01,0X04,0XCC,0X32,0X03,0X83,0X80,0X60,0X00,0X00,0X00,0X67,0X03,0X0C,0XCC,0X36,0X01,0XEF,0X00,0XC0,0X00,0X00,0X0F,0XE3,0XF3,0X0C,0XCF,0XE6,0X00,0XFE,0X1F,0XC0,0X00,0X00,0X0F,0X81,0XF1,0X04,0X03,0XC2,0X00,0X10,0X1F,0X80,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,]), 95, 19, 1)
+        oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
         oled.show()
 
 def wlanscan():#定义扫描wifi函数
@@ -305,23 +167,7 @@ def choosewifi():
     oled.show()
     wifilist = wlanscan()
     num=0
-    while len(wifilist)!=0:
-        oled.fill(0)
-        oled.DispChar("选择wifi:{}".format(wifilist[num]),0,0,1,True)
-        oled.DispChar("A:确认",0,48)
-        oled.show()
-        if eval("[/GetButtonExpr('py')/]"):
-            if num+1>len(wifilist):
-                num=0
-            else:
-                num+=1
-        elif eval("[/GetButtonExpr('on')/]"):
-            if num-1<0:
-                num=len(wifilist)-1
-            else:
-                num-=1
-        if eval("[/GetButtonExpr('a')/]"):
-            break
+    num = DayLight.ListOptions(wifilist, 8, True, "None")
     oled.fill(0)
     oled.DispChar("请稍等",0,0)
     oled.show()
@@ -332,7 +178,7 @@ def choosewifi():
     time.sleep(3)
     import network
     wifi=network.WLAN()
-    pwd=input("请输入密码:")
+    pwd=Typer.main()
     try:
         wifi.connectWiFi(wifilist[num],pwd)
         oled.fill(0)
