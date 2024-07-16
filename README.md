@@ -55,7 +55,7 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 
 目前该系统没有正式版本
 
-
+且现版本并不完善 并未发布官方编译版本 因此您需要自行编译
 ## 如何构建？
 
 本系统使用了专用的特殊工具以提高代码精简度/可读性，如果您对系统在本地仓库做了一定更改，并不能直接刷入至掌控版中
@@ -64,29 +64,46 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 
 但在此之前，您需要进行一些简单的环境配置
 
+### 基础环境
+
+您需要具有以下工具 以便自行编译
+
+- Python环境(不应低于3.8)
+- Python-pip和本项目所要求的模块(模块配置请详见后文)
+
+如您需要更进一步 编译历史版本/参与开发 您需要以下工具
+
+- Git
+
+> Tips: 推荐在 Ubuntu22.04(WSL) 下使用 VSCode 进行开发
+
 ### 创建并激活虚拟环境
+
 ```bash
 python -m venv .venv
 .venv/Scripts/Activate.ps1
 # 如果您使用cmd.exe作为终端 请使用以下代码：
 .venv/Scripts/activate.bat
 # Linux用户根据以上代码以此类推 可以使用以下代码：
-.venv/Scripts/activate
+source .venv/bin/activate
+```
+> Tips: 在Linux上 脚本对应路径通常位于`.venv/bin/activate`
+
+### 安装所需模块
+
+```bash
+pip install -r package.txt
 ```
 
-### 安装编译器
+### 设置编译相关选项
 
-这是本作唯一的一个需要配置的外部编译器，接下来请在终端中输入以下代码 便会安装完成.
-```python
-pip install mpy-cross-v5
-```
+初次运行`tools/Build.py` 会提示未配置配置文件 此时Build.py会自动释放文件`tools/BuildConfig.py`
 
-### 安装Build.py前置
+您需要根据您的需求修改`tools/BuildConfig.py`中的配置项
 
-Build.py需要使用Gitpython库来保证正常运行，请在终端中运行以下代码安装GitPython.
-```python
-pip install GitPython
-```
+请**特别注意** `projectPath` ，此项用于识别编译时仓库的环境，应当指向该仓库的根目录
+
+> Tips: BuildConfig.py不会被上传到仓库
 
 ### 构建
 
