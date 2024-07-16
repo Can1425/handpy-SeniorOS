@@ -1,29 +1,11 @@
+# ReplaceExpr对于SROS具有强依赖性
+# 本代码如需用于其他项目请同时移植 ReplaceExpr(func)-功能主体 和 Tools(class)-其他工具
+
 # 替换代码中被特殊标记了的表达式 ByGxxk
 # 格式：eval("[/表达式/]")
 
 import sys
-from git import Repo # GitPython
-
-projectPath="E:\\Can1425\\mPython-SeniorOS"
-# 根据具体情况编写
-projectRepo=Repo(projectPath)
-projectBranch=projectRepo.active_branch.name
-projectCommit=projectRepo.head.object.hexsha
-projectShortCommit=projectCommit[0:7]
-
-constData={
-    "version":"",
-    "screenshotMethod":"fast",
-    "branch":projectBranch,
-    "fullCommit":projectCommit,
-    "commit":projectShortCommit,
-
-}
-
-debugMessage={
-    "Core.DataCtrl.__init__":True
-}
-
+from BuildConfig import * # 此处按照逻辑上讲 Build.py已经做过一次校验 因此可以直接import
 class Tools:
     # 根据targetButton值生成一个纯or表达式
     # 例：输入：thab
