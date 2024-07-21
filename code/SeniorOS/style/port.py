@@ -6,10 +6,10 @@ import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import time
 
-def HomeStyleSet():
+def homeStyleSet():
     Set("home")
 
-def BarStyleSet():
+def barStyleSet():
     Set("bar")
 
 def Set(dataName:str):
@@ -17,16 +17,17 @@ def Set(dataName:str):
         oled.fill(0)
         DayLight.UITools()
         time.sleep_ms(5)
-        styleNum = eval('DayLight.ListOptions(Data.System.' + dataName + 'StyleName, 18, False, "风格选择")') + 1
+        styleNum = DayLight.ListOptions(Core.Data.Get("list", dataName + "StyleName"), 18, False, "风格选择") + 1
         options = DayLight.ListOptions(['预览风格', '风格详情', '立即应用'], 8, True, "None")
         if options == 0:
             Preview(styleNum, dataName)
         if options == 1:
             pass
         if options == 2:
-            Core.DataOperation.Write(dataName + "StyleNum", str(styleNum), False, False)
+            Core.Data.Write("text",(dataName + "StyleNum"), str(styleNum))
             return
     return
+
 
 def Preview(styleNum, dataName:str):
     while not button_a.is_pressed():
@@ -36,5 +37,5 @@ def Preview(styleNum, dataName:str):
         oled.DispChar('A-退出 TH-确认', DayLight.AutoCenter('A-退出 TH-确认'), 40, 1)
         oled.show()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
-            Core.DataOperation.Write(dataName + 'StyleNum', str(styleNum), False, False)
+            Core.Data.Write("text",(dataName + 'StyleNum'), str(styleNum))
             return

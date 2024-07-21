@@ -1,6 +1,4 @@
 import SeniorOS.system.core as Core
-import SeniorOS.data.main as Data
-import SeniorOS.apps.logo as Logo
 import SeniorOS.style.bar as BarStyle
 import ntptime
 import network
@@ -43,7 +41,7 @@ BarPage = {
 def app(appTitle:str):
     oled.fill(0)
     UITools()
-    BarPage.get(Data.System.barStyleNum)(appTitle)
+    BarPage.get(int(Core.Data.Get("text", "barStyleNum")))(appTitle)
 
 def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
     _start = _x
@@ -175,23 +173,39 @@ def message(content:str):
         content = content[1:] + content[0]
 
 class VastSea:
+    speed = int(Core.Data.Get("text", "VastSeaSpeed"))
     def Off():
         oled.fill(0)
         oled.show()
-        time.sleep_ms(Data.System.VastSeaSpeed * 90)
+        time.sleep_ms(VastSea.speed * 90)
         return
+    def Progressive(mode):
+        if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
+            if mode == True:
+                luminance = int(Core.Data.Get("text", "luminance"))
+                for count in range(VastSea.speed):
+                    luminance = luminance - luminance // VastSea.speed
+                    oled.contrast(luminance)
+                oled.fill(0)
+                UITools()
+            if mode == False:
+                luminance = int(Core.Data.Get("text", "luminance"))
+                for count in range(VastSea.speed):
+                    luminance = 0 + luminance // VastSea.speed
+                    oled.contrast(luminance)
+                UITools()
     class SeniorMove:
         def Line(nowX1:int, nowY1:int, nowX2:int, nowY2:int, newX1:int, newY1:int, newX2:int, newY2:int):
             oled.fill(0)
             oled.line(nowX1, nowY1, nowX2, nowY2, 1)
             oled.show()
-            if Data.System.VastSeaSwitch == 1:
-                for count in range(3):
+            if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
+                for count in range(VastSea.speed):
                     oled.line(nowX1, nowY1, nowX2, nowY2, 0)
-                    nowX1 = nowX1 + ((newX1-nowX1) // Data.System.VastSeaSpeed)
-                    nowY1 = nowY1 - ((nowY1-newY1) // Data.System.VastSeaSpeed + (newY1 - newY1//2))
-                    nowX2 = nowX2 + ((newX2-nowX2) // Data.System.VastSeaSpeed)
-                    nowY2 = nowY2 - ((nowY2-newY2) // Data.System.VastSeaSpeed + (newY2 - newY2//2))
+                    nowX1 = nowX1 + ((newX1-nowX1) // VastSea.speed)
+                    nowY1 = nowY1 - ((nowY1-newY1) // VastSea.speed + (newY1 - newY1//2))
+                    nowX2 = nowX2 + ((newX2-nowX2) // VastSea.speed)
+                    nowY2 = nowY2 - ((nowY2-newY2) // VastSea.speed + (newY2 - newY2//2))
                     oled.line(nowX1, nowY1, nowX2, nowY2, 1)
                     # oled.DispChar(str(nowX1), 0, 32, 1)
                     # oled.DispChar(str(nowY1), 0, 48, 1)
@@ -204,14 +218,14 @@ class VastSea:
             time.sleep_ms(200)
 
         def Text(text, nowX:int, nowY:int, newX:int, newY:int):
-            if Data.System.VastSeaSwitch == 1:
+            if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
                 oled.fill(0)
                 oled.DispChar(str(text), nowX, nowY)
                 oled.show()
-                for count in range(Data.System.VastSeaSpeed):
+                for count in range(VastSea.speed):
                     oled.fill_rect(0, nowY, 128, 16, 0)
-                    nowX = nowX + ((newX-nowX) // Data.System.VastSeaSpeed)
-                    nowY = nowY - ((nowY-newY) // Data.System.VastSeaSpeed + (newY - newY//2))
+                    nowX = nowX + ((newX-nowX) // VastSea.speed)
+                    nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
                     oled.DispChar(str(text), nowX, nowY)
                     # oled.DispChar(str(nowX), 0, 32, 1)
                     # oled.DispChar(str(nowY), 0, 48, 1)
@@ -223,8 +237,8 @@ class VastSea:
 
 def UITools():
     try:
-        oled.invert(Data.System.lightMode)
-        oled.contrast(Data.System.luminance)
+        oled.invert(int(Core.Data.Get("text", "lightMode")))
+        oled.contrast(int(Core.Data.Get("text", "luminance")))
     except:
         pass
 

@@ -1,13 +1,14 @@
 from mpython import wifi,oled
 from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 from mpython import button_a,button_b
-from SeniorOS.apps.port import *
+from SeniorOS.style.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import time
 
 import SeniorOS.fonts.misans
 import SeniorOS.fonts.misans_16
+import SeniorOS.fonts.HarmonyOS_sans_bold
 import font.dvsmb_21
 import font.dvsmb_12
 import font.digiface_21
@@ -31,4 +32,10 @@ def Style3():
     oled.fill(0)
     DayLight.DisplayFont(SeniorOS.fonts.misans, DayLight.UITime(True), 5, 10, False)
     DayLight.DisplayFont(SeniorOS.fonts.misans_16, (''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]])), 5, 35, False)
+    oled.show()
+#-----------------------------------------------------------------------------------#
+def Style4():
+    oled.fill(0)
+    DayLight.DisplayFont(SeniorOS.fonts.HarmonyOS_sans_bold, DayLight.UITime(True), 20, 20, False)
+    DayLight.DisplayFont(font.dvsmb_12, (''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]])), DayLight.AutoCenter((''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]]))), 45, False)
     oled.show()

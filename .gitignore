@@ -1,6 +1,5 @@
 .vscode
 .venv
-.vevn
 build
 tools/__pycache__
 tools/packs

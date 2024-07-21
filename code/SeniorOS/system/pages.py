@@ -2,15 +2,7 @@ from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
-import SeniorOS.style.home as HomeStyle
-import SeniorOS.data.main as Data
-import SeniorOS.data.map as Map
-#import framebuf
-#import font.dvsmb_21
 import urequests
-#import json
-#import math
-#import gc
 import ntptime
 import network
 from mpython import wifi,oled
@@ -28,7 +20,7 @@ wifi=wifi()
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
-    oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
+    oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
     oled.show()
     try:
         wifi.connectWiFi(ssid, password)
@@ -43,9 +35,9 @@ def ConfigureWLAN(ssid, password):
 def WifiPages():
     oled.fill(0)
     DayLight.VastSea.Off()
-    wifiNum = DayLight.ListOptions(Data.User.wifiName, 18, False, '请选择配置')
+    wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), 18, False, '请选择配置')
     oled.show()
-    ConfigureWLAN(Data.User.wifiName[wifiNum], Data.User.wifiPassword[wifiNum])
+    ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
 def CloudNotification():
     time.sleep(0.2)
@@ -79,6 +71,7 @@ def CloudNotification():
     return
 
 def SettingPanel():
+    import SeniorOS.data.map as Map
     time.sleep(0.2)
     while not button_a.is_pressed():
         options = DayLight.Select.Style1(['桌面风格', '电源选项', '日光模式','亮度调节', '释放内存'], 28, True, "设置面板")
@@ -87,13 +80,13 @@ def SettingPanel():
             pass
         else:
             Map.SettingPanel.get(options)()
-        DayLight.VastSea.Off()
         return
     return
 
 def Home():
+    import SeniorOS.data.map as Map
     while not eval("[/GetButtonExpr('thab')/]"):
-        Map.HomePage.get(Data.System.homeStyleNum)()
+        Map.HomePage.get(int(Core.Data.Get("text", "homeStyleNum")))()
         
     
     if eval("[/GetButtonExpr('ab',connector='and')/]"):
@@ -108,11 +101,11 @@ def Home():
             return True
 
     if button_a.is_pressed():
-        DayLight.VastSea.SeniorMove.Text("云端通知",-30,-50,20,-50)
+        DayLight.VastSea.SeniorMove.Text("云端通知",-10,-20,15,-20)
         CloudNotification()
         DayLight.VastSea.SeniorMove.Text("云端通知",5,4,-20,50)
     elif button_b.is_pressed():
-        DayLight.VastSea.SeniorMove.Text("设置面板",300,-50,-120,-50)
+        DayLight.VastSea.SeniorMove.Text("设置面板",148,-50,-50,-50)
         SettingPanel()
         DayLight.VastSea.SeniorMove.Text("设置面板",5,4,120,50)
     elif touchPad_T.is_pressed() and touchPad_H.is_pressed():
@@ -152,7 +145,7 @@ def select(options:list)->tuple:
 def About():
     oled.fill(0)
     while not button_a.is_pressed():
-        oled.Bitmap(16, 20, bytearray(Data.System.logo), 98, 20, 1)
+        oled.Bitmap(16, 20, bytearray(Core.Data.Get("text", "SeniorLogo")), 98, 20, 1)
         oled.show()
 
 def wlanscan():#定义扫描wifi函数
@@ -163,7 +156,7 @@ def wlanscan():#定义扫描wifi函数
 
 def choosewifi():
     oled.fill(0)
-    oled.DispChar("扫描wifi中,请稍等",0,0)
+    oled.DispChar("扫描 Wifi 中,请稍等",0,0)
     oled.show()
     wifilist = wlanscan()
     num=0
@@ -173,7 +166,7 @@ def choosewifi():
     oled.show()
     time.sleep(2)#经典
     oled.fill(0)
-    oled.DispChar("请输入您的WiFi密码",0,0)
+    oled.DispChar("请输入您的 WiFi 密码",0,0)
     oled.show()
     time.sleep(3)
     import network
@@ -184,7 +177,7 @@ def choosewifi():
         oled.fill(0)
         oled.DispChar("连接成功",0,0)
         oled.show()
-        open("/SeniorOS/data/wifi.fos",'a+').write("\n{},{}".format(wifilist[num],pwd))
+        open("/SeniorOS/data/userWifi.sros",'a+').write("\n{},{}".format(wifilist[num],pwd))
         return True
     except:
         oled.fill(0)

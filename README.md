@@ -26,11 +26,11 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 ││├main.mpy
 ││└port.mpy
 │├data
-││├variable
-││├lib.mpy
-││├main.py
+││├list.sros
+││├text.sros
 ││└map.mpy
 │├fonts
+││├HarmonyOS_sans_bold.mpy
 ││├misans.mpy
 ││└misans_16.mpy
 │├style
@@ -56,6 +56,7 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 目前该系统没有正式版本
 
 且现版本并不完善 并未发布官方编译版本 因此您需要自行编译
+
 ## 如何构建？
 
 本系统使用了专用的特殊工具以提高代码精简度/可读性，如果您对系统在本地仓库做了一定更改，并不能直接刷入至掌控版中
@@ -80,11 +81,15 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 ### 创建并激活虚拟环境
 
 ```bash
-python -m venv .venv
-.venv/Scripts/Activate.ps1
+# Windows 用户可以使用以下代码：
+.\Python\python.exe -m venv .venv
+# 请将 path 替换为 SeniorOS 在本地的仓库路径
+path\.venv\Scripts\Activate.ps1
 # 如果您使用cmd.exe作为终端 请使用以下代码：
-.venv/Scripts/activate.bat
-# Linux用户根据以上代码以此类推 可以使用以下代码：
+path\.venv\Scripts\activate.bat
+
+# Linux 用户根据以上代码以此类推 可以使用以下代码：
+python -m venv .venv
 source .venv/bin/activate
 ```
 > Tips: 在Linux上 脚本对应路径通常位于`.venv/bin/activate`
@@ -92,7 +97,9 @@ source .venv/bin/activate
 ### 安装所需模块
 
 ```bash
+pip.exe install -r package.txt
 pip install -r package.txt
+# 两者任选其一，如有提示，请跟随提示运行另外的代码
 ```
 
 ### 设置编译相关选项
@@ -107,9 +114,12 @@ pip install -r package.txt
 
 ### 构建
 
-非常简单 一句话即可：
+瞬息可就
+
 ```bash
+python.exe ./tools/Build.py
 python ./tools/Build.py
+# 两者任选其一
 ```
 
 将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可.

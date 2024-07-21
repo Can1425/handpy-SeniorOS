@@ -5,12 +5,13 @@ import network
 import gc
 import time
 import urequests
-import ujson
+import json
 from machine import unique_id
 from mpython import *
-import SeniorOS.data.main as Data
-# 适用于data下fos扩展名文件的信息读写操作
-# 将大部分使用了init_file write_file类函数而只对data文件夹下的数据作读写的代码替换为此处代码
+
+# 适用于 data/ 下 .sros 扩展名文件的信息读写操作
+# 将大部分使用了 init_file write_file 类函数而只对 data 文件夹下的数据作读写的代码替换为此处代码
+
 # 初始化函数
 class DataCtrl:
     # 初始化函数，传入文件夹路径
@@ -24,23 +25,66 @@ class DataCtrl:
                 eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.sros')])
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data)
+
     # 获取数据
-    def Get(self,dataName):
+    def GetOriginal(self,dataName):
         return self.data[dataName]
+    
     # 写入数据
-    def Write(self,dataName,dataValue,singleUseSet=False,needReboot=False):
+    def WriteOriginal(self,dataName,dataValue,singleUseSet=False,needReboot=False):
         if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
             self.data[dataName]=dataValue
             return
         with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
             f.write(dataValue)
         if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
-            self.data[dataName]=dataValue  
-        try:
-            exec("Data.System." + dataName + "=" + dataValue)
-        except:
-            exec("Data.User." + dataName + "=" + dataValue)      
-DataOperation=DataCtrl("/SeniorOS/data/variable/")
+            self.data[dataName]=dataValue
+
+    def Get(self, controls, dataName):
+        if controls == "text":
+            ConfigRead = Data.GetOriginal("text")
+            Config=ConfigRead.split('\n')
+            data=[]
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+                data.append(TSList1[1])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            return data[index]
+        if controls == "list":
+            ConfigRead = Data.GetOriginal("list")
+            Config=ConfigRead.split('\n')
+            data=[]
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+                data.append(TSList1[1])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            return data[index].split(';')
+    def Write(self, controls, dataName, dataValue):
+        if controls == "text":
+            ConfigRead = Data.GetOriginal("text")
+            Config=ConfigRead.split('\n')
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            Config[index] = dataName + ":" + dataValue
+            
+            with open(self.dataFolderPath + 'text' + '.sros','w') as f:
+                f.write('\n'.join(Config))
+                print(Config)
+            with open(self.dataFolderPath + 'text' + '.sros','r') as f:
+                print(f.read())
+            return
+
+Data=DataCtrl("/SeniorOS/data/")
 
 # 文件/路径 格式工厂
 class File_Path_Factory:

@@ -1,7 +1,6 @@
 from mpython import *
 import time,uos
 import SeniorOS.system.core as Core
-import SeniorOS.data.main as Data
 import audio
 
 audio.stop()
@@ -25,7 +24,7 @@ while True:
         oled.show()
         time.sleep(0.5)
         import gc;gc.enable()
-        oled.contrast(Data.System.luminance)
+        oled.contrast(int(Core.Data.Get("text", "luminance")))
         import SeniorOS.system.main
         break
     elif button_b.is_pressed():
