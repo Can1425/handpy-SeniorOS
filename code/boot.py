@@ -11,14 +11,14 @@ def RenameCode():
     uos.rename('/main.py.bak','/main.py')
 while True:
     oled.fill(0)
-    oled.DispChar('SeniorOS 启动选择器',0,0)
+    oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,0,0)
     oled.DispChar('A - SeniorOS',0,16)
     oled.DispChar('B - main.py',0,32)
     oled.DispChar("TH - REPL",0,48)
     oled.show()
     while not eval("[/GetButtonExpr('thab')/]"):
         pass
-    if button_a.is_pressed():
+    if eval("[/GetButtonExpr('a')/]"):
         oled.fill(0)
         oled.DispChar('启动至 SeniorOS',0,0)
         oled.show()
@@ -27,7 +27,7 @@ while True:
         oled.contrast(int(Core.Data.Get("text", "luminance")))
         import SeniorOS.system.main
         break
-    elif button_b.is_pressed():
+    elif eval("[/GetButtonExpr('b')/]"):
         oled.fill(0)
         oled.DispChar('启动至 main.py',0,0)
         oled.show()

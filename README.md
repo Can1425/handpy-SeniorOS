@@ -4,6 +4,8 @@
 
 [官网/文档](https://senior.stfp.site/)
 
+> Tips: 该文档暂未更新，请以当前版本代码以及以下简要介绍操作
+
 ![SeniorOS](https://senior.stfp.site/assets/senior.jpg)
 
 ## 关于 handpy(mpython)/掌控板
@@ -27,8 +29,7 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 ││└port.mpy
 │├data
 ││├list.sros
-││├text.sros
-││└map.mpy
+││└text.sros
 │├fonts
 ││├HarmonyOS_sans_bold.mpy
 ││├misans.mpy
@@ -104,22 +105,21 @@ pip install -r package.txt
 
 ### 设置编译相关选项
 
-初次运行`tools/Build.py` 会提示未配置配置文件 此时Build.py会自动释放文件`tools/BuildConfig.py`
-
 您需要根据您的需求修改`tools/BuildConfig.py`中的配置项
 
 请**特别注意** `projectPath` ，此项用于识别编译时仓库的环境，应当指向该仓库的根目录
-
-> Tips: BuildConfig.py不会被上传到仓库
 
 ### 构建
 
 瞬息可就
 
 ```bash
-python.exe ./tools/Build.py
+# Windows 用户可以使用以下代码：（两者任选其一）
+python.exe ./tools/Win_Build.py
+python ./tools/Win_Build.py
+
+# Linux 用户可以使用以下代码：
 python ./tools/Build.py
-# 两者任选其一
 ```
 
 将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可.

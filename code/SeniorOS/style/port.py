@@ -13,7 +13,7 @@ def barStyleSet():
     Set("bar")
 
 def Set(dataName:str):
-    while not button_a.is_pressed():
+    while not eval("[/GetButtonExpr('a')/]"):
         oled.fill(0)
         DayLight.UITools()
         time.sleep_ms(5)
@@ -30,7 +30,7 @@ def Set(dataName:str):
 
 
 def Preview(styleNum, dataName:str):
-    while not button_a.is_pressed():
+    while not eval("[/GetButtonExpr('a')/]"):
         exec("from " + dataName + " import *")
         exec(str(styleNum) + "()")
         oled.DispChar('正在预览', DayLight.AutoCenter('正在预览'), 30, 1)

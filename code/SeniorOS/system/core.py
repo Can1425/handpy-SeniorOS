@@ -1,11 +1,14 @@
+print(eval("[/Const('systemRunLog')/]") + "system/core.mpy")
 import time
 import os
+import sys
 import framebuf
 import network
 import gc
 import time
 import urequests
 import json
+import SeniorOS
 from machine import unique_id
 from mpython import *
 
@@ -18,18 +21,18 @@ class DataCtrl:
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
+        print(eval("[/Const('systemRunLog')/]") + "SystemData 初始化")
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.sros')])
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.strip('.sros')]=f.read().strip('\r')
                 eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.sros')])
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data)
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
 
     # 获取数据
     def GetOriginal(self,dataName):
         return self.data[dataName]
-    
     # 写入数据
     def WriteOriginal(self,dataName,dataValue,singleUseSet=False,needReboot=False):
         if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
@@ -37,6 +40,7 @@ class DataCtrl:
             return
         with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
             f.write(dataValue)
+            self.data[dataName]=dataValue
         if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
             self.data[dataName]=dataValue
 
@@ -52,7 +56,7 @@ class DataCtrl:
                 data.append(TSList1[1])
             try: index = TSList2.index(dataName)
             except: index = 0
-            return data[index]
+            return data[index].strip("\r")
         if controls == "list":
             ConfigRead = Data.GetOriginal("list")
             Config=ConfigRead.split('\n')
@@ -79,6 +83,7 @@ class DataCtrl:
             
             with open(self.dataFolderPath + 'text' + '.sros','w') as f:
                 f.write('\n'.join(Config))
+                self.data[controls]='\n'.join(Config)
                 print(Config)
             with open(self.dataFolderPath + 'text' + '.sros','r') as f:
                 print(f.read())
@@ -168,24 +173,6 @@ class Screenshot:
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
 
-class BatteryLevelFetcher:
-    """
-    获取电池剩余电量函数，存储当前电池剩余电量的字符串形式。
-    """
-    def __init__(self):
-        self.bay_rvol = 3.3  # 假设这个是固定的数值
-        self.bay_cvol = self.fetch_battery_level()  # 假设这个是通过某个方法获取的数值
-        self.battery_level = None
-        self.calculate_battery_level()
-    def fetch_battery_level(self):
-        return parrot.get_battery_level()  # 假设这个是通过某个方法获取的数值
-    def calculate_battery_level(self):
-        if self.bay_cvol is not None:
-            bay_rem = (self.bay_cvol / 1000) / self.bay_rvol * 100
-            self.battery_level = "{:.1f}".format(bay_rem)
-        else:
-            self.battery_level = None
-
 def Tree(path="/",prt=print,_tabs=0):
     lst=os.listdir(path)
     dirs=[]
@@ -206,3 +193,19 @@ def Tree(path="/",prt=print,_tabs=0):
         prt("│"*_tabs+lk+i)
         if n<ldirs:
             Tree(path+'/'+i,prt,_tabs+1)
+
+class ModuleRunner:
+    def __init__(self, modulePath):
+        # 对 modulePath 进行处理，意味着你只需要填写模块所在的目录名称
+        self.modulePath = eval("[/Const('systemName')/]") + '.' + modulePath +'.'
+    def Load(self, moduleName, print=False):
+        moduleName = self.modulePath + moduleName
+        # 动态加载模块
+        module = __import__(moduleName, globals(), locals(), -1)
+        # print(module)
+        if functionName == None:
+            pass
+        else:
+            # print(functionName)
+    def Run(self, moduleName, functionName=None):
+            eval(moduleName + '.' + functionName + "()", globals(), locals())

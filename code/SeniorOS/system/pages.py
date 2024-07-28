@@ -1,3 +1,4 @@
+print(eval("[/Const('systemRunLog')/]") + "system/pages.mpy")
 from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
@@ -25,7 +26,6 @@ def ConfigureWLAN(ssid, password):
     try:
         wifi.connectWiFi(ssid, password)
         ntptime.settime(8, "time.windows.com")
-        DayLight.message("Welcome to SeniorOS")
         time.sleep(2)
         return True
     except:
@@ -57,12 +57,12 @@ def CloudNotification():
         return
     except Exception as e:
         print(e)
-        while not button_a.is_pressed():
+        while not eval("[/GetButtonExpr('a')/]"):
             oled.DispChar('发生了未知错误', 5, 18, 2)
             oled.DispChar(str(e), 5, 34,auto_return=True)
             oled.show()
         return
-    while not button_a.is_pressed():
+    while not eval("[/GetButtonExpr('a')/]"):
         DayLight.app('云端通知')
         oled.DispChar(notifications[1], 5, 18)
         oled.DispChar(notifications[2], 5, 32)
@@ -71,40 +71,18 @@ def CloudNotification():
     return
 
 def SettingPanel():
-    import SeniorOS.data.map as Map
-    time.sleep(0.2)
-    while not button_a.is_pressed():
-        options = DayLight.Select.Style1(['桌面风格', '电源选项', '日光模式','亮度调节', '释放内存'], 28, True, "设置面板")
-        DayLight.VastSea.Off()
-        if options == None:
-            pass
-        else:
-            Map.SettingPanel.get(options)()
-        return
-    return
+    pass
 
 def Home():
-    import SeniorOS.data.map as Map
     while not eval("[/GetButtonExpr('thab')/]"):
-        Map.HomePage.get(int(Core.Data.Get("text", "homeStyleNum")))()
-        
-    
-    if eval("[/GetButtonExpr('ab',connector='and')/]"):
-        oled.fill(0)
-        DayLight.app('退出确认')
-        oled.DispChar("你同时按下了AB",5,18)
-        oled.DispChar("将回到启动选择器",5,32)
-        oled.DispChar("同时按下PN确认",0,45)
-        oled.show()
-        while not eval("[/GetButtonExpr('pythonab')/]"):pass
-        if eval("[/GetButtonExpr('pn')/]"):
-            return True
+        Module = Core.ModuleRunner('style')
+        Module.Load('home', 'Style' + Core.Data.Get("text", "homeStyleNum"))
 
-    if button_a.is_pressed():
+    if eval("[/GetButtonExpr('a')/]"):
         DayLight.VastSea.SeniorMove.Text("云端通知",-10,-20,15,-20)
         CloudNotification()
         DayLight.VastSea.SeniorMove.Text("云端通知",5,4,-20,50)
-    elif button_b.is_pressed():
+    elif eval("[/GetButtonExpr('b')/]"):
         DayLight.VastSea.SeniorMove.Text("设置面板",148,-50,-50,-50)
         SettingPanel()
         DayLight.VastSea.SeniorMove.Text("设置面板",5,4,120,50)
@@ -144,7 +122,7 @@ def select(options:list)->tuple:
 
 def About():
     oled.fill(0)
-    while not button_a.is_pressed():
+    while not eval("[/GetButtonExpr('a')/]"):
         oled.Bitmap(16, 20, bytearray(Core.Data.Get("text", "SeniorLogo")), 98, 20, 1)
         oled.show()
 
@@ -154,7 +132,7 @@ def wlanscan():#定义扫描wifi函数
     wlan.active(True)#打开
     return [i[0].decode() for i in network.WLAN().scan()]#返回
 
-def choosewifi():
+def Choosewifi():
     oled.fill(0)
     oled.DispChar("扫描 Wifi 中,请稍等",0,0)
     oled.show()
@@ -177,10 +155,44 @@ def choosewifi():
         oled.fill(0)
         oled.DispChar("连接成功",0,0)
         oled.show()
-        open("/SeniorOS/data/userWifi.sros",'a+').write("\n{},{}".format(wifilist[num],pwd))
+        # open("/SeniorOS/data/userWifi.sros",'a+').write("\n{},{}".format(wifilist[num],pwd))
         return True
     except:
         oled.fill(0)
         oled.DispChar("连接失败",0,0)
         oled.show()
         return False
+    
+def Collect():
+    oled.fill(0)
+    DayLight.UITools()
+    try:
+        oled.DispChar(str('请稍等'), 5, 5, 1)
+        time.sleep_ms(5)
+        oled.DispChar(str('尝试进行清理'), 5, 18, 1)
+        oled.show()
+        Core.FullCollect()
+        oled.DispChar(str('成功'), 5, 45, 1)
+        time.sleep_ms(5)
+        oled.show()
+        return True
+    except:
+        oled.DispChar(str('失败'), 5, 45, 1)
+        oled.show()
+
+def Time():
+    DayLight.UITools()
+    try:
+        oled.fill(0)
+        oled.DispChar(str('请稍等'), 5, 5, 1)
+        time.sleep_ms(5)
+        oled.DispChar(str('尝试进行时间同步'), 5, 18, 1)
+        oled.show()
+        ntptime.settime(8, "time.windows.com")
+        oled.DispChar(str('成功'), 5, 45, 1)
+        time.sleep_ms(5)
+        oled.show()
+        return True
+    except:
+        oled.DispChar(str('失败'), 5, 45, 1)
+        oled.show()

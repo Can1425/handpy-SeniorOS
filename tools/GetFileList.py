@@ -21,6 +21,6 @@ def GetMD5List(path):
     return dict(zip(tree,md5List))
 
 if __name__=="__main__":
-    tree=ScanFile(input("给个路径\n"))
+    tree=ScanFile(input("请给出路径\n"))
     md5List=GetMD5(tree)
     print(dict(zip(tree,md5List)))

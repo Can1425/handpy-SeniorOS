@@ -1,3 +1,4 @@
+print(eval("[/Const('systemRunLog')/]") + "system/update.mpy")
 import uhashlib,os,requests
 
 # lambda: 值查找键

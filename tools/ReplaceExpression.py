@@ -26,11 +26,17 @@ class Tools:
         return f"({f' {connector} '.join(targetButtonList)})"
     def Const(name):
         global constData
-        return constData[name]
+        return "'" + constData[name] + "'"
     def EnableDebugMsg(id):
         global debugMessage
         return "pass" if debugMessage[id] else "#" 
     hashtag="#"
+    def Language(name):
+        global Language,Chineses,English
+        if Language == "Chinese":
+            return "'" + Chineses[name] + "'"
+        elif Language == "English":
+            return "'" + English[name] + "'"
 
 def ReplaceExpr(inputPath,outputPath=""):
     if outputPath=="":outputPath=inputPath
@@ -43,11 +49,15 @@ def ReplaceExpr(inputPath,outputPath=""):
             exprStart=code[line].index("[/")+2  # +2是因为 string.index 返回的是起始位置 需要+ len("[/") 才行
             exprEnd=code[line].index("/]")      # 防止各位看着有点晕 拆分来写 顺手加个日志 反正电脑端性能无所谓
             exprResult=eval(f"Tools.{code[line][exprStart:exprEnd]}")
-            print(f"将{code[line][exprStart-8:exprEnd+4]}替换为{exprResult}")
+            print(f"将 {code[line][exprStart-8:exprEnd+4]} 替换为 {exprResult}")
 
-            tmpVar=list(code[line])  # 用于兼容神比Python的不可变类型
+            tmpVar=list(code[line])  # 用于兼容Python的不可变类型
             tmpVar[exprStart-8:exprEnd+4]=exprResult # 等号左侧是从eval函数开始到结束的需要替换的部分 
             code[line]="".join(tmpVar)
+    # 写入
+    with open(outputPath, "w", encoding="utf-8") as f:
+        f.write("\n".join(code))
+
     # 写入
     with open(outputPath, "w", encoding="utf-8") as f:
         f.write("\n".join(code))

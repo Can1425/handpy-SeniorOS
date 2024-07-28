@@ -2,8 +2,8 @@ from mpython import *
 import time
 import SeniorOS.apps.logo as logo
 import SeniorOS.system.daylight as DayLight
-from SeniorOS.apps.main import *
 import SeniorOS.system.core as Core
+import sys
 
 appNum = 0
 operationalJudgment = 0
@@ -83,7 +83,7 @@ def App():
     oled.Bitmap(select1X, 10, logo.App1, 25, 25, 1)
     oled.Bitmap(select2X, 10, logo.App0, 25, 25, 1)
     oled.show()
-    while not (button_a.is_pressed() or touchpad_t.is_pressed() and touchpad_h.is_pressed()):
+    while not (eval("[/GetButtonExpr('a')/]") or touchpad_t.is_pressed() and touchpad_h.is_pressed()):
         oled.hline(4, 46, 126, 1)
         oled.show()
         oled.DispChar(str('〔'), 30, 20, 1)
@@ -95,7 +95,10 @@ def App():
         AppDynamic()
         if touchPad_T.is_pressed() and touchPad_H.is_pressed():
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
-            exec(str("App"+ str(appNum) +".main()"))
+            Module = Core.ModuleRunner('apps')
+            Module.Load('app' + str(appNum))
+            del sys.modules[eval("[/Const('systemName')/]") + '.apps.app' + str(appNum)]
+            # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
             if operationalJudgment == 0:
                 try:

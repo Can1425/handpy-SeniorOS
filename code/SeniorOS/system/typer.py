@@ -1,3 +1,4 @@
+print(eval("[/Const('systemRunLog')/]") + "system/typer.mpy")
 from mpython import *
 import time
 NL=[
@@ -28,7 +29,7 @@ def typeOfNL():
         elif touchpad_h.is_pressed():y=3;break
         elif touchpad_o.is_pressed():y=4;break
         elif touchpad_n.is_pressed():y=5;break                                                   
-        if button_b.is_pressed():
+        if eval("[/GetButtonExpr('b')/]"):
             if up == False:up = True
             else:up=False
         if up==True:
@@ -48,7 +49,7 @@ def typeOfNL():
         elif touchpad_h.is_pressed():x=3;break
         elif touchpad_o.is_pressed():x=4;break
         elif touchpad_n.is_pressed():x=5;break
-        if button_b.is_pressed():
+        if eval("[/GetButtonExpr('b')/]"):
             if up == False:up = True
             else:up=False
         if up==True:
@@ -92,7 +93,7 @@ def typeOfPM():
     return PM[y][x]
 def main():
     text = ''
-    while not button_a.is_pressed():
+    while not eval("[/GetButtonExpr('a')/]"):
         oled.fill(0)
         oled.DispChar(text, 0, 0)
         oled.DispChar("字母/数字(P)",0,16)
