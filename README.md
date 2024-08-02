@@ -1,89 +1,53 @@
 # 苍旻操作系统｜SeniorOS
 
-轻量，强大的 mPython 操作系统
+轻量，强大的 handpy 操作系统
 
 [官网/文档](https://senior.stfp.site/)
 
-![新春特别涂装](gitee_logo.jpg)
+> Tips: 该文档暂未更新，请以当前版本代码以及以下简要介绍操作
 
-## 关于 mPython/掌控板
+![SeniorOS](https://senior.stfp.site/assets/senior.jpg)
 
-mPython掌控是一块MicroPython微控制器板。掌控板是创客教育专家委员会、猫友汇、广大一线老师共同提出需求并与创客教育行业优秀企业代表共同参与研发的教具、学具，是一块为教育而生的开源硬件，也是一个公益项目。
+## 关于 handpy(mpython)/掌控板
+
+掌控板是一块 MicroPython 微控制器板。掌控板是创客教育专家委员会、猫友汇、广大一线老师共同提出需求并与创客教育行业优秀企业代表共同参与研发的教具、学具，是一块为教育而生的开源硬件，也是一个公益项目。
 
 ## 关于 SeniorOS
 
-SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操作系统，旨在致力于构建完整的 mPython 生态体验。SeniorOS 也是一个为 mPython 开发者们准备好的全新平台，这里优化了大量官方固件中缺失的体验与功能，向 mPython 硬件的极限靠近。SeniorOS 不是 mPython 中的 MIUI ，也不会成为 mPython 中的 MIUI ，为了保证各位开发者能将程序毫发无损的迁移至 SeniorOS ，我们并未对固件做破坏性改动或删除重要功能，这将是日后， SeniorOS 生态强健有力的基础。
+SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作系统，旨在致力于构建更完整的硬件体验。SeniorOS 也是一个为开发者们准备好的平台，这里聚集了大量的操作与功能。为了保证各位开发者能将程序毫发无损的迁移至 SeniorOS ，我们并未对固件做破坏性改动或删除重要功能。
 
 ## SeniorOS 现有版本文件目录
-
-### 编译前
-
-```
-/code
-
-│  boot.py  # SeniorOS 启动选择器，用于引导系统/用户程序运行
-│
-└─SeniorOS  # System
-        |
-        ├─system  # 系统核心代码
-        │      core.py  # 系统可调用代码
-        │      pages.py  # 系统可调用页面
-        │      main.py  # 系统引导后最先运行的代码
-        │      ui.py  # 日光引擎
-        │
-        ├─data  # 系统数据
-        │      brightness.fos  # 系统显示亮度
-        |      fileList.json  # 系统更新文件
-        │      volume.fos  # 系统音量
-        │      light.fos  # 系统日光/黑夜模式数据存放
-        |      wifi.fos  # WIFI 预配置文件
-        │
-        ├─apps # 本地预置应用
-        |         logo.py  # 软件图标
-        |  └─ app_0  # 系统设置
-        |           core.py  # 核心代码
-        |           main.py  # 主体
-        |      
-        |  └─ app_1  # 线上插件
-        |           main  # 主体
-        │
-        ├─fonts  # 系统字体
-        │      quantum.py  # 桌面时间字体
-```
 
 ### 编译后
 
 ```
-/build
+/build(刷入掌控版后在掌控版中为 /)
+├SeniorOS
+│├apps
+││├logo.mpy
+││├main.mpy
+││└port.mpy
+│├data
+││├list.sros
+││└text.sros
+│├fonts
+││├HarmonyOS_sans_bold.mpy
+││├misans.mpy
+││└misans_16.mpy
+│├style
+││├bar.mpy
+││├home.mpy
+││├lib.py
+││└port.mpy
+│├system
+││├core.mpy
+││├daylight.mpy
+││├main.mpy
+││├typer.mpy
+││├update.mpy
+││└pages.mpy
+└boot.py
 
-│  boot.py  # SeniorOS 启动选择器，用于引导系统/用户程序运行
-│
-└─SeniorOS  # System
-        |
-        ├─system  # 系统核心代码
-        │      core.mpy  # 系统可调用代码
-        │      pages.mpy  # 系统可调用页面
-        │      main.mpy  # 系统引导后最先运行的代码
-        │      ui.mpy  # 日光引擎
-        │
-        ├─data  # 系统数据
-        │      brightness.fos  # 系统显示亮度
-        |      fileList.json  # 系统更新文件
-        │      volume.fos  # 系统音量
-        │      light.fos  # 系统日光/黑夜模式数据存放
-        |      wifi.fos  # WIFI 预配置文件
-        │
-        ├─apps # 本地预置应用
-        |         logo.py  # 软件图标
-        |  └─ app_0  # 系统设置
-        |           core.py  # 核心代码
-        |           main.py  # 主体
-        |      
-        |  └─ app_1  # 线上插件
-        |           main  # 主体
-        │
-        ├─fonts  # 系统字体
-        │      quantum.mpy  # 桌面时间字体
 ```
 
 # 开发注意事项
@@ -92,6 +56,7 @@ SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操�
 
 目前该系统没有正式版本
 
+且现版本并不完善 并未发布官方编译版本 因此您需要自行编译
 
 ## 如何构建？
 
@@ -101,20 +66,59 @@ SeniorOS 是运行在 mPython （掌控版）平台上的轻量级多文件操�
 
 但在此之前，您需要进行一些简单的环境配置
 
+### 基础环境
+
+您需要具有以下工具 以便自行编译
+
+- Python环境(不应低于3.8)
+- Python-pip和本项目所要求的模块(模块配置请详见后文)
+
+如您需要更进一步 编译历史版本/参与开发 您需要以下工具
+
+- Git
+
+> Tips: 推荐在 Ubuntu22.04(WSL) 下使用 VSCode 进行开发
+
 ### 创建并激活虚拟环境
 
-快速环境搭建工具由 @CycleBai 提供。
 ```bash
-# 如果是 Linux 系统：
-bash initBuildEnv.sh
-# 如果是 Windows 系统：
-./initBuildEnv.bat
+# Windows 用户可以使用以下代码：
+.\Python\python.exe -m venv .venv
+# 请将 path 替换为 SeniorOS 在本地的仓库路径
+path\.venv\Scripts\Activate.ps1
+# 如果您使用cmd.exe作为终端 请使用以下代码：
+path\.venv\Scripts\activate.bat
+
+# Linux 用户根据以上代码以此类推 可以使用以下代码：
+python -m venv .venv
+source .venv/bin/activate
 ```
+> Tips: 在Linux上 脚本对应路径通常位于`.venv/bin/activate`
+
+### 安装所需模块
+
+```bash
+pip.exe install -r package.txt
+pip install -r package.txt
+# 两者任选其一，如有提示，请跟随提示运行另外的代码
+```
+
+### 设置编译相关选项
+
+您需要根据您的需求修改`tools/BuildConfig.py`中的配置项
+
+请**特别注意** `projectPath` ，此项用于识别编译时仓库的环境，应当指向该仓库的根目录
 
 ### 构建
 
-非常简单 一句话即可：
+瞬息可就
+
 ```bash
+# Windows 用户可以使用以下代码：（两者任选其一）
+python.exe ./tools/Win_Build.py
+python ./tools/Win_Build.py
+
+# Linux 用户可以使用以下代码：
 python ./tools/Build.py
 ```
 

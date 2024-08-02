@@ -1,54 +1,95 @@
+print(eval("[/Const('systemRunLog')/]") + "system/core.mpy")
+import time
 import os
+import sys
 import framebuf
 import network
 import gc
 import time
+import urequests
+import json
+import SeniorOS
 from machine import unique_id
 from mpython import *
 
+# 适用于 data/ 下 .sros 扩展名文件的信息读写操作
+# 将大部分使用了 init_file write_file 类函数而只对 data 文件夹下的数据作读写的代码替换为此处代码
+
+# 初始化函数
 class DataCtrl:
-    """
-    控制数据操作的类，支持读取和写入特定格式文件（.fos）。
+    # 初始化函数，传入文件夹路径
+    def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
+        self.data={}
+        self.dataFolderPath=dataFolderPath
+        print(eval("[/Const('systemRunLog')/]") + "SystemData 初始化")
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.sros')])
+        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
+            with open(dataFolderPath+i,'r',encoding='utf-8')as f:
+                self.data[i.strip('.sros')]=f.read().strip('\r')
+                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.sros')])
+        # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
 
-    Attributes:
-        data (dict): 存储数据的字典。
-        dataFolderPath (str): 数据文件夹路径。
-
-    Methods:
-        __init__(dataFolderPath: str): 初始化函数，读取所有 .fos 文件到内存。
-        Get(dataName: str) -> str: 根据数据名称获取数据值。
-        Write(dataName: str, dataValue: str, singleUseSet: bool = False, needReboot: bool = False) -> None:
-            写入数据到文件，并更新内存中的数据值。
-    """
-    def __init__(self, dataFolderPath: str):
-        self.data = {}
-        self.dataFolderPath = dataFolderPath
-        for file_name in os.listdir(dataFolderPath):
-            if file_name.endswith('.fos'):
-                with open(os.path.join(dataFolderPath, file_name), 'r', encoding='utf-8') as f:
-                    self.data[file_name[:-4]] = f.read().strip('\r')
-
-    def Get(self, dataName: str) -> str:
-        """根据数据名称获取数据值。"""
+    # 获取数据
+    def GetOriginal(self,dataName):
         return self.data[dataName]
-
-    def Write(self, dataName: str, dataValue: str, singleUseSet: bool = False, needReboot: bool = False) -> None:
-        """
-        写入数据到文件，并更新内存中的数据值。
-
-        Args:
-            dataName (str): 数据名称。
-            dataValue (str): 数据值。
-            singleUseSet (bool, optional): 是否只是临时设置数据，不写入文件。默认为False。
-            needReboot (bool, optional): 是否需要重启后生效。默认为False。
-        """
-        if singleUseSet:
-            self.data[dataName] = dataValue
+    # 写入数据
+    def WriteOriginal(self,dataName,dataValue,singleUseSet=False,needReboot=False):
+        if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
+            self.data[dataName]=dataValue
             return
-        with open(os.path.join(self.dataFolderPath, dataName + '.fos'), 'w', encoding='utf-8') as f:
+        with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
             f.write(dataValue)
-        if not needReboot:
-            self.data[dataName] = dataValue
+            self.data[dataName]=dataValue
+        if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
+            self.data[dataName]=dataValue
+
+    def Get(self, controls, dataName):
+        if controls == "text":
+            ConfigRead = Data.GetOriginal("text")
+            Config=ConfigRead.split('\n')
+            data=[]
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+                data.append(TSList1[1])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            return data[index].strip("\r")
+        if controls == "list":
+            ConfigRead = Data.GetOriginal("list")
+            Config=ConfigRead.split('\n')
+            data=[]
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+                data.append(TSList1[1])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            return data[index].split(';')
+    def Write(self, controls, dataName, dataValue):
+        if controls == "text":
+            ConfigRead = Data.GetOriginal("text")
+            Config=ConfigRead.split('\n')
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            Config[index] = dataName + ":" + dataValue
+            
+            with open(self.dataFolderPath + 'text' + '.sros','w') as f:
+                f.write('\n'.join(Config))
+                self.data[controls]='\n'.join(Config)
+                print(Config)
+            with open(self.dataFolderPath + 'text' + '.sros','r') as f:
+                print(f.read())
+            return
+
+Data=DataCtrl("/SeniorOS/data/")
 
 class File_Path_Factory:
     """
@@ -185,4 +226,41 @@ class Screenshot:
                     buffer[x // 8 + y * 16] |= oledObj.pixel(x, y) << 7 - (x % 8)
             with open('screenshot.pbm', 'wb') as f:
                 f.write(b'P4\n128 64\n')
-                f.write(buffer)
+                f.write(buffer)  # 将缓冲区数据写入PBM文件
+
+def Tree(path="/",prt=print,_tabs=0):
+    lst=os.listdir(path)
+    dirs=[]
+    files=[]
+    l=0
+    for i in lst:
+        pti=path+'/'+i
+        if os.stat(pti)[0] & 0x4000:
+            dirs.append(i)
+        else:
+            files.append(i)
+        l+=1
+    lk="├"
+    ldirs=len(dirs)
+    for n,i in enumerate(dirs+files,1):
+        if n==l:
+            lk="└"
+        prt("│"*_tabs+lk+i)
+        if n<ldirs:
+            Tree(path+'/'+i,prt,_tabs+1)
+
+class ModuleRunner:
+    def __init__(self, modulePath):
+        # 对 modulePath 进行处理，意味着你只需要填写模块所在的目录名称
+        self.modulePath = eval("[/Const('systemName')/]") + '.' + modulePath +'.'
+    def Load(self, moduleName, print=False):
+        moduleName = self.modulePath + moduleName
+        # 动态加载模块
+        module = __import__(moduleName, globals(), locals(), -1)
+        # print(module)
+        if functionName == None:
+            pass
+        else:
+            # print(functionName)
+    def Run(self, moduleName, functionName=None):
+            eval(moduleName + '.' + functionName + "()", globals(), locals())

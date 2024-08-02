@@ -11,37 +11,23 @@ def RenameCode():
     uos.rename('/main.py.bak','/main.py')
 while True:
     oled.fill(0)
-    oled.DispChar('SeniorOS 启动选择器',0,0)
+    oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,0,0)
     oled.DispChar('A - SeniorOS',0,16)
     oled.DispChar('B - main.py',0,32)
     oled.DispChar("TH - REPL",0,48)
     oled.show()
     while not eval("[/GetButtonExpr('thab')/]"):
         pass
-    if button_a.is_pressed():
+    if eval("[/GetButtonExpr('a')/]"):
         oled.fill(0)
         oled.DispChar('启动至 SeniorOS',0,0)
         oled.show()
         time.sleep(0.5)
-        from mpython import wifi
-        from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-        from mpython import button_a,button_b
         import gc;gc.enable()
-        global runtimeDict
-        runtimeDict={
-                "oled":oled,"wifi":wifi(),
-                "touchPad_P":touchPad_P,"touchPad_Y":touchPad_Y,"touchPad_H":touchPad_H,"touchPad_O":touchPad_O,"touchPad_N":touchPad_N,"touchPad_T":touchPad_T,
-                "button_a":button_a,"button_b":button_b,
-                "ntptime":__import__('ntptime'),
-                "time":time,
-                "gc":gc,
-                "os":uos
-        }
-        runtimeDict["runtimeDict"]=runtimeDict # 因为这玩意是要一直传下去的 总不能互相干扰对方命名空间
-        oled.contrast(int(Core.Data.Get('luminance')))
+        oled.contrast(int(Core.Data.Get("text", "luminance")))
         import SeniorOS.system.main
         break
-    elif button_b.is_pressed():
+    elif eval("[/GetButtonExpr('b')/]"):
         oled.fill(0)
         oled.DispChar('启动至 main.py',0,0)
         oled.show()
