@@ -1,4 +1,4 @@
-from mpython import *
+from SeniorOS.system.devlib import *
 import time
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
@@ -13,7 +13,7 @@ def AppDynamic():
     global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment
     if eval("[/GetButtonExpr('py')/]"):
         operationalJudgment = 0
-        appNum += 1
+        appNum = appNum + 1
         if appNum + 1 > len(List):
             appNum = len(List) - 1
             return
@@ -30,10 +30,10 @@ def AppDynamic():
             oled.fill_rect(0, 0, 128, 43, 0)
             try:oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
             except:pass
-            oled.Bitmap(select1X, 10, Logo[appNum], 25, 25, 1)
+            oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
             try:
-                oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
-                oled.Bitmap(select1X, 10, Logo[appNum-2], 25, 25, 1)
+                oled.Bitmap(select3X, 10, Logo[appNum-1], 25, 25, 1)
+                oled.Bitmap(select4X, 10, Logo[appNum-2], 25, 25, 1)
             except:pass
             oled.fill_rect(0, 47, 128, 18, 0)
             oled.show()
@@ -58,10 +58,10 @@ def AppDynamic():
             oled.fill_rect(0, 0, 128, 43, 0)
             try:oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
             except:pass
-            oled.Bitmap(select1X, 10, Logo[appNum], 25, 25, 1)
+            oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
             try:
-                oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
-                oled.Bitmap(select1X, 10, Logo[appNum+2], 25, 25, 1)
+                oled.Bitmap(select3X, 10, Logo[appNum+1], 25, 25, 1)
+                oled.Bitmap(select4X, 10, Logo[appNum+2], 25, 25, 1)
             except:pass
             oled.fill_rect(0, 47, 128, 18, 0)
             oled.show()
@@ -87,28 +87,27 @@ def App():
         oled.DispChar(List[appNum],DayLight.AutoCenter(List[appNum]), 48, 1)
         oled.show()
         AppDynamic()
-        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+        if eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
-            Module = Core.ModuleRunner('apps')
-            Module.Load('app' + str(appNum))
+            Core.Load('apps.app' + str(appNum))
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.app' + str(appNum)]
             # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
             if operationalJudgment == 0:
                 try:oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
                 except:pass
-                oled.Bitmap(select1X, 10, Logo[appNum], 25, 25, 1)
+                oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
                 try:
-                    oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
-                    oled.Bitmap(select1X, 10, Logo[appNum-2], 25, 25, 1)
+                    oled.Bitmap(select3X, 10, Logo[appNum-1], 25, 25, 1)
+                    oled.Bitmap(select4X, 10, Logo[appNum-2], 25, 25, 1)
                 except:pass
                 oled.show()
             elif operationalJudgment == 1:
                 try:oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
                 except:pass
-                oled.Bitmap(select1X, 10, Logo[appNum], 25, 25, 1)
+                oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
                 try:
-                    oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
-                    oled.Bitmap(select1X, 10, Logo[appNum+2], 25, 25, 1)
+                    oled.Bitmap(select3X, 10, Logo[appNum+1], 25, 25, 1)
+                    oled.Bitmap(select4X, 10, Logo[appNum+2], 25, 25, 1)
                 except:pass
                 oled.show()

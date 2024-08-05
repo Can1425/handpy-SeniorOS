@@ -25,7 +25,11 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 ├SeniorOS
 │├apps
 ││├logo.mpy
-││├main.mpy
+││├app1.mpy
+││├app2.mpy
+││├app3.mpy
+││├app4.mpy
+││├app5.mpy
 ││└port.mpy
 │├data
 ││├list.sros
@@ -37,17 +41,18 @@ SeniorOS 是运行在 handpy （掌控版）平台上的轻量级多文件操作
 │├style
 ││├bar.mpy
 ││├home.mpy
-││├lib.py
 ││└port.mpy
 │├system
+││├app_manager.mpy
 ││├core.mpy
 ││├daylight.mpy
+││├devlib.mpy
 ││├main.mpy
 ││├typer.mpy
 ││├update.mpy
+││├smart_wifi.mpy
 ││└pages.mpy
 └boot.py
-
 ```
 
 # 开发注意事项
@@ -122,4 +127,4 @@ python ./tools/Win_Build.py
 python ./tools/Build.py
 ```
 
-将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可.
+将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可

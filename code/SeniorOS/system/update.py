@@ -1,5 +1,6 @@
-print(eval("[/Const('systemRunLog')/]") + "system/update.mpy")
 import uhashlib,os,requests
+import SeniorOS.system.log_manager as LogManager
+LogManager.Output("system/update.mpy", "INFO")
 
 # lambda: 值查找键
 valueFindKey=lambda dictObj,value:{v : k for k, v in dictObj.items()}[value]

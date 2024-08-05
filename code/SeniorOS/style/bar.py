@@ -1,6 +1,6 @@
-from mpython import wifi,oled
-from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from mpython import button_a,button_b
+from SeniorOS.system.devlib import wifi,oled
+from SeniorOS.system.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
+from SeniorOS.system.devlib import button_a,button_b
 from SeniorOS.apps.port import *
 import time
 

@@ -1,4 +1,3 @@
-print(eval("[/Const('systemRunLog')/]") + "system/daylight.mpy")
 import SeniorOS.system.core as Core
 import SeniorOS.style.bar as BarStyle
 import ntptime
@@ -6,13 +5,13 @@ import network
 import time
 import ustruct
 import framebuf
-from mpython import wifi,oled
-from mpython import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from mpython import button_a,button_b
+from SeniorOS.system.devlib import *
 import gc
 import uos
 import math
 import urequests
+import SeniorOS.system.log_manager as LogManager
+LogManager.Output("system/daylight.mpy", "INFO")
 
 def UITime(pages=True):
     h=str(Core.GetTime.Hour())
@@ -22,11 +21,11 @@ def UITime(pages=True):
             ('0' + m if len(m)==1 else m)
 
 def GetCharWidth(s):
-    strWidth = 0
-    for c in s:
-        charData = oled.f.GetCharacterData(c)
-        if charData is None:continue
-        strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
+    strWidth = oled.DispChar(s,0,0,Colormode.noshow)[0][0]
+    #for c in s:
+    #    charData = oled.f.GetCharacterData(c)
+    #    if charData is None:continue
+    #    strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
     return strWidth
 
 AutoCenter=lambda string:64-GetCharWidth(string)//2
@@ -38,20 +37,15 @@ BarPage = {
     3: BarStyle.Style3,
     4: BarStyle.Style4,
 }
-
-def app(appTitle:str):
-    oled.fill(0)
-    UITools()
-    BarPage.get(int(Core.Data.Get("text", "barStyleNum")))(appTitle)
-
-def DisplayFont(_font, _str, _x, _y, _wrap, _z=0):
-    _start = _x
-    for _c in _str:
-        _d = _font.get_ch(_c)
-        if _wrap and _x > 128 - _d[2]: _x = _start; _y += _d[1]
-        if _c == '1' and _z > 0: oled.fill_rect(_x, _y, _d[2], _d[1], 0)
-        oled.blit(framebuf.FrameBuffer(bytearray(_d[0]), _d[2], _d[1],framebuf.MONO_HLSB), (_x+int(_d[2]/_z)) if _c=='1' and _z>0 else _x, _y)
-        _x += _d[2]
+class App:
+    def Style1(appTitle:str):
+        oled.fill(0)
+        UITools()
+        BarPage.get(int(Core.Data.Get("text", "barStyleNum")))(appTitle)
+    def Style2(appTitle:str):
+        oled.fill(0)
+        UITools()
+        oled.DispChar(appTitle, 5, 5, 1)
 
 class Select:
     def Style1(dispContent:list, y:int, window:bool = False, appTitle = None):
@@ -62,32 +56,31 @@ class Select:
             pass
         else:
             if window == False:
-                app(appTitle)
+                App.Style1(appTitle)
             else:
                 oled.DispChar(appTitle, 5, 5, 1)
                 oled.DispChar(UITime(True), 93, 5, 1)
         oled.show()
-        while not eval("[/GetButtonExpr('a')/]"):
+        while not button_a.is_pressed():
             oled.fill_rect(0, 20, 128, 45, 0)
             oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
-            oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
+            oled.DispChar(Core.ListState(dispContent, selectNum), 105, 40, 1)
             if window == True:
                 oled.RoundRect(2, y - 26, 124, 55, 2, 1)
             else:
                 pass
             oled.show()
-            if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+            if eval("[/GetButtonExpr('on')/]"):
                 selectNum = selectNum + 1
                 if selectNum + 1 > len(dispContent):
                     selectNum = len(dispContent) - 1
-            if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            if eval("[/GetButtonExpr('py')/]"):
                 selectNum = selectNum - 1
                 if selectNum < 0:
                     selectNum = 0
-            if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            if eval("[/GetButtonExpr('th')/]"):
                 return selectNum
-            time.sleep_ms(300)
-        time.sleep_ms(300)
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
         return
     def Style2(dispContent:list, tip:list, y:int, window:bool=False, appTitle = None):
         oled.fill(0)
@@ -97,31 +90,43 @@ class Select:
             pass
         else:
             if window == False:
-                app(appTitle)
+                App.Style1(appTitle)
             else:
                 oled.DispChar(appTitle, 5, 5, 1)
                 oled.DispChar(UITime(True), 93, 5, 1)
         oled.show()
-        while not eval("[/GetButtonExpr('a')/]"):
+        while not button_a.is_pressed():
             if window == True:
                 oled.RoundRect(2, y - 18, 124, 55, 2, 1)
             else:
                 pass
             oled.show()
-            if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+            if eval("[/GetButtonExpr('on')/]"):
                 selectNum = selectNum + 1
                 if selectNum + 1 > len(dispContent):
                     selectNum = len(dispContent) - 1
-            if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+            if eval("[/GetButtonExpr('py')/]"):
                 selectNum = selectNum - 1
                 if selectNum < 0:
                     selectNum = 0
-            if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+            if eval("[/GetButtonExpr('th')/]"):
                 return selectNum
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
             oled.DispChar(tip[selectNum], 5, y, 1, True)
             oled.DispChar(dispContent[selectNum], 5, y + 27, 1)
-            oled.DispChar(''.join([str(selectNum + 1),'/',str(len(dispContent))]), 105, 45, 1)
+            oled.DispChar(Core.ListState(dispContent, selectNum), 105, 45, 1)
             oled.show()
+    def Style3():
+        UITools()
+        selectNum = 0
+        while not button_a.is_pressed():
+            if eval("[/GetButtonExpr('py')/]"):
+                selectNum = 1
+                return selectNum
+            if eval("[/GetButtonExpr('on')/]"):
+                selectNum = 0
+                return selectNum
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
 
 def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
     # 请不要在激活 appTitle 时设置 window = True
@@ -132,11 +137,11 @@ def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
     if appTitle == "None":
         pass
     else:
-        app(appTitle)
+        App.Style1(appTitle)
     oled.show()
-    while not eval("[/GetButtonExpr('a')/]"):
+    while not button_a.is_pressed():
         oled.fill_rect(0, 20, 128, 45, 0)
-        oled.DispChar(''.join([str(listNum + 1),'/',str(len(dispContent))]), 105, 40, 1)
+        oled.DispChar(Core.ListState(dispContent, listNum), 105, 40, 1)
         try:
             oled.DispChar(str(dispContent[listNum]), 5, y, 2)
             oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
@@ -152,48 +157,30 @@ def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
         else:
             pass
         oled.show()
-        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+        if eval("[/GetButtonExpr('on')/]"):
             listNum = listNum + 1
             if listNum + 1 > len(dispContent):
                 listNum = len(dispContent) - 1
-        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+        if eval("[/GetButtonExpr('py')/]"):
             listNum = listNum - 1
             if listNum < 0:
                 listNum = 0
-        if touchPad_T.is_pressed() and touchPad_H.is_pressed():
+        if eval("[/GetButtonExpr('th')/]"):
             return listNum
-
-def Message(content:str):
-    content = content + "   按A键确认   "
-    while not button_a.is_pressed:
-        oled.fill(0)
-        oled.rect(1, 0, 126, 16, 1)
-        oled.DispChar(content, 0, 0, 2)
-        oled.show()
-        time.sleep(0.2)
-        content = content[1:] + content[0]
-    return
 
 class VastSea:
     speed = int(Core.Data.Get("text", "VastSeaSpeed"))
     def Switch():
-        while not eval("[/GetButtonExpr('a')/]"):
+        while not button_a.is_pressed():
             oled.fill(0)
-            DayLight.UITools()
-            oled.DispChar(str('动效开关'), 5, 5, 1)
+            UITools()
+            App.Style2(eval("[/Language('动效开关')/]"))
             time.sleep_ms(5)
-            if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-                get = '开启'
-            else:
-                get = '关闭'
-            oled.DispChar(get, 5, 18, 1)
+            get = int(Core.Data.Get("text", "VastSeaSwitch"))
+            oled.DispChar([eval("[/Language('关闭')/]"),eval("[/Language('开启')/]")](get), 5, 18, 1)
             oled.show()
-            if touchpad_p.is_pressed() and touchpad_y.is_pressed():
-                Core.Data.Write("text",'VastSeaSwitch','1')
-                oled.show()
-            if touchpad_o.is_pressed() and touchpad_n.is_pressed():
-                Core.Data.Write("text",'VastSeaSwitch','0')
-                oled.show()
+            get = Select.Style3()
+            Core.Data.Write("text",'VastSeaSwitch', str(get))
         return
     
     def Off():
@@ -212,7 +199,7 @@ class VastSea:
                 UITools()
             if mode == False:
                 luminance = int(Core.Data.Get("text", "luminance"))
-                for count in range(VastSea.speed):
+                for _ in range(VastSea.speed):
                     luminance = 0 + luminance // VastSea.speed
                     oled.contrast(luminance)
                 UITools()
@@ -266,10 +253,10 @@ def UITools():
         pass
 
 def About():
-    while not eval("[/GetButtonExpr('a')/]"):
+    while not button_a.is_pressed():
         oled.fill(0)
         UITools()
-        oled.DispChar(str('关于日光引擎'), 5, 5, 1)
+        oled.DispChar('关于日光引擎', 5, 5, 1)
         oled.DispChar("这是一个 GUI 框架，", 5, 20, 1)
         oled.DispChar("负责渲染部分特有 GUI", 5,35 , 1)
         oled.DispChar("鸣谢POLA在的巨大贡献", 5, 50, 1)
@@ -277,42 +264,34 @@ def About():
     return
 
 def LightModeSet():
-    while not eval("[/GetButtonExpr('a')/]"):
+    while not button_a.is_pressed():
         oled.fill(0)
         UITools()
-        oled.DispChar(str('日光模式'), 5, 5, 1)
+        App.Style2(eval("[/Language('日光模式')/]"))
         time.sleep_ms(5)
-        if int(Core.Data.Get("text", "luminance")) == "1":
-            get = '开启'
-        else:
-            get = '关闭'
-        oled.DispChar(get, 5, 18, 1)
+        get = int(Core.Data.Get("text", "luminance"))
+        oled.DispChar([eval("[/Language('关闭')/]"),eval("[/Language('开启')/]")](get), 5, 18, 1)
         oled.show()
-        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
-            Core.Data.Write("text",'lightMode','1')
-            oled.invert(1)
-            oled.show()
-        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
-            Core.Data.Write("text",'lightMode','0')
-            oled.invert(0)
-            oled.show()
+        get = Select.Style3()
+        Core.Data.Write("text",'lightMode', str(get))
+
 def LuminanceSet():
     luminance = int(Core.Data.Get("text", "luminance"))
     oled.contrast(luminance)
     UITools()
-    while not eval("[/GetButtonExpr('a')/]"):
+    while not button_a.is_pressed():
         oled.contrast(luminance)
         oled.fill(0)
-        oled.DispChar(str('亮度调节'), 5, 5, 1)
+        App.Style2(eval("[/Language('亮度调节')/]"))
         time.sleep_ms(5)
-        oled.DispChar("当前亮度"+ str(luminance), 5, 18, 1)
+        oled.DispChar(eval("[/Language('当前值')/]") + str(luminance), 5, 18, 1)
         oled.show()
-        if touchPad_O.is_pressed() and touchPad_N.is_pressed():
+        if eval("[/GetButtonExpr('on')/]"):
             luminance = luminance + 5
             if luminance > 255:
                 luminance = 255
             oled.contrast(luminance)
-        if touchPad_P.is_pressed() and touchPad_Y.is_pressed():
+        if eval("[/GetButtonExpr('py')/]"):
             luminance = luminance - 5
             if luminance < 0:
                 luminance = 0

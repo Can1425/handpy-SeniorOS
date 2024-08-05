@@ -1,6 +1,8 @@
-print(eval("[/Const('systemRunLog')/]") + "system/typer.mpy")
-from mpython import *
+from SeniorOS.system.devlib import *
 import time
+import SeniorOS.system.log_manager as LogManager
+LogManager.Output("system/typer.mpy", "INFO")
+
 NL=[
     ['a','b','c','d','e','f'],
     ['g','h','i','j','k','l'],
@@ -29,7 +31,7 @@ def typeOfNL():
         elif touchpad_h.is_pressed():y=3;break
         elif touchpad_o.is_pressed():y=4;break
         elif touchpad_n.is_pressed():y=5;break                                                   
-        if eval("[/GetButtonExpr('b')/]"):
+        if button_b.is_pressed():
             if up == False:up = True
             else:up=False
         if up==True:
@@ -49,7 +51,7 @@ def typeOfNL():
         elif touchpad_h.is_pressed():x=3;break
         elif touchpad_o.is_pressed():x=4;break
         elif touchpad_n.is_pressed():x=5;break
-        if eval("[/GetButtonExpr('b')/]"):
+        if button_b.is_pressed():
             if up == False:up = True
             else:up=False
         if up==True:
@@ -93,7 +95,7 @@ def typeOfPM():
     return PM[y][x]
 def main():
     text = ''
-    while not eval("[/GetButtonExpr('a')/]"):
+    while not button_a.is_pressed():
         oled.fill(0)
         oled.DispChar(text, 0, 0)
         oled.DispChar("字母/数字(P)",0,16)

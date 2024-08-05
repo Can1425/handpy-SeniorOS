@@ -1,4 +1,3 @@
-print(eval("[/Const('systemRunLog')/]") + "system/core.mpy")
 import time
 import os
 import sys
@@ -10,7 +9,9 @@ import urequests
 import json
 import SeniorOS
 from machine import unique_id
-from mpython import *
+from SeniorOS.system.devlib import *
+import SeniorOS.system.log_manager as LogManager
+LogManager.Output("system/core.mpy", "INFO")
 
 # 适用于 data/ 下 .sros 扩展名文件的信息读写操作
 # 将大部分使用了 init_file write_file 类函数而只对 data 文件夹下的数据作读写的代码替换为此处代码
@@ -21,8 +22,8 @@ class DataCtrl:
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！
         self.data={}
         self.dataFolderPath=dataFolderPath
-        print(eval("[/Const('systemRunLog')/]") + "SystemData 初始化")
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print([f for f in os.listdir(dataFolderPath) if f.endswith('.sros')])
+        LogManager.Output("SystemData initial", "INFO")
+        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.strip('.sros')]=f.read().strip('\r')
@@ -45,18 +46,35 @@ class DataCtrl:
             self.data[dataName]=dataValue
 
     def Get(self, controls, dataName):
+        ConfigRead = Data.GetOriginal(controls)
+        Config=ConfigRead.split('\n')
+        data=[]
+        TSList2=[]
+        # 遍历Config列表
+        for i in range(len(Config)):
+            TSList1=Config[i].split(':')
+            TSList2.append(TSList1[0])
+            data.append(TSList1[1])
+        try: index = TSList2.index(dataName)
+        except: index = 0
+        if controls == "text":
+            return data[index].strip("\r")
+        elif controls == "list":
+            return data[index].split(';')
+        '''
         if controls == "text":
             ConfigRead = Data.GetOriginal("text")
             Config=ConfigRead.split('\n')
             data=[]
             TSList2=[]
+            # 遍历Config列表
             for i in range(len(Config)):
                 TSList1=Config[i].split(':')
                 TSList2.append(TSList1[0])
                 data.append(TSList1[1])
             try: index = TSList2.index(dataName)
             except: index = 0
-            return data[index].strip("\r")
+            
         if controls == "list":
             ConfigRead = Data.GetOriginal("list")
             Config=ConfigRead.split('\n')
@@ -68,8 +86,26 @@ class DataCtrl:
                 data.append(TSList1[1])
             try: index = TSList2.index(dataName)
             except: index = 0
-            return data[index].split(';')
+        '''
     def Write(self, controls, dataName, dataValue):
+        ConfigRead = Data.GetOriginal(controls)
+        Config=ConfigRead.split('\n')
+        TSList2=[]
+        for i in range(len(Config)):
+            TSList1=Config[i].split(':')
+            TSList2.append(TSList1[0])
+        try: index = TSList2.index(dataName)
+        except: index = 0
+        Config[index] = dataName + ":" + dataValue
+        
+        with open(self.dataFolderPath + 'text' + '.sros','w') as f:
+            f.write('\n'.join(Config))
+            self.data[controls]='\n'.join(Config)
+            print(Config)
+        with open(self.dataFolderPath + 'text' + '.sros','r') as f:
+            print(f.read())
+        return
+        '''
         if controls == "text":
             ConfigRead = Data.GetOriginal("text")
             Config=ConfigRead.split('\n')
@@ -88,6 +124,7 @@ class DataCtrl:
             with open(self.dataFolderPath + 'text' + '.sros','r') as f:
                 print(f.read())
             return
+        '''
 
 Data=DataCtrl("/SeniorOS/data/")
 
@@ -194,18 +231,39 @@ def Tree(path="/",prt=print,_tabs=0):
         if n<ldirs:
             Tree(path+'/'+i,prt,_tabs+1)
 
-class ModuleRunner:
-    def __init__(self, modulePath):
-        # 对 modulePath 进行处理，意味着你只需要填写模块所在的目录名称
-        self.modulePath = eval("[/Const('systemName')/]") + '.' + modulePath +'.'
-    def Load(self, moduleName, print=False):
-        moduleName = self.modulePath + moduleName
-        # 动态加载模块
+def Load(moduleName, delete=False, log=True):
+    modulePath = eval("[/Const('systemName')/]") + "."
+    moduleName = modulePath + moduleName
+    # 动态加载模块
+    try:
         module = __import__(moduleName, globals(), locals(), -1)
-        # print(module)
-        if functionName == None:
-            pass
-        else:
-            # print(functionName)
-    def Run(self, moduleName, functionName=None):
-            eval(moduleName + '.' + functionName + "()", globals(), locals())
+        if log == True:
+            LogManager.Output(str(module), "INFO")
+        if delete == True:
+            Del(moduleName)
+    except IndexError as error:
+        LogManager.Output(error, "ERROR")
+    # print(module)
+
+def Run(moduleName, functionName, log=True):
+    modulePath = eval("[/Const('systemName')/]") + "."
+    moduleName = modulePath + moduleName
+    try:
+        eval(moduleName + '.' + functionName + "()", globals(), locals())
+        if log == True:
+            LogManager.Output(moduleName + '.' + functionName + "()", "INFO")
+    except IndexError as error:
+        LogManager.Output(moduleName + '.' + functionName + "(): " + error, "ERROR")
+
+def Del(moduleName, log=True):
+    modulePath = eval("[/Const('systemName')/]") + "."
+    moduleName = modulePath + moduleName
+    try:
+        del sys.modules[moduleName]
+        if log == True:
+            LogManager.Output("del " + moduleName, "INFO")
+    except IndexError as error:
+        LogManager.Output("del " + moduleName + error, "INFO")
+
+def ListState(list, num):
+    return (''.join([str(num + 1),'/',str(len(list))]))

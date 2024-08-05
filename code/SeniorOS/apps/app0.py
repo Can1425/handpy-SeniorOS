@@ -1,11 +1,22 @@
-from mpython import *
+from SeniorOS.system.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
+import SeniorOS.system.app_manager as ImportAppManager
 import machine
 import esp32
+AppManager = ImportAppManager.AppManager
 
-list = ['网络与时间', '界面与动效', '缓存与运存', '系统与设备']
-tip = ['联网相关设置及信息', '界面动效参数及设置', '应用缓存与设备内存', '系统设备信息及更新']
+list = [eval("[/Language('网络与时间')/]"), 
+        eval("[/Language('界面与动效')/]"), 
+        eval("[/Language('缓存与运存')/]"), 
+        eval("[/Language('系统与设备')/]")]
+tip = [eval("[/Language('联网相关设置及信息')/]"), 
+       eval("[/Language('界面动效参数及设置')/]"), 
+       eval("[/Language('应用缓存与设备内存')/]"), 
+       eval("[/Language('系统设备信息及更新')/]")]
+
+manager = AppManager('设置')
+
 DayLight.UITools()
 import SeniorOS.system.pages as Pages
 import SeniorOS.style.port as Style
@@ -14,7 +25,8 @@ time.sleep_ms(5)
 Settings0 = {
     0: Pages.WifiPages,
     1: Pages.Time,
-    2: Pages.Choosewifi
+    2: Pages.Choosewifi,
+    3: Pages.AutoConnectWifi
 }
 
 Settings1 = {
@@ -36,43 +48,47 @@ Settings3 = {
     1: Pages.About,
 }
 
+@manager.regScreen('main')
+@manager.setAppEntryPoint()
+def main():
+    while not button_a.value()==0:
+        settingsNum = DayLight.Select.Style2(list, tip, 18, False, "设置")
+        if eval("[/GetButtonExpr('th')/]"):
+            options = eval('DayLight.Select.Style1(list{}, 28, True, "选择")'.format(settingsNum),
+                            {'list0':['重连网络', '同步时间', '新建网络配置','自动联网配置'],
+                            'list1':['日光模式','亮度调节','动效开关','桌面风格','状态栏风格' '日光引擎信息'],
+                            'list2':['释放内存', '内存信息'],
+                            'DayLight':DayLight}
+                        )
+            if settingsNum == 0:
+                DayLight.VastSea.Progressive(True)
+                if options == None:
+                    pass
+                else:
+                    Settings0.get(options)()
+                DayLight.VastSea.Progressive(True)
+            elif settingsNum == 1:
+                DayLight.VastSea.Progressive(True)
+                if options == None:
+                    pass
+                else:
+                    Settings1.get(options)()
+                DayLight.VastSea.Progressive(True)
+            elif settingsNum == 2:
+                DayLight.VastSea.Progressive(True)
+                if options == None:
+                    pass
+                else:
+                    Settings2.get(options)()
+                DayLight.VastSea.Progressive(True)
+            elif settingsNum == 3:
+                DayLight.VastSea.Progressive(True)
+                if options == None:
+                    pass
+                else:
+                    Settings3.get(options)()
+                DayLight.VastSea.Progressive(True)
+            else:
+                pass
 
-while not button_a.value()==0:
-    settingsNum = DayLight.Select.Style2(list, tip, 18, False, "设置")
-    if touchpad_t.is_pressed() and touchpad_h.is_pressed():
-        options = eval('DayLight.Select.Style1(list{}, 28, True, "选择")'.format(settingsNum),
-                        {'list0':['重连网络', '同步时间', '新建网络配置'],
-                        'list1':['日光模式','亮度调节','动效开关','桌面风格','状态栏风格' '日光引擎信息'],
-                        'list2':['释放内存', '内存信息'],
-                        'DayLight':DayLight}
-                    )
-        if settingsNum == 0:
-            DayLight.VastSea.Progressive(True)
-            if options == None:
-                pass
-            else:
-                Settings0.get(options)()
-            DayLight.VastSea.Progressive(True)
-        elif settingsNum == 1:
-            DayLight.VastSea.Progressive(True)
-            if options == None:
-                pass
-            else:
-                Settings1.get(options)()
-            DayLight.VastSea.Progressive(True)
-        elif settingsNum == 2:
-            DayLight.VastSea.Progressive(True)
-            if options == None:
-                pass
-            else:
-                Settings2.get(options)()
-            DayLight.VastSea.Progressive(True)
-        elif settingsNum == 3:
-            DayLight.VastSea.Progressive(True)
-            if options == None:
-                pass
-            else:
-                Settings3.get(options)()
-            DayLight.VastSea.Progressive(True)
-        else:
-            pass
+manager.Run()
