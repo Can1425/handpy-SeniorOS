@@ -1,10 +1,10 @@
 from SeniorOS.system.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
-import SeniorOS.system.app_manager as ImportAppManager
+import SeniorOS.system.pages_manager as PagesManager
 import machine
 import esp32
-AppManager = ImportAppManager.AppManager
+
 
 list = [eval("[/Language('网络与时间')/]"), 
         eval("[/Language('界面与动效')/]"), 
@@ -15,7 +15,7 @@ tip = [eval("[/Language('联网相关设置及信息')/]"),
        eval("[/Language('应用缓存与设备内存')/]"), 
        eval("[/Language('系统设备信息及更新')/]")]
 
-manager = AppManager('设置')
+Manager = PagesManager.main('apps/app0.mpy')
 
 DayLight.UITools()
 import SeniorOS.system.pages as Pages
@@ -48,9 +48,9 @@ Settings3 = {
     1: Pages.About,
 }
 
-@manager.regScreen('main')
-@manager.setAppEntryPoint()
-def main():
+@Manager.regScreen('Appmain')
+@Manager.setPagesEntryPoint()
+def Main():
     while not button_a.value()==0:
         settingsNum = DayLight.Select.Style2(list, tip, 18, False, "设置")
         if eval("[/GetButtonExpr('th')/]"):
@@ -90,5 +90,3 @@ def main():
                 DayLight.VastSea.Progressive(True)
             else:
                 pass
-
-manager.Run()

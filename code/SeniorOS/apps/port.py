@@ -4,10 +4,15 @@ from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import sys
+import SeniorOS.system.dynamic_run_page as DynamicRun
+import SeniorOS.system.pages_manager as PagesManager
+
+Manager = PagesManager('apps/port.mpy')
 
 appNum = 0
 operationalJudgment = 0
 List = Core.Data.Get("list", "localAppName")
+PagesManager.main()
 
 def AppDynamic():
     global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment
@@ -89,7 +94,8 @@ def App():
         AppDynamic()
         if eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
-            Core.Load('apps.app' + str(appNum))
+            # Core.Load('apps.app' + str(appNum))
+            DynamicRun.Main(Manager, 'SeniorOS.system.apps.app' + appNum, 'AppMain', 'Main')
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.app' + str(appNum)]
             # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)

@@ -10,8 +10,9 @@ from SeniorOS.system.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,t
 from SeniorOS.system.devlib import button_a,button_b
 import gc
 import time,uos
-import machine
+import machine,_thread
 import SeniorOS.system.log_manager as LogManager
+import SeniorOS.system.pages_manager as PagesManager
 LogManager.Output("system/pages.mpy", "INFO")
 
 # Gxxk留言：
@@ -64,12 +65,59 @@ def CloudNotification():
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
     return
+##我自己有其他的想法(6，我只有一个要求，有轮子就用（）#彳亍 #或者实在不顺眼，你也可以把轮子改了（）
+def SettingPanel(): 
+    def HS_CPU():
+        while not button_a.is_pressed():
+            oled.fill(0)
+            oled.DispChar(f"{str(machine.freq)/10000000} MHZ",0,16)
+            oled.DispChar("CPU - ESP32 @ 160MHZ",0,0)
+            oled.show()
+        return
+    def HS_Ram():
+        while not button_a.is_pressed():
+            oled.fill(0)
+            oled.DispChar("Ram - total:520kb",0,0)
+            oled.DispChar(f"内存可用:{gc.mem_free()}",0,16)
+            oled.DispChar("触摸键释放内存",0,32)
+            oled.show()
+            if eval("[/GetButtonExpr('python')/]"):
+                _thread.start_new_thread(Core.FullCollect())
+        return 0
+    def HS_flash():
+        while not button_a.is_pressed():
+            oled.fill(0)
+            oled.DispChar("Flash - total:8MB",0,0)
+            oled.DispChar("可用:")
+    ListOperation = {#这里填对应的函数名（不加括号）#ok,哪里学的(
+    0: HS_CPU,
+    1: HS_Ram,
+    2: HS_flash,
+    3: HS_RGB,
+    }
+    hardware=["CPU","Ram","flash","RGB灯","麦克风","OLED"]
+    def hardwareSettings():
+        while not button_a.is_pressed():
+            options = DayLight.ListOptions(hardware, 8, True, "None")
+            ListOperation.get(options)()# 这么用，就可以省略大量的 if
+    while not button_a.is_pressed():
+        oled.fill(0)
+        oled.DispChar("PY-板载硬件",0,0)
+        oled.DispChar("ON-外设",0,16)
+        oled.show()
+        while not button_a.is_pressed():
+            if touchpad_p.is_pressed() or touchpad_y.is_pressed():
+                hardwareSettings()
+                break
+            elif touchpad_o.is_pressed() or touchpad_n.is_pressed():
+                pass
+                break
+        # 剩下的交给你
 
-def SettingPanel():
-    pass
 
 def Home():
     Core.Load('style.home')
+    LogManager.Output(str(gc.mem_alloc()), "MSG")
     while not eval("[/GetButtonExpr('thab')/]"):
         Core.Run('style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
     if button_a.is_pressed():

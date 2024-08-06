@@ -1,5 +1,5 @@
 from SeniorOS.system.devlib import *
-import SeniorOS.system.app_manager as ImportAppManager
+import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import urequests
@@ -13,12 +13,11 @@ def Poetry():
     except:
         return
 
-AppManager = ImportAppManager.AppManager
-manager = AppManager('即时诗词')
+Manager = PagesManager.main('apps/app5.mpy')
 
-@manager.regScreen('main')
-@manager.setAppEntryPoint()
-def main():
+@Manager.regScreen('AppMain')
+@Manager.setAppEntryPoint()
+def Main():
     Poetry()
     while not button_a.is_pressed():
         oled.fill(0)
@@ -37,5 +36,3 @@ def main():
                 oled.DispChar('诗词走丢啦！', 5, 18, 1)
                 oled.DispChar('TH - 刷新', 5, 50, 1)
         oled.show()
-
-manager.Run()

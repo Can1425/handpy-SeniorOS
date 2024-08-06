@@ -1,8 +1,11 @@
-# App Manager for HandPy
+# Pages Manager for SeniorOS
+
+ 基于 App Manager for HandPy 开发
 
 ## 作者
 
 - **CycleBai**
+- **W-Can1425**
 
 ## 由以下组件支持
 
@@ -15,19 +18,19 @@
 
 自定义异常类，用于表示屏幕相关的错误。
 
-### `AppError`
+### `PagesError`
 
 自定义异常类，用于表示应用程序相关的错误。
 
-### `AppManager`
+### `main`
 
-应用管理器类，用于管理应用程序的屏幕和数据。
+管理器类，用于管理 Pages 的屏幕和数据。
 
 #### 方法
 
 - **`__init__(self, app_name: str) -> None`**
 
-  初始化 `AppManager` 实例。
+  初始化 `main` 实例。
 
   - `app_name`: 应用名称（字符串）。
 
@@ -103,4 +106,4 @@
 
   运行应用程序。
 
-  - 抛出: `AppError` 如果应用程序入口点未设置或在执行过程中发生错误。
+  - 抛出: `Error` 如果 Pages 入口点未设置或在执行过程中发生错误。

@@ -1,17 +1,12 @@
 import SeniorOS.system.core as Core
-import SeniorOS.style.bar as BarStyle
-import ntptime
-import network
+import sys
 import time
-import ustruct
-import framebuf
 from SeniorOS.system.devlib import *
-import gc
-import uos
-import math
-import urequests
 import SeniorOS.system.log_manager as LogManager
+import SeniorOS.system.pages_manager as PagesManager
+import SeniorOS.system.dynamic_run_page as DynamicRun
 LogManager.Output("system/daylight.mpy", "INFO")
+Manager = PagesManager('system/daylight.mpy')
 
 def UITime(pages=True):
     h=str(Core.GetTime.Hour())
@@ -31,21 +26,17 @@ def GetCharWidth(s):
 AutoCenter=lambda string:64-GetCharWidth(string)//2
 HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)
 
-BarPage = {  
-    1: BarStyle.Style1,  
-    2: BarStyle.Style2,  
-    3: BarStyle.Style3,
-    4: BarStyle.Style4,
-}
 class App:
     def Style1(appTitle:str):
         oled.fill(0)
         UITools()
-        BarPage.get(int(Core.Data.Get("text", "barStyleNum")))(appTitle)
+        DynamicRun.Main(Manager, 'SeniorOS.style.bar', 'Style' + Core.Data.Get("text", "barStyleNum"), 'Style' + Core.Data.Get("text", "barStyleNum"))
+        del sys.modules['SeniorOS.style.bar']
     def Style2(appTitle:str):
         oled.fill(0)
         UITools()
-        oled.DispChar(appTitle, 5, 5, 1)
+        Text(appTitle, 5, 5, 3, 90)
+        # oled.DispChar(appTitle, 5, 5, 1)
 
 class Select:
     def Style1(dispContent:list, y:int, window:bool = False, appTitle = None):
@@ -92,7 +83,7 @@ class Select:
             if window == False:
                 App.Style1(appTitle)
             else:
-                oled.DispChar(appTitle, 5, 5, 1)
+                Text(appTitle, 5, 5, 3, 90)
                 oled.DispChar(UITime(True), 93, 5, 1)
         oled.show()
         while not button_a.is_pressed():
@@ -112,8 +103,10 @@ class Select:
             if eval("[/GetButtonExpr('th')/]"):
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
-            oled.DispChar(tip[selectNum], 5, y, 1, True)
-            oled.DispChar(dispContent[selectNum], 5, y + 27, 1)
+            Text(dispContent[selectNum], 5, y, 2)
+            # oled.DispChar(tip[selectNum], 5, y, 1, True)
+            # oled.DispChar(dispContent[selectNum], 5, y + 27, 1)
+            Text(dispContent[selectNum], 5, y + 27, 3)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 45, 1)
             oled.show()
     def Style3():
@@ -143,15 +136,20 @@ def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
         oled.fill_rect(0, 20, 128, 45, 0)
         oled.DispChar(Core.ListState(dispContent, listNum), 105, 40, 1)
         try:
-            oled.DispChar(str(dispContent[listNum]), 5, y, 2)
-            oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
-            oled.DispChar(str(dispContent[(listNum + 2)]), 5, y + 30, 1)
+            Text(str(dispContent[listNum]), 5, y, 3)
+            # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+            Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
+            # oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
+            Text(str(dispContent[(listNum + 1)]), 5, y + 30, 3)
+            # oled.DispChar(str(dispContent[(listNum + 2)]), 5, y + 30, 1)
         except:
             try:
-                oled.DispChar(str(dispContent[listNum]), 5, y, 2)
-                oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
+                Text(str(dispContent[listNum]), 5, y, 3)
+                # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+                Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
             except:
-                oled.DispChar(str(dispContent[listNum]), 5, y, 2)
+                Text(str(dispContent[listNum]), 5, y, 3)
+                # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
         if window == True:
             oled.RoundRect(2, y - 6, 124, 55, 2, 1)
         else:
@@ -299,3 +297,14 @@ def LuminanceSet():
     oled.contrast(luminance)
     Core.Data.Write("text",'luminance',str(luminance))
     return
+
+def Text(text, x, y, outMode, maximum_x = 118, return_x = 5, return_addy = 18):
+    if outMode == 1:
+        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, return_x, return_addy)
+        return
+    if outMode == 2:
+        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, return_x, return_addy)
+        return
+    if outMode == 3:
+        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, return_x, return_addy)
+        return

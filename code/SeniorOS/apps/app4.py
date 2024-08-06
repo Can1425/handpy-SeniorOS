@@ -1,16 +1,15 @@
 from SeniorOS.system.devlib import *
-import SeniorOS.system.app_manager as ImportAppManager
+import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 image_picture = Image()
 rgb.brightness(1.0)
 
-AppManager = ImportAppManager.AppManager
-manager = AppManager('手电筒')
+Manager = PagesManager.main('apps/app4.mpy')
 
-@manager.regScreen('main')
-@manager.setAppEntryPoint()
-def main():
+@Manager.regScreen('AppMain')
+@Manager.setAppEntryPoint()
+def Main():
     num = 1
     while not button_a.is_pressed():
         DayLight.App.Style1('手电筒')
@@ -36,5 +35,3 @@ def main():
     rgb.fill( (0, 0, 0) )
     rgb.write()
     time.sleep_ms(1)
-
-manager.Run()
