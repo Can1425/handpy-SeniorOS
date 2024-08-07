@@ -4,31 +4,10 @@ import os
 import gc
 import time
 class picture:
-    pathpic=bytearray([0X00,0X00,0X3E,0X00,
-                            0X41,0X00,0X80,0X80,
-                            0X81,0XFC,0XFE,0X02,
-                            0X80,0X01,0X80,0X01,
-                            0XFF,0XFF,0X80,0X01,
-                            0X80,0X01,0X80,0X01,
-                            0X80,0X01,0X80,0X01,
-                            0X40,0X02,0X3F,0XFC,])
-    filepic=bytearray([0X00,0X00,0X3F,0XC0,
-                0X20,0X60,0X2F,0X50,
-                0X20,0X48,0X2F,0X7C,
-                0X20,0X04,0X23,0XC4,
-                0X22,0X04,0X23,0X84,
-                0X22,0X04,0X22,0X04,
-                0X22,0X04,0X20,0X04,
-                0X3F,0XFC,0X00,0X00,])
+    pathpic=bytearray([0X00,0X00,0X3E,0X00,0X41,0X00,0X80,0X80,0X81,0XFC,0XFE,0X02,0X80,0X01,0X80,0X01,0XFF,0XFF,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X40,0X02,0X3F,0XFC,])
+    filepic=bytearray([0X00,0X00,0X3F,0XC0,0X20,0X60,0X2F,0X50,0X20,0X48,0X2F,0X7C,0X20,0X04,0X23,0XC4,0X22,0X04,0X23,0X84,0X22,0X04,0X22,0X04,0X22,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
     runpic=filepic
-    picpic=bytearray([0XFF,0XFF,0X80,0X01,
-                0X8C,0X01,0X92,0X01,
-                0X92,0X09,0X8C,0X15,
-                0X80,0X23,0X84,0X41,
-                0X8A,0X81,0X91,0X01,
-                0XA0,0X01,0XC0,0X01,
-                0X80,0X01,0X80,0X01,
-                0X80,0X01,0XFF,0XFF,])
+    picpic=bytearray([0XFF,0XFF,0X80,0X01,0X8C,0X01,0X92,0X01,0X92,0X09,0X8C,0X15,0X80,0X23,0X84,0X41,0X8A,0X81,0X91,0X01,0XA0,0X01,0XC0,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0XFF,0XFF,])
 class Textreader:
     def __init__(self, text, splitCfg="\n"):
         self.text = text.split(splitCfg)
@@ -94,7 +73,6 @@ class FileViewer:
     def __init__(self):
         self.copy=""
     def IsFile(self,f):
-        print(f)
         if os.stat(f)[0]<20000:return "目录"
         else:
             return self.fileattribute(f)
@@ -285,6 +263,7 @@ class FileViewer:
                         num-=1
                         if num<0:num=DIRlen-1
                         break
+        return 0
     #鸣谢名单
     #程序设计---LP_OVER/emofalling
     #界面设计---LP_OVER

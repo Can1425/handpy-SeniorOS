@@ -7,12 +7,11 @@ import sys
 import SeniorOS.system.dynamic_run_page as DynamicRun
 import SeniorOS.system.pages_manager as PagesManager
 
-Manager = PagesManager('apps/port.mpy')
+Manager = PagesManager.main('apps/port.mpy')
 
 appNum = 0
 operationalJudgment = 0
 List = Core.Data.Get("list", "localAppName")
-PagesManager.main()
 
 def AppDynamic():
     global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment

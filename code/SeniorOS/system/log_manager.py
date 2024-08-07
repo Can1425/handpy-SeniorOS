@@ -1,96 +1,28 @@
-#######################################################################################
-#   |                     \  |                                         
-#   |       _ \    _` |  |\/ |   _` |  __ \    _` |   _` |   _ \   __| 
-#   |      (   |  (   |  |   |  (   |  |   |  (   |  (   |   __/  |    
-#  _____| \___/  \__, | _|  _| \__,_| _|  _| \__,_| \__, | \___| _|    
-#                |___/                              |___/              
-#    
-# Log Manager
-# For HandPy
-# 
-# By CycleBai
-# Powered by:
-# # SeniorOS
+# LogManager
+# Copyright (C) 2024 CycleBai
 #
-#######################################################################################
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 log_level_list = ['DEBUG', 'INFO', 'MSG', 'WARN', 'ERROR', 'FATAL']
 
 import time
 import gc
-
+import ntptime
 PYTHON = 'mpy' # 'cpy' or 'mpy'
 
-def is_leap_year(year):
-    # 闰年的判断规则
-    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
-def format_timestamp(timestamp, timezone_offset=0):
-    #ready-to-delete
-    '''
-    # 定义每个月的天数
-    days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    
-    # 秒，分钟，小时，天的计算单位
-    SECONDS_IN_A_MINUTE = 60
-    SECONDS_IN_AN_HOUR = 3600
-    SECONDS_IN_A_DAY = 86400
-    SECONDS_IN_A_YEAR = 31536000
-    SECONDS_IN_A_LEAP_YEAR = 31622400
-    
-    # 调整时间戳以考虑时区偏移
-    timestamp += timezone_offset * SECONDS_IN_AN_HOUR
-    
-    # 从1970年1月1日开始的年份
-    year = 1970
-    seconds = int(timestamp)
-    
-    # 计算年份
-    while True:
-        if is_leap_year(year):
-            if seconds >= SECONDS_IN_A_LEAP_YEAR:
-                seconds -= SECONDS_IN_A_LEAP_YEAR
-                year += 1
-            else:
-                break
-        else:
-            if seconds >= SECONDS_IN_A_YEAR:
-                seconds -= SECONDS_IN_A_YEAR
-                year += 1
-            else:
-                break
-    
-    # 更新二月的天数
-    if is_leap_year(year):
-        days_in_month[1] = 29
-    else:
-        days_in_month[1] = 28
-    
-    # 计算月份
-    month = 0
-    while seconds >= days_in_month[month] * SECONDS_IN_A_DAY:
-        seconds -= days_in_month[month] * SECONDS_IN_A_DAY
-        month += 1
-    
-    month += 1  # 月份从1开始
-    
-    # 计算天数
-    day = seconds // SECONDS_IN_A_DAY + 1
-    seconds %= SECONDS_IN_A_DAY
-    
-    # 计算小时
-    hour = seconds // SECONDS_IN_AN_HOUR
-    seconds %= SECONDS_IN_AN_HOUR
-    
-    # 计算分钟
-    minute = seconds // SECONDS_IN_A_MINUTE
-    seconds %= SECONDS_IN_A_MINUTE
-    
-    # 剩余的就是秒数
-    second = seconds
-    
-    return f'{year:04d}-{month:02d}-{day:02d} {hour:02d}:{minute:02d}:{second:02d}'
-    '''
+def format_timestamp():
     t=time.localtime()
     return f'{t[0]}-{t[1]}-{t[2]} {t[3]}:{t[4]}:{t[5]}'
 
@@ -104,11 +36,17 @@ def getTime(format: bool = False):
     if not format:
         return nowTime
     else:
-        formatted_time = format_timestamp(nowTime, 8)
+        formatted_time = format_timestamp()
         return formatted_time
 
-
+ntp_is_connect=False
 def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO') -> str:
+    try:
+        if not ntp_is_connect:
+            ntptime.settime(8,"time.windows.com")
+            ntp_is_connect=True
+        else:pass
+    except:print("settime failed")
     formatText=formatText.replace(f'{prefix}level{prefix}', level)\
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\

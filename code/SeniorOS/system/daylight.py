@@ -6,7 +6,7 @@ import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.dynamic_run_page as DynamicRun
 LogManager.Output("system/daylight.mpy", "INFO")
-Manager = PagesManager('system/daylight.mpy')
+Manager = PagesManager.main('system/daylight.mpy')
 
 def UITime(pages=True):
     h=str(Core.GetTime.Hour())

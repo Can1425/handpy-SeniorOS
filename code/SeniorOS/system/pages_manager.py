@@ -1,19 +1,18 @@
-#######################################################################################
-#      \                        \  |                                         
-#     _ \    __ \   __ \       |\/ |   _` |  __ \    _` |   _` |   _ \   __| 
-#    ___ \   |   |  |   |      |   |  (   |  |   |  (   |  (   |   __/  |    
-#  _/    _\  .__/   .__/      _|  _| \__,_| _|  _| \__,_| \__, | \___| _|    
-#           _|     _|                                     |___/           
-#    
-# Pages Manager
-# For HandPy
-# 
-# By CycleBai
-# Powered by:
-# # devlib
-# # SeniorOS
+# PagesManager
+# Copyright (C) 2024 CycleBai
 #
-#######################################################################################
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import SeniorOS.system.log_manager as LogManager
 
@@ -28,8 +27,7 @@ class PagesError(Exception):
     pass
 
 class main:
-    def __init__(self, module_name, pages_name) -> None:
-        self.moduleName = module_name
+    def __init__(self, pages_name) -> None:
         self.pagesName = pages_name
         self.pagesScreen = {}
         self.pagesData = {}

@@ -6,7 +6,7 @@
 使用实例：
 
 dyncmic_run_page.Main(AppManager 对象, 屏幕所在的模块, 屏幕名称, 屏幕的函数名称)
-dyncmic_run_page.Main(Manager, 'eniorOS.system.pages_manager', 'Screen', 'TheFunc')
+dyncmic_run_page.Main(Manager, 'SeniorOS.system.pages_manager', 'Screen', 'TheFunc')
 '''
 
 from SeniorOS.system.pages_manager import DynamicImport
