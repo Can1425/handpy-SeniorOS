@@ -19,7 +19,7 @@ jobs:
     
     - name: Install dependencies
       run: \
-        pip3 install GitPython mpy-cross-v5
+        pip install GitPython mpy-cross-v5
         sudo apt install zip unzip
 
     - name: Build project
