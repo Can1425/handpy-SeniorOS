@@ -62,7 +62,7 @@ jobs:
         prerelease: true
         allowUpdates: true
         body: |
-          ** 我是机器人，此操作是自动执行的。 **
+          **我是机器人，此操作是自动执行的。**
 
           这是自动构建，下载附件中的 `Build.zip` 即可获得构建完成后的版本。
         generateReleaseNotes: true
