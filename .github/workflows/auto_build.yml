@@ -1,0 +1,54 @@
+name: Auto Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Creating Virtual Environment
+      run: python3 -m venv venv
+    
+    - name: Activate Virtual Environment
+      run: . venv/bin/activate
+    
+    - name: Install dependencies
+      run: \
+        pip3 install GitPython mpy-cross-v5
+        sudo apt install zip unzip
+
+    - name: Build project
+      run: python3 tools/Build.py
+
+    - name: Create compress file
+      run: zip -r build.zip build
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: build.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "release.tar.gz,foo/*.txt"
+        bodyFile: "body.md"
+        token: ${{ secrets.GITHUB_TOKEN }}

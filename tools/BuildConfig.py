@@ -1,6 +1,6 @@
 # 当前项目仓库的路径
 # projectPath="~/handpy-SeniorOS/"
-projectPath="E:\\Can1425\\handpy-SeniorOS"
+projectPath="./"
 
 Language="Chinese"
 # Chinese , English
