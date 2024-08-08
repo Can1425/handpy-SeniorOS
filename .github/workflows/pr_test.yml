@@ -1,0 +1,71 @@
+name: PR Build Test
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Creating Virtual Environment
+      run: python3 -m venv venv
+    
+    - name: Activate Virtual Environment
+      run: . venv/bin/activate
+    
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        pip3 install GitPython mpy-cross-v5
+        sudo apt install zip unzip
+
+    - name: Build project
+      run: python3 tools/Build.py
+
+    - name: Create compress file
+      run: zip -r Build.zip build
+
+    - name: Upload Build Artifact
+      id: upload-build
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: Build.zip
+
+    - name: Get Artifact Download URL
+      run: |
+        echo "Artifact URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts" > artifact-url.txt
+
+    - name: Comment Build Results
+      if: always()
+      run: |
+        echo "### Build Results" > results.md
+        if [ $? -eq 0 ]; then
+          echo "| Step | Status |" >> results.md
+          echo "| ---- | ------ |" >> results.md
+          echo "| Build | :white_check_mark: Success |" >> results.md
+        else
+          echo "| Step | Status |" >> results.md
+          echo "| Build | :x: Failed |" >> results.md
+        fi
+        echo "" >> results.md
+        echo "[Download Build.zip](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)" >> results.md
+      continue-on-error: true
+
+    - name: Post Comment on Pull Request
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        path: results.md

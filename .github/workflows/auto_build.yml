@@ -1,0 +1,71 @@
+name: Auto Build
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Creating Virtual Environment
+      run: python3 -m venv venv
+    
+    - name: Activate Virtual Environment
+      run: . venv/bin/activate
+    
+    - name: Install dependencies
+      run: |
+        python3 -m pip install --upgrade pip setuptools wheel
+        pip3 install GitPython mpy-cross-v5
+        sudo apt install zip unzip
+
+    - name: Build project
+      run: python3 tools/Build.py
+
+    - name: Create compress file
+      run: zip -r Build.zip build
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: Build.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v3
+      with:
+        name: build-artifacts
+
+    - name: Create Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "Build.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: "preview"
+        prerelease: true
+        allowUpdates: true
+        body: |
+          **我是机器人，此操作是自动执行的。**
+
+          这是自动构建，下载附件中的 `Build.zip` 即可获得构建完成后的版本。
+        generateReleaseNotes: true
+        name: Preview
+        removeArtifacts: true
+        replacesArtifacts: true
