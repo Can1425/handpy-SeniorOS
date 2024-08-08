@@ -19,7 +19,7 @@ elif info == "1":
     connect=False
     for i in range(len(wifilist[0])):
         for j in wlanconfig:
-            if wlanconfig[j]==wifilist[i]:
+            if str(j)==wifilist[0][i]:
                 connect=Pages.ConfigureWLAN(wifilist[0][i],wifilist[1][i])
                 if connect:
                     break

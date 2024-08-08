@@ -119,7 +119,7 @@ class OLED(SSD1106_I2C):
     def _reverse(self,bytearr:bytearray):
         for i in range(len(bytearr)):
             bytearr[i]=~bytearr[i]
-    def DispChar(self,s,x,y,mode=Colormode.normal,out=Outmode.stop,*,maximum_x=128,space=1,newlinecode=True,return_x=0,return_addy=16,ellipsis="...",end="",buffer=None):
+    def DispChar(self, s, x, y, mode=Colormode.normal, out=Outmode.stop,maximum_x=128,space=1,newlinecode=True,return_x=0,return_addy=16,ellipsis="...",end="",buffer=None):
         stat_w=0
         stat_h=0
         stat_chars=0

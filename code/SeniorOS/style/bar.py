@@ -5,7 +5,7 @@ from SeniorOS.apps.port import *
 import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.dynamic_run_page as DynamicRun
 import time
-Manager = PagesManager('style/bar.mpy')
+Manager = PagesManager.main('style/bar.mpy')
 #-----------------------------------------------------------------------------------#
 @Manager.regScreen('Style1')
 @Manager.setPagesEntryPoint()

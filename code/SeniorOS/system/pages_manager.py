@@ -17,8 +17,10 @@
 import SeniorOS.system.log_manager as LogManager
 
 def DynamicImport(module_name, class_name):
-    module_spec = __import__(module_name, fromlist=[class_name])
-    return getattr(module_spec, class_name)
+    #module_spec = __import__(module_name, fromlist=[class_name])
+    exec("import {} as module_spec".format(module_name))
+    print("module_spec.{}".format(class_name))
+    exec("module_spec.{}".format(class_name))
 
 class ScreenError(Exception):
     pass
@@ -105,7 +107,7 @@ class main:
         else:
             return self.pagesData['extraData']
     
-    def setPagesEntryPoint(self, override: bool = False) -> function:
+    def setPagesEntryPoint(self, override: bool = True) -> function:
         def setEntryPoint(func):
             if 'EntryPoint' in self.pagesData and not override:
                 raise PagesError('The pageslication entry point is already set and cannot be redefined unless the override property is set to True.')
@@ -126,4 +128,5 @@ class main:
             try:
                 self.pagesData['EntryPoint']()
             except Exception as e:
-                raise PagesError('An uncaught error was encountered during pageslication execution: {}'.format(e))
+                print("no anything changed")
+                #raise PagesError('An uncaught error was encountered during pageslication execution: {}'.format(e))

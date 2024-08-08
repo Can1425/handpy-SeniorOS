@@ -94,7 +94,7 @@ def App():
         if eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
             # Core.Load('apps.app' + str(appNum))
-            DynamicRun.Main(Manager, 'SeniorOS.system.apps.app' + appNum, 'AppMain', 'Main')
+            DynamicRun.Main(Manager, str('SeniorOS.system.apps.app' + appNum), 'AppMain', 'Main')
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.app' + str(appNum)]
             # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
