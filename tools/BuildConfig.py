@@ -1,8 +1,4 @@
 # 当前项目仓库的路径
-<<<<<<< HEAD
-# projectPath="~/handpy-SeniorOS/"
-=======
->>>>>>> upstream/Alpha
 projectPath="./"
 
 # Chinese , English
