@@ -15,8 +15,6 @@ tip = [eval("[/Language('联网相关设置及信息')/]"),
        eval("[/Language('应用缓存与设备内存')/]"), 
        eval("[/Language('系统设备信息及更新')/]")]
 
-Manager = PagesManager.main('apps/app0.mpy')
-
 DayLight.UITools()
 import SeniorOS.system.pages as Pages
 import SeniorOS.style.port as Style
@@ -48,8 +46,6 @@ Settings3 = {
     1: Pages.About,
 }
 
-@Manager.regScreen('Appmain')
-@Manager.setPagesEntryPoint()
 def Main():
     while not button_a.value()==0:
         settingsNum = DayLight.Select.Style2(list, tip, 18, False, "设置")

@@ -5,10 +5,6 @@ import SeniorOS.system.daylight as DayLight
 image_picture = Image()
 rgb.brightness(1.0)
 
-Manager = PagesManager.main('apps/app4.mpy')
-
-@Manager.regScreen('AppMain')
-@Manager.setAppEntryPoint()
 def Main():
     num = 1
     while not button_a.is_pressed():

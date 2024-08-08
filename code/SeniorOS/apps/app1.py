@@ -7,12 +7,6 @@ import gc
 import os
 source = Core.Data.Get("text", "radienPluginsSource")
 
-Manager = PagesManager.main('apps/app1.mpy')
-
-@Manager.regScreen('AppMain')
-@Manager.setAppEntryPoint()
-
-
 def Main():
     global source
     pluginsNum = 0

@@ -13,10 +13,6 @@ def Poetry():
     except:
         return
 
-Manager = PagesManager.main('apps/app5.mpy')
-
-@Manager.regScreen('AppMain')
-@Manager.setAppEntryPoint()
 def Main():
     Poetry()
     while not button_a.is_pressed():

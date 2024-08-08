@@ -4,9 +4,7 @@ import time
 from SeniorOS.system.devlib import *
 import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
-import SeniorOS.system.dynamic_run_page as DynamicRun
 LogManager.Output("system/daylight.mpy", "INFO")
-Manager = PagesManager('system/daylight.mpy')
 
 def UITime(pages=True):
     h=str(Core.GetTime.Hour())
@@ -30,7 +28,7 @@ class App:
     def Style1(appTitle:str):
         oled.fill(0)
         UITools()
-        DynamicRun.Main(Manager, 'SeniorOS.style.bar', 'Style' + Core.Data.Get("text", "barStyleNum"), 'Style' + Core.Data.Get("text", "barStyleNum"))
+        PagesManager.Main.Import('SeniorOS.style.bar', 'Style' + Core.Data.Get("text", "barStyleNum"))
         del sys.modules['SeniorOS.style.bar']
     def Style2(appTitle:str):
         oled.fill(0)
@@ -298,13 +296,13 @@ def LuminanceSet():
     Core.Data.Write("text",'luminance',str(luminance))
     return
 
-def Text(text, x, y, outMode, maximum_x = 118, return_x = 5, return_addy = 18):
+def Text(text, x, y, outMode, space = 1, maximum_x = 122, return_x = 5, return_addy = 16):
     if outMode == 1:
-        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, return_x, return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, space, return_x = return_x, return_x = return_addy)
         return
     if outMode == 2:
-        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, return_x, return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, space, return_x = return_x, return_x = return_addy)
         return
     if outMode == 3:
-        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, return_x, return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, space, return_x = return_x, return_x = return_addy)
         return

@@ -30,8 +30,3 @@ def Style3():
     oled.DispChar_font(SeniorOS.fonts.misans_16, (''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]])), 5, 35)
     oled.show()
 #-----------------------------------------------------------------------------------#
-def Style4():
-    oled.fill(0)
-    oled.DispChar_font(SeniorOS.fonts.HarmonyOS_sans_bold, DayLight.UITime(True), 20, 20)
-    oled.DispChar_font(font.dvsmb_12, (''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]])), DayLight.AutoCenter((''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]]))), 45)
-    oled.show()

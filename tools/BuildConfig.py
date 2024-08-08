@@ -1,9 +1,12 @@
 # 当前项目仓库的路径
+<<<<<<< HEAD
 # projectPath="~/handpy-SeniorOS/"
+=======
+>>>>>>> upstream/Alpha
 projectPath="./"
 
-Language="Chinese"
 # Chinese , English
+Language="Chinese"
 
 # 对应feature:DebugMessage 调试信息
 # 此处可选择对应需要开启调试信息的模块

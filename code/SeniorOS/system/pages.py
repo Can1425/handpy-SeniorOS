@@ -65,7 +65,7 @@ def CloudNotification():
         oled.DispChar(notifications[3], 5, 45)
         oled.show()
     return
-##我自己有其他的想法(6，我只有一个要求，有轮子就用（）#彳亍 #或者实在不顺眼，你也可以把轮子改了（）
+
 def SettingPanel(): 
     def HS_CPU():
         while not button_a.is_pressed():
