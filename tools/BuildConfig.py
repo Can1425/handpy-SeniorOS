@@ -1,9 +1,8 @@
 # 当前项目仓库的路径
-# projectPath="~/handpy-SeniorOS/"
-projectPath=r"C:\Users\d1101\Desktop\LP_OVER\handpy-SeniorOS"
+projectPath="./"
 
-Language="Chinese"
 # Chinese , English
+Language="Chinese"
 
 # 对应feature:DebugMessage 调试信息
 # 此处可选择对应需要开启调试信息的模块

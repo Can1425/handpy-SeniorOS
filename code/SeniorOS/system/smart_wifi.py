@@ -72,9 +72,9 @@ def connectWIFI(ssid,pwd):
     sta.connectWiFi(ssid,pwd)
 def main():
     DayLight.App.Style1("高级 WIFI 配置")
-    DayLight.Text('请连接以完成配置', 5, 18, 2)
-    DayLight.Text('WIFIName:SeniorOS-WIFI', 5, 36, 2)
-    DayLight.Text('WIFIPassWord:123456', 5, 54, 2)
+    DayLight.Text('请连接以完成配置', 5, 18, 1)
+    DayLight.Text('WIFIName:SeniorOS-WIFI', 5, 36, 1)
+    DayLight.Text('WIFIPassWord:123456', 5, 54, 1)
     oled.show()
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

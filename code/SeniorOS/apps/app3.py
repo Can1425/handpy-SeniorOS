@@ -11,10 +11,6 @@ def GetSeniWeather(_url, _location):
     response.close()
     return json
 
-Manager = PagesManager.main('apps/app3.mpy')
-
-@Manager.regScreen('AppMain')
-@Manager.setAppEntryPoint()
 def Main():
     w1 = GetSeniWeather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
     w2 = GetSeniWeather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")

@@ -1,10 +1,6 @@
 from SeniorOS.system.devlib import *
 import time,uos
 import SeniorOS.system.core as Core
-import audio
-
-audio.stop()
-audio.player_init()
 
 def RenameCode():
     time.sleep(1.5)

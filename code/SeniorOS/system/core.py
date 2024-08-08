@@ -61,32 +61,6 @@ class DataCtrl:
             return data[index].strip("\r")
         elif controls == "list":
             return data[index].split(';')
-        '''
-        if controls == "text":
-            ConfigRead = Data.GetOriginal("text")
-            Config=ConfigRead.split('\n')
-            data=[]
-            TSList2=[]
-            # 遍历Config列表
-            for i in range(len(Config)):
-                TSList1=Config[i].split(':')
-                TSList2.append(TSList1[0])
-                data.append(TSList1[1])
-            try: index = TSList2.index(dataName)
-            except: index = 0
-            
-        if controls == "list":
-            ConfigRead = Data.GetOriginal("list")
-            Config=ConfigRead.split('\n')
-            data=[]
-            TSList2=[]
-            for i in range(len(Config)):
-                TSList1=Config[i].split(':')
-                TSList2.append(TSList1[0])
-                data.append(TSList1[1])
-            try: index = TSList2.index(dataName)
-            except: index = 0
-        '''
     def Write(self, controls, dataName, dataValue):
         ConfigRead = Data.GetOriginal(controls)
         Config=ConfigRead.split('\n')
@@ -105,26 +79,6 @@ class DataCtrl:
         with open(self.dataFolderPath + 'text' + '.sros','r') as f:
             print(f.read())
         return
-        '''
-        if controls == "text":
-            ConfigRead = Data.GetOriginal("text")
-            Config=ConfigRead.split('\n')
-            TSList2=[]
-            for i in range(len(Config)):
-                TSList1=Config[i].split(':')
-                TSList2.append(TSList1[0])
-            try: index = TSList2.index(dataName)
-            except: index = 0
-            Config[index] = dataName + ":" + dataValue
-            
-            with open(self.dataFolderPath + 'text' + '.sros','w') as f:
-                f.write('\n'.join(Config))
-                self.data[controls]='\n'.join(Config)
-                print(Config)
-            with open(self.dataFolderPath + 'text' + '.sros','r') as f:
-                print(f.read())
-            return
-        '''
 
 Data=DataCtrl("/SeniorOS/data/")
 
