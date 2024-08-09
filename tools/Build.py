@@ -2,8 +2,10 @@ import os
 import shutil
 import urllib.request
 import logging
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from git import Repo  # GitPython
-from ReplaceExpression import ReplaceExpr  # 确保导入ReplaceExpr
+from ReplaceExpression import ReplaceExpr  # Ensure ReplaceExpr is imported
 
 # 配置日志
 logging.basicConfig(
@@ -56,27 +58,50 @@ def tree_dir(directory):
         for file in files if file.endswith(".py")
     ]
 
-# 构建功能
+# 替换表达式
+def replace_expression(file):
+    logging.info(f"EXPR {file}")
+    ReplaceExpr(file)
+
+# 编译文件
+def compile_file(file_path):
+    if os.path.basename(file_path) == "boot.py":
+        return
+    logging.info(f"MPYC {file_path}")
+    os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
+    os.remove(file_path)
+
 def build_project(code_files, input_dir, output_dir):
     logging.info("\n" + "=" * 40 + "\n" + " FlagOS 构建工具 ".center(40) + "\n" + "=" * 40 + "\n")
+
+    start_time = time.time()
 
     # 清理输出目录
     shutil.rmtree(output_dir, ignore_errors=True)
     shutil.copytree(input_dir, output_dir)
 
-    # 替换表达式
-    for file in code_files:
-        logging.info(f"EXPR {file}")
-        ReplaceExpr(os.path.join(output_dir, file))
+    # Multi-threaded expression replacement
+    replace_start_time = time.time()
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(replace_expression, os.path.join(output_dir, file)) for file in code_files]
+        for future in as_completed(futures):
+            future.result()  # Ensures that exceptions are raised
 
-    # 编译文件
-    for file in code_files:
-        if file == "boot.py":
-            continue
-        logging.info(f"MPYC {file}")
-        file_path = os.path.join(output_dir, file)
-        os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
-        os.remove(file_path)
+    replace_duration = time.time() - replace_start_time
+    logging.info(f"Expression replacement took {replace_duration:.2f} seconds")
+
+    # Multi-threaded file compilation
+    compile_start_time = time.time()
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(compile_file, os.path.join(output_dir, file)) for file in code_files]
+        for future in as_completed(futures):
+            future.result()  # Ensures that exceptions are raised
+
+    compile_duration = time.time() - compile_start_time
+    logging.info(f"File compilation took {compile_duration:.2f} seconds")
+
+    total_duration = time.time() - start_time
+    logging.info(f"Total build process took {total_duration:.2f} seconds")
 
 if __name__ == "__main__":
     # 获取项目路径并初始化Git数据
