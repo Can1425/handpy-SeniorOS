@@ -45,26 +45,17 @@ class Main:
         pass
 
     @staticmethod
-    def Import(moduleLoc: str, funcName: str) -> bool:
-        '''
-        动态引入页面并执行
-        Parameters:
-            moudleLoc: 如何导入此页面所在的模块
-            funcName: 页面所对应的函数名称
-        Returns:
-            布尔值，表示是否执行成功（指无报错）
-        示例:
-        import SeniorOS.system.pages_manager as PagesManager
-        PagesManager.Main.Import("...", "...")
-        
-        '''
-
-        module = __import__(moduleLoc, fromlist=[funcName])
+    def Import(moduleLoc: str, funcName: str, *argument) -> bool:
+        print(moduleLoc, funcName)
+        module = __import__(moduleLoc, globals(), locals(), [funcName])
         func = getattr(module, funcName)
         try:
-            func()
-            return True
+            func(*argument)# 等下，如果没有传参呢？# 就返回空元组,所以正常运行.so,看我这的报错
         except Exception as e:
-            Log.Error('在执行 {} 中的 {} 时意外抛出异常: {}'.format(moduleLoc, funcName, e))
+            Log.Error(moduleLoc + ">" + funcName + ": " + e.__class__.__name__ + ": " + str(e))
+            # example: SeniorOS.system.pages_manager > function: OSError: [Errno 2] ENOENT
+            # 感觉是 SeniorOS.system.pages_manager > function: OSError:  OSError: [Errno 2] ENOENT(emo)啊，funcName不是报错名 ，ee而是函数名 e 是完整的报错信息,包括报错类型(emo)6
             # raise InternalPageError(f'在执行 {moduleLoc} 中的 {funcName} 时意外抛出异常: {e}')
             return False
+        else:
+            return True

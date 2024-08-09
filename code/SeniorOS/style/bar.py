@@ -3,7 +3,6 @@ from SeniorOS.system.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,t
 from SeniorOS.system.devlib import button_a,button_b
 from SeniorOS.apps.port import *
 import time
-Manager = PagesManager.main('style/bar.mpy')
 #-----------------------------------------------------------------------------------#
 def Style1(appTitle):
     import SeniorOS.system.daylight as DayLight

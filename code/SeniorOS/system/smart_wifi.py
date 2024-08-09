@@ -2,32 +2,47 @@ import network
 import socket
 import gc
 import time
+import SeniorOS.system.log_manager as LogManager
 responseHeaders=b"""
 HTTP/1.1 200 OK
 Content-Type: text/html
 Connection: close
 """
 
-HTML=b"""
+HTML=b'''
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>ESP32 Web Server</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设置WiFi</title>
+    <style>
+        body { font-family: sans-serif; background: #f5f5f7; margin: 0; padding: 100px; color: #333; }
+        .form-container { max-width: 400px; margin: 40px auto; background: #fff; padding: 20px; box-shadow: 0 8px 16px rgba(0,0,0,.2); border-radius: 19px; }
+        input[type="text"], input[type="submit"] { width: calc(100% - 22px); padding: 10px; margin: 10px 0; border: 1px solid #d9d9d9; border-radius: 10px; font-size: 16px; }
+        input[type="submit"] { background: #007aff; color: white; cursor: pointer; }
+        input[type="submit"]:hover { background: #006ae3; }
+        a { display: inline-block; padding: 10px 15px; background: #ff3b30; color: white; text-decoration: none; border-radius: 25px; font-size: 16px; }
+        a:hover { background: #e6332e; }
+    </style>
 </head>
 <body>
-    <form action="http://192.168.4.1" method="get">
-        Type WIFISSID:
-        <input type="text" name="ssid" placeholder="type your wifiSSID">
-        <input type="submit" value="upload">
-    </form>
-    <form action="http://192.168.4.1" method="get">
-        Type WIFI Password:
-        <input type="text" name="pwd" placeholder="type your wifiPassword">
-        <input type="submit" value="upload">
-    </form>
-    <a href="http://192.168.4.1/exit">exit</a>
+    <div class="form-container">
+        <form action="http://192.168.4.1" method="get">
+            <label for="ssid">WiFi名称:</label>
+            <input type="text" id="ssid" name="ssid" placeholder="输入WiFi名称">
+            <input type="submit" value="确定">
+        </form>
+        <form action="http://192.168.4.1" method="get">
+            <label for="pwd">WiFi密码:</label>
+            <input type="text" id="pwd" name="pwd" placeholder="输入WiFi密码">
+            <input type="submit" value="确定">
+        </form>
+        <a href="http://192.168.4.1/exit">退出</a>
+    </div>
 </body>
-"""
+</html>
+'''
 #报错了把这个打开就行
 '''
 class wifi:

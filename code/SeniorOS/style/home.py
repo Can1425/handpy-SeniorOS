@@ -4,7 +4,6 @@ import SeniorOS.system.core as Core
 import time
 import SeniorOS.fonts.misans
 import SeniorOS.fonts.misans_16
-import SeniorOS.fonts.HarmonyOS_sans_bold
 import font.dvsmb_21
 import font.dvsmb_12
 import font.digiface_21

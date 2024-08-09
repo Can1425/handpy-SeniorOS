@@ -28,7 +28,7 @@ class App:
     def Style1(appTitle:str):
         oled.fill(0)
         UITools()
-        PagesManager.Main.Import('SeniorOS.style.bar', 'Style' + Core.Data.Get("text", "barStyleNum"))
+        PagesManager.Main.Import('SeniorOS.style.bar', ('Style' + Core.Data.Get("text", "barStyleNum")), appTitle)
         del sys.modules['SeniorOS.style.bar']
     def Style2(appTitle:str):
         oled.fill(0)
@@ -296,13 +296,13 @@ def LuminanceSet():
     Core.Data.Write("text",'luminance',str(luminance))
     return
 
-def Text(text, x, y, outMode, space = 1, maximum_x = 122, return_x = 5, return_addy = 16):
+def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16):
     if outMode == 1:
-        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, space, return_x = return_x, return_x = return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
     if outMode == 2:
-        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, space, return_x = return_x, return_x = return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
     if outMode == 3:
-        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, space, return_x = return_x, return_x = return_addy)
+        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
