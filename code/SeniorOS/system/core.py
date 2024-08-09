@@ -137,14 +137,14 @@ def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
 # 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
 # 这里Enumerate部分使用的算法取决于构建阶段 对本代码作EXPR操作时 constData["screenMethod"] 的值是 fast 还是 ram
 class Screenshot:
-    def CopyFramebuf(path,oledObj=__import__("mpython").oled):
+    def CopyFramebuf(path,oledObj=__import__("SeniorOS.system.devlib")):
         bufb=bytearray(128*64)
         with open(path,"wb")as f:
             f.write(b"P4\n128 64\n")
             buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
             buf.blit(oledObj.buffer,0,0)
             f.write(bufb)
-    def Enumerate(path,oledObj=__import__("mpython").oled):# 以「枚举」为核心 的算法
+    def Enumerate(path,oledObj=__import__("SeniorOS.system.devlib")):# 以「枚举」为核心 的算法
         if eval("[/Const('screenshotMethod')/]")=="fast": # 速度优先
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')
@@ -159,6 +159,11 @@ class Screenshot:
                 for x in range(128):
                     buffer[x//8+y*16]|=oledObj.pixel(x,y)<<7-(x%8)
             # 保存为PBM文件
+            try:
+                os.chdir("/SeniorOS/downloads")
+            except:
+                os.mkdir("/SeniorOS/downloads")
+                os.chdir("/SeniorOS/downloads")
             with open('screenshot.pbm', 'wb') as f:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
@@ -184,40 +189,3 @@ def Tree(path="/",prt=print,_tabs=0):
         prt("│"*_tabs+lk+i)
         if n<ldirs:
             Tree(path+'/'+i,prt,_tabs+1)
-
-def Load(moduleName, delete=False, log=True):
-    modulePath = eval("[/Const('systemName')/]") + "."
-    moduleName = modulePath + moduleName
-    # 动态加载模块
-    try:
-        module = __import__(moduleName, globals(), locals(), -1)
-        if log == True:
-            LogManager.Output(str(module), "INFO")
-        if delete == True:
-            Del(moduleName)
-    except IndexError as error:
-        LogManager.Output(error, "ERROR")
-    # print(module)
-
-def Run(moduleName, functionName, log=True):
-    modulePath = eval("[/Const('systemName')/]") + "."
-    moduleName = modulePath + moduleName
-    try:
-        eval(moduleName + '.' + functionName + "()", globals(), locals())
-        if log == True:
-            LogManager.Output(moduleName + '.' + functionName + "()", "INFO")
-    except IndexError as error:
-        LogManager.Output(moduleName + '.' + functionName + "(): " + error, "ERROR")
-
-def Del(moduleName, log=True):
-    modulePath = eval("[/Const('systemName')/]") + "."
-    moduleName = modulePath + moduleName
-    try:
-        del sys.modules[moduleName]
-        if log == True:
-            LogManager.Output("del " + moduleName, "INFO")
-    except IndexError as error:
-        LogManager.Output("del " + moduleName + error, "INFO")
-
-def ListState(list, num):
-    return (''.join([str(num + 1),'/',str(len(list))]))

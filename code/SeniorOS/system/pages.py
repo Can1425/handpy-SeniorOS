@@ -116,10 +116,7 @@ def SettingPanel():
 
 
 def Home():
-    Core.Load('style.home')
-    LogManager.Output(str(gc.mem_alloc()), "MSG")
-    while not eval("[/GetButtonExpr('thab')/]"):
-        Core.Run('style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
+    PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"))
     if button_a.is_pressed():
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,15,-20)
         Core.Load('system.pages', 'CloudNotification')
@@ -134,7 +131,7 @@ def Home():
         DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 0, 46, 128, 46)
     elif eval("[/GetButtonExpr('ab')/]"):
         pass
-    Core.Del('style.home')
+    del sys.modules['SeniorOS.style.home']
 
 def About():
     oled.fill(0)

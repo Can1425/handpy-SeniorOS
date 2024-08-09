@@ -1,0 +1,2 @@
+[pyinstaller40]
+hook-dirs = pywebio.platform.pyinstaller:get_hook_dirs
