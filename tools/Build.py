@@ -1,63 +1,88 @@
-# 针对FlagOS的构建工具
+import os
+import shutil
+import urllib.request
+import logging
+from git import Repo  # GitPython
+from ReplaceExpression import ReplaceExpr  # 确保导入ReplaceExpr
 
-import shutil,os
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
-# 配置部分初始化
-try:
-    from BuildConfig import *
-except:
-    # 释放文件BuildCfg
-    with open("./BuildConfig.py",'wb')as f:f.write(__import__('zlib').decompress(b'x\x9cM\x8f]K\xc2`\x18\x86\xcf\xf7+\xc6<)(\xb5S\xc1\xa3<\x95\x02;\x1fK_\xdd"6\xd9^\x83\x08C\xd3L1[\xa0&\xf8A\nR\x16\xe5\x8c>\xdc\xec\xc3?\xb3\xe7\xd1\xfd\x8bf\x12\xf8\x1c_\xf7}_\x8f\x87\x85\xef*\x94*N\xcf\x9a\xb5\x86\xf6g\x15&\xd5Y3?\x1f\x1b\xf0\x93g\x92\xaar@\xa2tW\xa0b\x90;\xf5\x89\x82\x1cK\x1eoF\x88,)\xeaN\xc4\xc71\x8c\x87\x05\xc3\x82I-N\x04\x9aRI D\xf6S\x890\xd14!A\xd8\xf9(77\xea\xf6\xb4\x87Y\xc3%\xf1\xb9\x0f\xfd<\xe8\x86\x93)a\xf9a\x19t\xda\x99\xf9]\x16\xbe2pm\xac\xf2\xae\x04\x0ez\xd0i,&t\xc3\x9ev\xf02\x0bW\xb7\xd8\x1d3\xb1\x95\x91\xe0\t\xc3\xba\xc7m+*\xf1\x86\x04*lS\xf5\xd0\xcb\xf3\x92,Q\x9e\xe7\x02{j\x8a0\xe9?Q\xd3t.t\xac\x8f\xb02d\xa1\x7f\xef\xe4\x06P,`\xee\x1c\n\xef\xb6Y\xb6\xcd\xca\xd2\x05[oX\xb3\x98\xa8"ktQ\xf8\xbf\xa0EUBdMTh\x98PQ\x89q\x01..h\x94\xdb`\xdd\xd7\x8a\x8f\xf0\xa2/\x85\xf1\xc6\xc2\xd7\xfa2sDTMRd\x17\xdd\xf2\xfa\xbd~\xceEg\xa5"\xb6\x9f@\x1f\xafa\xf3\x0c\x1b\x1f\xd8\xe8\xcej\x83u&\xfd\x0b\xd7k\xc8\x12'))
-    raise OSError("请先配置 BuildConfig.py")
-from git import Repo # git对应模块->GitPython
-projectRepo=Repo(projectPath)
-constData["branch"]=projectRepo.active_branch.name
-constData["fullCommitID"]=projectRepo.head.object.hexsha
-constData["commitID"]=projectRepo.head.object.hexsha[0:7]
-os.chdir(projectPath)
-codeDir="./code/"
-buildDir="./build/"
-from ReplaceExpression import *
+# 自动切换到父目录
+def change_working_directory():
+    current_dir = os.path.abspath(os.getcwd())
+    if current_dir.endswith('tools'):
+        new_dir = os.path.abspath(os.path.join(current_dir, '..'))
+        logging.info(f"当前工作目录以 'tools' 结尾，切换到父目录: {new_dir}")
+        os.chdir(new_dir)
 
-# 自动生成构建清单
-# 需要使用os.walk
-def treeDir(dir):
-    result=[]
-    for root,dirs,files in os.walk(dir):
-        for file in files:
-            if file.endswith(".py"):
-                result.append(os.path.join(root,file).strip(codeDir))
-    return result
+# 首先确保 BuildConfig.py 已下载
+def ensure_build_config():
+    url = "https://raw.githubusercontent.com/Can1425/handpy-SeniorOS/Alpha/tools/BuildConfig.py"
+    save_path = "BuildConfig.py"
+    if not os.path.exists(save_path):
+        logging.info("BuildConfig.py 不存在，正在下载...")
+        urllib.request.urlretrieve(url, save_path)
+        logging.info("BuildConfig.py 下载完成。")
 
+# 确保 BuildConfig.py 已存在
+change_working_directory()  # 确保在任何其他操作之前切换工作目录
+ensure_build_config()
 
-def Build(codeFile,inputDir,outputDir):
-    print("\n")
-    print(r"  /$$$$$$                      /$$                      /$$$$$$   /$$$$$$ ")
-    print(r" /$$__  $$                    |__/                     /$$__  $$ /$$__  $$")
-    print(r"| $$  \__/  /$$$$$$  /$$$$$$$  /$$  /$$$$$$   /$$$$$$ | $$  \ $$| $$  \__/")
-    print(r"|  $$$$$$  /$$__  $$| $$__  $$| $$ /$$__  $$ /$$__  $$| $$  | $$|  $$$$$$ ")
-    print(r" \____  $$| $$$$$$$$| $$  \ $$| $$| $$  \ $$| $$  \__/| $$  | $$ \____  $$")
-    print(r" /$$  \ $$| $$_____/| $$  | $$| $$| $$  | $$| $$      | $$  | $$ /$$  \ $$")
-    print(r"|  $$$$$$/|  $$$$$$$| $$  | $$| $$|  $$$$$$/| $$      |  $$$$$$/|  $$$$$$/")
-    print(r"  \______/  \_______/|__/  |__/|__/ \______/ |__/       \______/  \______/ ")
-    print("\n")
-    try:shutil.rmtree(outputDir)
-    except:pass
-    shutil.copytree(inputDir,outputDir)
+# 然后再导入所需模块
+from BuildConfig import *
+
+# 初始化Git仓库数据
+def initialize_git_data(project_path):
+    project_repo = Repo(project_path)
+    const_data = {
+        "branch": project_repo.active_branch.name,
+        "fullCommitID": project_repo.head.object.hexsha,
+        "commitID": project_repo.head.object.hexsha[:7]
+    }
+    return const_data
+
+# 遍历目录获取Python文件列表
+def tree_dir(directory):
+    return [
+        os.path.join(root, file).strip('./code/')
+        for root, dirs, files in os.walk(directory)
+        for file in files if file.endswith(".py")
+    ]
+
+# 构建功能
+def build_project(code_files, input_dir, output_dir):
+    logging.info("\n" + "=" * 40 + "\n" + " FlagOS 构建工具 ".center(40) + "\n" + "=" * 40 + "\n")
+
+    # 清理输出目录
+    shutil.rmtree(output_dir, ignore_errors=True)
+    shutil.copytree(input_dir, output_dir)
+
     # 替换表达式
-    for i in codeFile:
-        print(f"EXPR {i}")
-        ReplaceExpr(outputDir+i)
-    # 编译
-    for i in codeFile:
-        if i == "boot.py":
+    for file in code_files:
+        logging.info(f"EXPR {file}")
+        ReplaceExpr(os.path.join(output_dir, file))
+
+    # 编译文件
+    for file in code_files:
+        if file == "boot.py":
             continue
-        print(f"MPYC {i}")
-        path=outputDir+i
-        os.system(f"mpy-cross-v5 {path} -march=xtensawin")
-        os.remove(path)
+        logging.info(f"MPYC {file}")
+        file_path = os.path.join(output_dir, file)
+        os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
+        os.remove(file_path)
 
+if __name__ == "__main__":
+    # 获取项目路径并初始化Git数据
+    project_path = './'
+    const_data = initialize_git_data(project_path)
 
-if __name__=="__main__":
-    
-    Build(treeDir(codeDir),codeDir,buildDir)
+    # 构建项目
+    code_files = tree_dir('./code/')
+    build_project(code_files, './code/', './build/')
