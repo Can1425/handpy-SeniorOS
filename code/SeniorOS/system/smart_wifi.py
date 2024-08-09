@@ -15,9 +15,17 @@ HTML=b"""
     <title>ESP32 Web Server</title>
 </head>
 <body>
-    <p>192.168.4.1/ssid:WiFi name</p>
-    <p>192.168.4.1/pwd:WiFi password</p>
-    <a href="exit" target="top">Click to exit and connect WIFI</a>
+    <form action="http://192.168.4.1" method="get">
+        Type WIFISSID:
+        <input type="text" name="ssid" placeholder="type your wifiSSID">
+        <input type="submit" value="upload">
+    </form>
+    <form action="http://192.168.4.1" method="get">
+        Type WIFI Password:
+        <input type="text" name="pwd" placeholder="type your wifiPassword">
+        <input type="submit" value="upload">
+    </form>
+    <a href="http://192.168.4.1/exit">exit</a>
 </body>
 """
 #报错了把这个打开就行
@@ -54,14 +62,12 @@ class wifi:
             time.sleep_ms(500)
         print("")
         print('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())), "INFO")
-'''
+#'''
 ap = network.WLAN(network.AP_IF)
 ap.config(essid='SeniorOS-WIFI', authmode=4, password='12345678')
 ap.active(True)
 
-import SeniorOS.system.daylight as DayLight
-from SeniorOS.system.devlib import *
-import SeniorOS.system.log_manager as LogManager
+
 
 def connectWIFI(ssid,pwd):
     global ap
@@ -71,11 +77,6 @@ def connectWIFI(ssid,pwd):
     sta=wifi()
     sta.connectWiFi(ssid,pwd)
 def main():
-    DayLight.App.Style1("高级 WIFI 配置")
-    DayLight.Text('请连接以完成配置', 5, 18, 1)
-    DayLight.Text('WIFIName:SeniorOS-WIFI', 5, 36, 1)
-    DayLight.Text('WIFIPassWord:123456', 5, 54, 1)
-    oled.show()
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(socket.getaddrinfo("0.0.0.0", 80)[0][-1])
@@ -93,17 +94,17 @@ def main():
                 break
         if q.startswith('GET / HTTP/1.1'):
             client_sock.write(HTML)
-        elif q.startswith('GET /ssid:'):
+        elif q.startswith('GET /?ssid='):
             q=q.split("/")[1]
             q=q[:-5]
-            q=q.split(":")[1]
+            q=q.split("=")[1]
             print(q)
             ssid=q
             client_sock.write('get')
-        elif q.startswith('GET /pwd'):
+        elif q.startswith('GET /?pwd='):
             q=q.split("/")[1]
             q=q[:-5]
-            q=q.split(":")[1]
+            q=q.split("=")[1]
             #print(q)
             pwd=q
             client_sock.write('get')

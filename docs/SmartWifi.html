@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ESP32 Web Server</title>
+</head>
+<body>
+    <form action="http://192.168.4.1" method="get">
+        Type WIFISSID:
+        <input type="text" name="ssid" placeholder="type your wifiSSID">
+        <input type="submit" value="upload">
+    </form>
+    <form action="http://192.168.4.1" method="get">
+        Type WIFI Password:
+        <input type="text" name="pwd" placeholder="type your wifiPassword">
+        <input type="submit" value="upload">
+    </form>
+    <a href="http://192.168.4.1/exit">exit</a>
+</body>
