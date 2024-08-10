@@ -4,7 +4,8 @@ import urllib.request
 import logging
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from git import Repo  # GitPython
+from pathlib import Path
+from git import Repo
 from ReplaceExpression import ReplaceExpr  # Ensure ReplaceExpr is imported
 
 # 配置日志
@@ -18,17 +19,19 @@ logging.basicConfig(
 
 # 自动切换到父目录
 def change_working_directory():
-    current_dir = os.path.abspath(os.getcwd())
-    if current_dir.endswith('tools'):
-        new_dir = os.path.abspath(os.path.join(current_dir, '..'))
+    current_dir = Path.cwd()
+    if current_dir.name == 'tools':
+        new_dir = current_dir.parent
         logging.info(f"当前工作目录以 'tools' 结尾，切换到父目录: {new_dir}")
         os.chdir(new_dir)
 
 # 首先确保 BuildConfig.py 已下载
 def ensure_build_config():
+    tools_dir = Path("tools")
+    tools_dir.mkdir(parents=True, exist_ok=True)  # 确保 tools/ 目录存在
     url = "https://raw.githubusercontent.com/Can1425/handpy-SeniorOS/Alpha/tools/BuildConfig.py"
-    save_path = "BuildConfig.py"
-    if not os.path.exists(save_path):
+    save_path = tools_dir / "BuildConfig.py"
+    if not save_path.exists():
         logging.info("BuildConfig.py 不存在，正在下载...")
         urllib.request.urlretrieve(url, save_path)
         logging.info("BuildConfig.py 下载完成。")
@@ -43,31 +46,29 @@ from BuildConfig import *
 # 初始化Git仓库数据
 def initialize_git_data(project_path):
     project_repo = Repo(project_path)
-    const_data = {
+    return {
         "branch": project_repo.active_branch.name,
         "fullCommitID": project_repo.head.object.hexsha,
         "commitID": project_repo.head.object.hexsha[:7]
     }
-    return const_data
 
 # 遍历目录获取Python文件列表
 def tree_dir(directory):
     return [
-        os.path.join(root, file).strip('./code/')
-        for root, dirs, files in os.walk(directory)
-        for file in files if file.endswith(".py")
+        str(file.relative_to(directory))
+        for file in Path(directory).rglob("*.py")
     ]
 
 # 替换表达式
 def replace_expression(file):
-    logging.info(f"EXPR {file}")
+    logging.info(f"处理文件：{file}")
     ReplaceExpr(file)
 
 # 编译文件
 def compile_file(file_path):
-    if os.path.basename(file_path) == "boot.py":
+    if Path(file_path).name == "boot.py":
         return
-    logging.info(f"MPYC {file_path}")
+    logging.info(f"编译文件：{file_path}")
     os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
     os.remove(file_path)
 
@@ -77,35 +78,43 @@ def build_project(code_files, input_dir, output_dir):
     start_time = time.time()
 
     # 清理输出目录
-    shutil.rmtree(output_dir, ignore_errors=True)
-    shutil.copytree(input_dir, output_dir)
+    output_path = Path(output_dir)
+    if output_path.exists():
+        shutil.rmtree(output_path)
+    shutil.copytree(input_dir, output_path)
 
     # Multi-threaded expression replacement
     replace_start_time = time.time()
     with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(replace_expression, os.path.join(output_dir, file)) for file in code_files]
+        futures = [executor.submit(replace_expression, output_path / file) for file in code_files]
         for future in as_completed(futures):
-            future.result()  # Ensures that exceptions are raised
+            try:
+                future.result()  # Ensures that exceptions are raised
+            except Exception as e:
+                logging.error(f"替换表达式出错: {e}")
 
     replace_duration = time.time() - replace_start_time
-    logging.info(f"Expression replacement took {replace_duration:.2f} seconds")
+    logging.info(f"表达式替换耗时 {replace_duration:.2f} 秒")
 
     # Multi-threaded file compilation
     compile_start_time = time.time()
     with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(compile_file, os.path.join(output_dir, file)) for file in code_files]
+        futures = [executor.submit(compile_file, output_path / file) for file in code_files]
         for future in as_completed(futures):
-            future.result()  # Ensures that exceptions are raised
+            try:
+                future.result()  # Ensures that exceptions are raised
+            except Exception as e:
+                logging.error(f"编译文件出错: {e}")
 
     compile_duration = time.time() - compile_start_time
-    logging.info(f"File compilation took {compile_duration:.2f} seconds")
+    logging.info(f"文件编译耗时 {compile_duration:.2f} 秒")
 
     total_duration = time.time() - start_time
-    logging.info(f"Total build process took {total_duration:.2f} seconds")
+    logging.info(f"整个构建过程耗时 {total_duration:.2f} 秒")
 
 if __name__ == "__main__":
     # 获取项目路径并初始化Git数据
-    project_path = './'
+    project_path = Path('./')
     const_data = initialize_git_data(project_path)
 
     # 构建项目
