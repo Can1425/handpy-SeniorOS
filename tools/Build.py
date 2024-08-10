@@ -1,63 +1,122 @@
-# 针对FlagOS的构建工具
+import os
+import shutil
+import urllib.request
+import logging
+import time
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from pathlib import Path
+from git import Repo
+from ReplaceExpression import ReplaceExpr  # Ensure ReplaceExpr is imported
 
-import shutil,os
+# 配置日志
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
 
-# 配置部分初始化
-try:
-    from BuildConfig import *
-except:
-    # 释放文件BuildCfg
-    with open("./BuildConfig.py",'wb')as f:f.write(__import__('zlib').decompress(b'x\x9cM\x8f]K\xc2`\x18\x86\xcf\xf7+\xc6<)(\xb5S\xc1\xa3<\x95\x02;\x1fK_\xdd"6\xd9^\x83\x08C\xd3L1[\xa0&\xf8A\nR\x16\xe5\x8c>\xdc\xec\xc3?\xb3\xe7\xd1\xfd\x8bf\x12\xf8\x1c_\xf7}_\x8f\x87\x85\xef*\x94*N\xcf\x9a\xb5\x86\xf6g\x15&\xd5Y3?\x1f\x1b\xf0\x93g\x92\xaar@\xa2tW\xa0b\x90;\xf5\x89\x82\x1cK\x1eoF\x88,)\xeaN\xc4\xc71\x8c\x87\x05\xc3\x82I-N\x04\x9aRI D\xf6S\x890\xd14!A\xd8\xf9(77\xea\xf6\xb4\x87Y\xc3%\xf1\xb9\x0f\xfd<\xe8\x86\x93)a\xf9a\x19t\xda\x99\xf9]\x16\xbe2pm\xac\xf2\xae\x04\x0ez\xd0i,&t\xc3\x9ev\xf02\x0bW\xb7\xd8\x1d3\xb1\x95\x91\xe0\t\xc3\xba\xc7m+*\xf1\x86\x04*lS\xf5\xd0\xcb\xf3\x92,Q\x9e\xe7\x02{j\x8a0\xe9?Q\xd3t.t\xac\x8f\xb02d\xa1\x7f\xef\xe4\x06P,`\xee\x1c\n\xef\xb6Y\xb6\xcd\xca\xd2\x05[oX\xb3\x98\xa8"ktQ\xf8\xbf\xa0EUBdMTh\x98PQ\x89q\x01..h\x94\xdb`\xdd\xd7\x8a\x8f\xf0\xa2/\x85\xf1\xc6\xc2\xd7\xfa2sDTMRd\x17\xdd\xf2\xfa\xbd~\xceEg\xa5"\xb6\x9f@\x1f\xafa\xf3\x0c\x1b\x1f\xd8\xe8\xcej\x83u&\xfd\x0b\xd7k\xc8\x12'))
-    raise OSError("请先配置 BuildConfig.py")
-from git import Repo # git对应模块->GitPython
-projectRepo=Repo(projectPath)
-constData["branch"]=projectRepo.active_branch.name
-constData["fullCommitID"]=projectRepo.head.object.hexsha
-constData["commitID"]=projectRepo.head.object.hexsha[0:7]
-os.chdir(projectPath)
-codeDir="./code/"
-buildDir="./build/"
-from ReplaceExpression import *
+# 自动切换到父目录
+def change_working_directory():
+    current_dir = Path.cwd()
+    if current_dir.name == 'tools':
+        new_dir = current_dir.parent
+        logging.info(f"当前工作目录以 'tools' 结尾，切换到父目录: {new_dir}")
+        os.chdir(new_dir)
 
-# 自动生成构建清单
-# 需要使用os.walk
-def treeDir(dir):
-    result=[]
-    for root,dirs,files in os.walk(dir):
-        for file in files:
-            if file.endswith(".py"):
-                result.append(os.path.join(root,file).strip(codeDir))
-    return result
+# 首先确保 BuildConfig.py 已下载
+def ensure_build_config():
+    tools_dir = Path("tools")
+    tools_dir.mkdir(parents=True, exist_ok=True)  # 确保 tools/ 目录存在
+    url = "https://raw.githubusercontent.com/Can1425/handpy-SeniorOS/Alpha/tools/BuildConfig.py"
+    save_path = tools_dir / "BuildConfig.py"
+    if not save_path.exists():
+        logging.info("BuildConfig.py 不存在，正在下载...")
+        urllib.request.urlretrieve(url, save_path)
+        logging.info("BuildConfig.py 下载完成。")
 
+# 确保 BuildConfig.py 已存在
+change_working_directory()  # 确保在任何其他操作之前切换工作目录
+ensure_build_config()
 
-def Build(codeFile,inputDir,outputDir):
-    print("\n")
-    print(r"  /$$$$$$                      /$$                      /$$$$$$   /$$$$$$ ")
-    print(r" /$$__  $$                    |__/                     /$$__  $$ /$$__  $$")
-    print(r"| $$  \__/  /$$$$$$  /$$$$$$$  /$$  /$$$$$$   /$$$$$$ | $$  \ $$| $$  \__/")
-    print(r"|  $$$$$$  /$$__  $$| $$__  $$| $$ /$$__  $$ /$$__  $$| $$  | $$|  $$$$$$ ")
-    print(r" \____  $$| $$$$$$$$| $$  \ $$| $$| $$  \ $$| $$  \__/| $$  | $$ \____  $$")
-    print(r" /$$  \ $$| $$_____/| $$  | $$| $$| $$  | $$| $$      | $$  | $$ /$$  \ $$")
-    print(r"|  $$$$$$/|  $$$$$$$| $$  | $$| $$|  $$$$$$/| $$      |  $$$$$$/|  $$$$$$/")
-    print(r"  \______/  \_______/|__/  |__/|__/ \______/ |__/       \______/  \______/ ")
-    print("\n")
-    try:shutil.rmtree(outputDir)
-    except:pass
-    shutil.copytree(inputDir,outputDir)
-    # 替换表达式
-    for i in codeFile:
-        print(f"EXPR {i}")
-        ReplaceExpr(outputDir+i)
-    # 编译
-    for i in codeFile:
-        if i == "boot.py":
-            continue
-        print(f"MPYC {i}")
-        path=outputDir+i
-        os.system(f"mpy-cross-v5 {path} -march=xtensawin")
-        os.remove(path)
+# 然后再导入所需模块
+from BuildConfig import *
 
+# 初始化Git仓库数据
+def initialize_git_data(project_path):
+    project_repo = Repo(project_path)
+    return {
+        "branch": project_repo.active_branch.name,
+        "fullCommitID": project_repo.head.object.hexsha,
+        "commitID": project_repo.head.object.hexsha[:7]
+    }
 
-if __name__=="__main__":
-    
-    Build(treeDir(codeDir),codeDir,buildDir)
+# 遍历目录获取Python文件列表
+def tree_dir(directory):
+    return [
+        str(file.relative_to(directory))
+        for file in Path(directory).rglob("*.py")
+    ]
+
+# 替换表达式
+def replace_expression(file):
+    logging.info(f"处理文件：{file}")
+    ReplaceExpr(file)
+
+# 编译文件
+def compile_file(file_path):
+    if Path(file_path).name == "boot.py":
+        return
+    logging.info(f"编译文件：{file_path}")
+    os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
+    os.remove(file_path)
+
+def build_project(code_files, input_dir, output_dir):
+    logging.info("\n" + "=" * 40 + "\n" + " FlagOS 构建工具 ".center(40) + "\n" + "=" * 40 + "\n")
+
+    start_time = time.time()
+
+    # 清理输出目录
+    output_path = Path(output_dir)
+    if output_path.exists():
+        shutil.rmtree(output_path)
+    shutil.copytree(input_dir, output_path)
+
+    # Multi-threaded expression replacement
+    replace_start_time = time.time()
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(replace_expression, output_path / file) for file in code_files]
+        for future in as_completed(futures):
+            try:
+                future.result()  # Ensures that exceptions are raised
+            except Exception as e:
+                logging.error(f"替换表达式出错: {e}")
+
+    replace_duration = time.time() - replace_start_time
+    logging.info(f"表达式替换耗时 {replace_duration:.2f} 秒")
+
+    # Multi-threaded file compilation
+    compile_start_time = time.time()
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(compile_file, output_path / file) for file in code_files]
+        for future in as_completed(futures):
+            try:
+                future.result()  # Ensures that exceptions are raised
+            except Exception as e:
+                logging.error(f"编译文件出错: {e}")
+
+    compile_duration = time.time() - compile_start_time
+    logging.info(f"文件编译耗时 {compile_duration:.2f} 秒")
+
+    total_duration = time.time() - start_time
+    logging.info(f"整个构建过程耗时 {total_duration:.2f} 秒")
+
+if __name__ == "__main__":
+    # 获取项目路径并初始化Git数据
+    project_path = Path('./')
+    const_data = initialize_git_data(project_path)
+
+    # 构建项目
+    code_files = tree_dir('./code/')
+    build_project(code_files, './code/', './build/')
