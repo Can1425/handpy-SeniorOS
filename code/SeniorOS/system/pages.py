@@ -42,7 +42,7 @@ def WifiPages():
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
 def CloudNotification():
-    time.sleep(0.2)
+    time.sleep_ms(int(eval("[/Const('interval')/]")))
     DayLight.App.Style1(eval("[/Language('云端通知')/]"))
     try:
         oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 2)
@@ -93,13 +93,12 @@ def SettingPanel():
     0: HS_CPU,
     1: HS_Ram,
     2: HS_flash,
-    3: HS_RGB,
     }
     hardware=["CPU","Ram","flash","RGB灯","麦克风","OLED"]
     def hardwareSettings():
         while not button_a.is_pressed():
             options = DayLight.ListOptions(hardware, 8, True, "None")
-            ListOperation.get(options)()# 这么用，就可以省略大量的 if
+            ListOperation.get(options)()
     while not button_a.is_pressed():
         oled.fill(0)
         oled.DispChar("PY-板载硬件",0,0)
@@ -116,7 +115,8 @@ def SettingPanel():
 
 
 def Home():
-    PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"))
+    while not eval("[/GetButtonExpr('thab')/]"):
+        PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"))
     if button_a.is_pressed():
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,15,-20)
         Core.Load('system.pages', 'CloudNotification')

@@ -5,7 +5,7 @@ import SeniorOS.system.core as Core
 import urequests
 import gc
 import os
-source = Core.Data.Get("text", "radienPluginsSource")
+source = "https://" + Core.Data.Get("text", "radienPluginsSource")
 
 def Main():
     global source

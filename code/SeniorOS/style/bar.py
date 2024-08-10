@@ -6,7 +6,7 @@ import time
 #-----------------------------------------------------------------------------------#
 def Style1(appTitle):
     import SeniorOS.system.daylight as DayLight
-    DayLight.Text(appTitle, 5, 0, 3, 90)
+    DayLight.Text(appTitle, 5, 0, 3, 1, 100)
     # oled.DispChar(appTitle, 5, 0, 1)
     oled.DispChar(DayLight.UITime(True), 93, 0, 1)
 #-----------------------------------------------------------------------------------#

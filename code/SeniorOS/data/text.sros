@@ -4,8 +4,8 @@ luminance:255
 lightMode:0
 homeStyleNum:3
 barStyleNum:1
-poetrySource:https://v1.jinrishici.com/rensheng.txt
-radienPluginsSource:https://gitee.com/can1425/mpython-senioros-radient
+poetrySource:v1.jinrishici.com/rensheng.txt
+radienPluginsSource:gitee.com/can1425/mpython-senioros-radient
 timingServer:time.windows.com
 connectWifiMode:1
 pagesDataDump:0

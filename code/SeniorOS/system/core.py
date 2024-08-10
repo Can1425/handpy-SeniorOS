@@ -189,3 +189,6 @@ def Tree(path="/",prt=print,_tabs=0):
         prt("│"*_tabs+lk+i)
         if n<ldirs:
             Tree(path+'/'+i,prt,_tabs+1)
+
+def ListState(dispContent, selectNum):
+    return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))

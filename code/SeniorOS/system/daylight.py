@@ -1,5 +1,5 @@
 import SeniorOS.system.core as Core
-import sys
+import gc
 import time
 from SeniorOS.system.devlib import *
 import SeniorOS.system.log_manager as LogManager
@@ -26,11 +26,12 @@ HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)
 
 class App:
     def Style1(appTitle:str):
+        gc.collect()
         oled.fill(0)
         UITools()
-        PagesManager.Main.Import('SeniorOS.style.bar', ('Style' + Core.Data.Get("text", "barStyleNum")), appTitle)
-        del sys.modules['SeniorOS.style.bar']
+        PagesManager.Main.Import('SeniorOS.style.bar', ('Style' + Core.Data.Get("text", "barStyleNum")), True , appTitle)
     def Style2(appTitle:str):
+        gc.collect()
         oled.fill(0)
         UITools()
         Text(appTitle, 5, 5, 3, 90)
@@ -134,7 +135,7 @@ def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
         oled.fill_rect(0, 20, 128, 45, 0)
         oled.DispChar(Core.ListState(dispContent, listNum), 105, 40, 1)
         try:
-            Text(str(dispContent[listNum]), 5, y, 3)
+            Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
             # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
             Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
             # oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
@@ -142,11 +143,11 @@ def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
             # oled.DispChar(str(dispContent[(listNum + 2)]), 5, y + 30, 1)
         except:
             try:
-                Text(str(dispContent[listNum]), 5, y, 3)
+                Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
                 # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
                 Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
             except:
-                Text(str(dispContent[listNum]), 5, y, 3)
+                Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
                 # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
         if window == True:
             oled.RoundRect(2, y - 6, 124, 55, 2, 1)
@@ -296,13 +297,13 @@ def LuminanceSet():
     Core.Data.Write("text",'luminance',str(luminance))
     return
 
-def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16):
+def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16, showMode = 1):
     if outMode == 1:
-        oled.DispChar(text, x, y, 1, Outmode.stop, maximum_x, space, return_x = returnX, return_addy = returnAddy)
+        oled.DispChar(text, x, y, showMode, Outmode.stop, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
     if outMode == 2:
-        oled.DispChar(text, x, y, 1, Outmode.autoreturn, maximum_x, space, return_x = returnX, return_addy = returnAddy)
+        oled.DispChar(text, x, y, showMode, Outmode.autoreturn, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
     if outMode == 3:
-        oled.DispChar(text, x, y, 1, Outmode.ellipsis, maximum_x, space, return_x = returnX, return_addy = returnAddy)
+        oled.DispChar(text, x, y, showMode, Outmode.ellipsis, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return

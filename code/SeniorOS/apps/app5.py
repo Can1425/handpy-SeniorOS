@@ -4,10 +4,12 @@ import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import urequests
 
+source = "https://" + Core.Data.Get("text", "poetrySource")
+
 def Poetry():
-    global poetry
+    global poetry, source
     try:
-        _response = urequests.get(Core.Data.Get("text", "poetrySource"), headers={})
+        _response = urequests.get(source, headers={})
         poetry = (_response.text.split('，'))
         return
     except:
