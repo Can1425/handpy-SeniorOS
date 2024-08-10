@@ -21,9 +21,7 @@ jobs:
     
     - name: Install dependencies
       run: |
-        python3 -m pip install --upgrade pip setuptools wheel
         pip3 install GitPython mpy-cross-v5
-        sudo apt install zip unzip
 
     - name: Build project
       run: python3 tools/Build.py
