@@ -1,73 +1,77 @@
-# ReplaceExpr对于SROS具有强依赖性
-# 本代码如需用于其他项目请同时移植 ReplaceExpr(func)-功能主体 和 Tools(class)-其他工具
-
-# 替换代码中被特殊标记了的表达式 ByGxxk
-# 格式：eval("[/表达式/]")
-
 import sys
-from BuildConfig import * # 此处按照逻辑上讲 Build.py已经做过一次校验 因此可以直接import
+import re
+from BuildConfig import *  # 此处按照逻辑上讲 Build.py已经做过一次校验 因此可以直接import
+
 class Tools:
     # 根据targetButton值生成一个纯or表达式
-    # 例：输入：thab
-    # 
-    def GetButtonExpr(targetButton,connector="or",touchPadValue=100):
-        targetButtonList=[]
+    def GetButtonExpr(targetButton, connector="or", touchPadValue=100):
+        targetButtonList = []
         for i in targetButton:
             targetButtonList.append(eval(i,
-                                       {'a':"button_a.value()==0",
-                                        'b':"button_b.value()==0",
-                                        'p':f"touchPad_P.read()<{touchPadValue}",
-                                        'y':f"touchPad_Y.read()<{touchPadValue}",
-                                        't':f"touchPad_T.read()<{touchPadValue}",
-                                        'h':f"touchPad_H.read()<{touchPadValue}",
-                                        'o':f"touchPad_O.read()<{touchPadValue}",
-                                        'n':f"touchPad_N.read()<{touchPadValue}"
+                                       {'a': "button_a.value()==0",
+                                        'b': "button_b.value()==0",
+                                        'p': f"touchPad_P.read()<{touchPadValue}",
+                                        'y': f"touchPad_Y.read()<{touchPadValue}",
+                                        't': f"touchPad_T.read()<{touchPadValue}",
+                                        'h': f"touchPad_H.read()<{touchPadValue}",
+                                        'o': f"touchPad_O.read()<{touchPadValue}",
+                                        'n': f"touchPad_N.read()<{touchPadValue}"
             }))
         return f"({f' {connector} '.join(targetButtonList)})"
+
     def Const(name):
         global constData
         return "'" + constData[name] + "'"
+
     def EnableDebugMsg(id):
         global debugMessage
         return "pass" if debugMessage[id] else "#" 
-    hashtag="#"
+
+    hashtag = "#"
+
     def Language(name):
-        global Language,Chineses,English
+        global Language, Chineses, English
         if Language == "Chinese":
             return "'" + Chineses[name] + "'"
         elif Language == "English":
             return "'" + English[name] + "'"
 
-def ReplaceExpr(inputPath,outputPath=""):
-    if outputPath=="":outputPath=inputPath
+def ReplaceExpr(inputPath, outputPath=""):
+    if outputPath == "":
+        outputPath = inputPath
+
     # 读取文件
     with open(inputPath, "r", encoding="utf-8") as f:
-        code = [i.strip("\r") for i in f.read().split("\n")] # strip属于对crlf作兼容
-    # 遍历并查找标识符
-    for line in range(len(code)):
-        if ("eval(" in code[line]) and ("[/" in code[line]) and ("/]" in code[line]) and (")" in code[line]):
-            exprStart=code[line].index("[/")+2  # +2是因为 string.index 返回的是起始位置 需要+ len("[/") 才行
-            exprEnd=code[line].index("/]")      # 防止各位看着有点晕 拆分来写 顺手加个日志 反正电脑端性能无所谓
-            exprResult=eval(f"Tools.{code[line][exprStart:exprEnd]}")
-            print(f"将 {code[line][exprStart-8:exprEnd+4]} 替换为 {exprResult}")
+        code = f.read()
 
-            tmpVar=list(code[line])  # 用于兼容Python的不可变类型
-            tmpVar[exprStart-8:exprEnd+4]=exprResult # 等号左侧是从eval函数开始到结束的需要替换的部分 
-            code[line]="".join(tmpVar)
-    # 写入
-    with open(outputPath, "w", encoding="utf-8") as f:
-        f.write("\n".join(code))
+    # 使用优化的正则表达式模式，匹配 "eval("[/表达式/]")" 的部分
+    pattern = re.compile(r'eval\("\[\/(.*?)\/\]\"\)')
 
-    # 写入
+    # 缓存表达式结果
+    expr_cache = {}
+
+    def replace_function(match):
+        expr = match.group(1)
+        if expr not in expr_cache:
+            try:
+                expr_cache[expr] = eval(f"Tools.{expr}")
+            except Exception as e:
+                print(f"替换失败: {e}")
+                expr_cache[expr] = match.group(0)  # 错误时保留原表达式
+        return expr_cache[expr]
+
+    # 执行替换
+    updated_code = pattern.sub(replace_function, code)
+
+    # 写入文件
     with open(outputPath, "w", encoding="utf-8") as f:
-        f.write("\n".join(code))
-    
+        f.write(updated_code)
 
 if __name__ == "__main__":
-    if len(sys.argv)==1:
-        ReplaceExpr(input("请给定输入文件路径\n"),input("请给定输出文件路径(可不填)\n"))
+    if len(sys.argv) == 1:
+        ReplaceExpr(input("请给定输入文件路径\n"), input("请给定输出文件路径(可不填)\n"))
     else:
         try:
-            ReplaceExpr(sys.argv[1],sys.argv[2])
+            ReplaceExpr(sys.argv[1], sys.argv[2])
         except:
             ReplaceExpr(sys.argv[1])
