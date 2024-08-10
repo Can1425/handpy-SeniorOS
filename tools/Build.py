@@ -10,7 +10,7 @@ from ReplaceExpression import ReplaceExpr  # Ensure ReplaceExpr is imported
 
 # 配置日志
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.INFO,  # 只记录INFO及以上级别的日志
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler()
@@ -25,7 +25,7 @@ def change_working_directory():
         logging.info(f"当前工作目录以 'tools' 结尾，切换到父目录: {new_dir}")
         os.chdir(new_dir)
 
-# 首先确保 BuildConfig.py 已下载
+# 确保 BuildConfig.py 已下载
 def ensure_build_config():
     tools_dir = Path("tools")
     tools_dir.mkdir(parents=True, exist_ok=True)  # 确保 tools/ 目录存在
@@ -54,21 +54,18 @@ def initialize_git_data(project_path):
 
 # 遍历目录获取Python文件列表
 def tree_dir(directory):
-    return [
-        str(file.relative_to(directory))
-        for file in Path(directory).rglob("*.py")
-    ]
+    return [str(file.relative_to(directory)) for file in Path(directory).rglob("*.py")]
 
 # 替换表达式
 def replace_expression(file):
-    logging.info(f"处理文件：{file}")
+    logging.debug(f"处理文件：{file}")  # 将文件处理日志级别设置为DEBUG
     ReplaceExpr(file)
 
 # 编译文件
 def compile_file(file_path):
     if Path(file_path).name == "boot.py":
         return
-    logging.info(f"编译文件：{file_path}")
+    logging.debug(f"编译文件：{file_path}")  # 将文件处理日志级别设置为DEBUG
     os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
     os.remove(file_path)
 
@@ -85,26 +82,18 @@ def build_project(code_files, input_dir, output_dir):
 
     # Multi-threaded expression replacement
     replace_start_time = time.time()
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(replace_expression, output_path / file) for file in code_files]
-        for future in as_completed(futures):
-            try:
-                future.result()  # Ensures that exceptions are raised
-            except Exception as e:
-                logging.error(f"替换表达式出错: {e}")
-
+    with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        # 使用 map 函数批量处理替换任务
+        list(executor.map(replace_expression, (output_path / file for file in code_files)))
+        
     replace_duration = time.time() - replace_start_time
     logging.info(f"表达式替换耗时 {replace_duration:.2f} 秒")
 
     # Multi-threaded file compilation
     compile_start_time = time.time()
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(compile_file, output_path / file) for file in code_files]
-        for future in as_completed(futures):
-            try:
-                future.result()  # Ensures that exceptions are raised
-            except Exception as e:
-                logging.error(f"编译文件出错: {e}")
+    with ThreadPoolExecutor(max_workers=os.cpu_count()) as executor:
+        # 使用 map 函数批量处理编译任务
+        list(executor.map(compile_file, (output_path / file for file in code_files)))
 
     compile_duration = time.time() - compile_start_time
     logging.info(f"文件编译耗时 {compile_duration:.2f} 秒")
