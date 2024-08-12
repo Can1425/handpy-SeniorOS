@@ -189,24 +189,45 @@ class VastSea:
                 UITools()
 
     class SeniorMove:
-        @staticmethod
         def Line(nowX1:int, nowY1:int, nowX2:int, nowY2:int, newX1:int, newY1:int, newX2:int, newY2:int):
             oled.fill(0)
             oled.line(nowX1, nowY1, nowX2, nowY2, 1)
             oled.show()
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-                for _ in range(VastSea.speed):
-                    oled.fill(0)
+                for count in range(VastSea.speed):
+                    oled.line(nowX1, nowY1, nowX2, nowY2, 0)
                     nowX1 = nowX1 + ((newX1-nowX1) // VastSea.speed)
                     nowY1 = nowY1 - ((nowY1-newY1) // VastSea.speed + (newY1 - newY1//2))
                     nowX2 = nowX2 + ((newX2-nowX2) // VastSea.speed)
                     nowY2 = nowY2 - ((nowY2-newY2) // VastSea.speed + (newY2 - newY2//2))
-                    oled.line(newX1, newY1, newX2, newY2, 1)
+                    oled.line(nowX1, nowY1, nowX2, nowY2, 1)
+                    # oled.DispChar(str(nowX1), 0, 32, 1)
+                    # oled.DispChar(str(nowY1), 0, 48, 1)
+                    # oled.DispChar(str(nowX2), 50, 32, 1)
+                    # oled.DispChar(str(nowY2), 50, 48, 1)
                     oled.show()
-                    time.sleep_ms(10)
+            else:
+                VastSea.Off()
+            oled.fill(0)
+            time.sleep_ms(200)
+
+        def Text(text, nowX:int, nowY:int, newX:int, newY:int):
+            if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
                 oled.fill(0)
+                oled.DispChar(str(text), nowX, nowY)
                 oled.show()
-            return
+                for count in range(VastSea.speed):
+                    oled.fill_rect(0, nowY, 128, 16, 0)
+                    nowX = nowX + ((newX-nowX) // VastSea.speed)
+                    nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
+                    oled.DispChar(str(text), nowX, nowY)
+                    # oled.DispChar(str(nowX), 0, 32, 1)
+                    # oled.DispChar(str(nowY), 0, 48, 1)
+                    oled.show()
+            else:
+                VastSea.Off()
+            oled.fill(0)
+            time.sleep_ms(300)
 
 def UITools():
     try:
