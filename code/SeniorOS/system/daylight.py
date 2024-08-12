@@ -6,46 +6,44 @@ import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 LogManager.Output("system/daylight.mpy", "INFO")
 
+# 缓存时间相关的字符串
 def UITime(pages=True):
-    h=str(Core.GetTime.Hour())
-    m=str(Core.GetTime.Min())
-    return ('0' + h if len(h)==1 else h) + \
+    h = str(Core.GetTime.Hour())
+    m = str(Core.GetTime.Min())
+    return ('0' + str(h) if len(str(h)) == 1 else str(h)) + \
              (':' if pages else "") + \
-            ('0' + m if len(m)==1 else m)
+            ('0' + str(m) if len(str(m)) == 1 else str(m))
 
 def GetCharWidth(s):
-    strWidth = oled.DispChar(s,0,0,Colormode.noshow)[0][0]
-    #for c in s:
-    #    charData = oled.f.GetCharacterData(c)
-    #    if charData is None:continue
-    #    strWidth += ustruct.unpack('HH', charData[:4])[0] + 1
-    return strWidth
+    # 获取字符宽度的优化实现
+    return oled.DispChar(s, 0, 0, Colormode.noshow)[0][0]
 
-AutoCenter=lambda string:64-GetCharWidth(string)//2
-HomeTimeAutoCenter=lambda string:64-GetCharWidth(string)
+AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
+HomeTimeAutoCenter = AutoCenter
 
 class App:
+    @staticmethod
     def Style1(appTitle:str):
         gc.collect()
         oled.fill(0)
         UITools()
-        PagesManager.Main.Import('SeniorOS.style.bar', ('Style' + Core.Data.Get("text", "barStyleNum")), True , appTitle)
+        PagesManager.Main.Import('SeniorOS.style.bar', ('Style' + Core.Data.Get("text", "barStyleNum")), True, appTitle)
+
+    @staticmethod
     def Style2(appTitle:str):
         gc.collect()
         oled.fill(0)
         UITools()
         Text(appTitle, 5, 5, 3, 90)
-        # oled.DispChar(appTitle, 5, 5, 1)
 
 class Select:
+    @staticmethod
     def Style1(dispContent:list, y:int, window:bool = False, appTitle = None):
         oled.fill(0)
         UITools()
         selectNum = 0
-        if appTitle == None:
-            pass
-        else:
-            if window == False:
+        if appTitle:
+            if not window:
                 App.Style1(appTitle)
             else:
                 oled.DispChar(appTitle, 5, 5, 1)
@@ -55,118 +53,105 @@ class Select:
             oled.fill_rect(0, 20, 128, 45, 0)
             oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 40, 1)
-            if window == True:
+            if window:
                 oled.RoundRect(2, y - 26, 124, 55, 2, 1)
-            else:
-                pass
             oled.show()
-            if eval("[/GetButtonExpr('on')/]"):
-                selectNum = selectNum + 1
-                if selectNum + 1 > len(dispContent):
-                    selectNum = len(dispContent) - 1
-            if eval("[/GetButtonExpr('py')/]"):
-                selectNum = selectNum - 1
-                if selectNum < 0:
-                    selectNum = 0
-            if eval("[/GetButtonExpr('th')/]"):
+            on_pressed = GetButtonExpr('on')
+            py_pressed = GetButtonExpr('py')
+            th_pressed = GetButtonExpr('th')
+            if on_pressed:
+                selectNum = min(selectNum + 1, len(dispContent) - 1)
+            if py_pressed:
+                selectNum = max(selectNum - 1, 0)
+            if th_pressed:
                 return selectNum
-            time.sleep_ms(int(eval("[/Const('interval')/]")))
+            time.sleep_ms(Const('interval'))
         return
+
+    @staticmethod
     def Style2(dispContent:list, tip:list, y:int, window:bool=False, appTitle = None):
         oled.fill(0)
         UITools()
         selectNum = 0
-        if appTitle == None:
-            pass
-        else:
-            if window == False:
+        if appTitle:
+            if not window:
                 App.Style1(appTitle)
             else:
                 Text(appTitle, 5, 5, 3, 90)
                 oled.DispChar(UITime(True), 93, 5, 1)
         oled.show()
         while not button_a.is_pressed():
-            if window == True:
+            if window:
                 oled.RoundRect(2, y - 18, 124, 55, 2, 1)
-            else:
-                pass
             oled.show()
-            if eval("[/GetButtonExpr('on')/]"):
-                selectNum = selectNum + 1
-                if selectNum + 1 > len(dispContent):
-                    selectNum = len(dispContent) - 1
-            if eval("[/GetButtonExpr('py')/]"):
-                selectNum = selectNum - 1
-                if selectNum < 0:
-                    selectNum = 0
-            if eval("[/GetButtonExpr('th')/]"):
+            on_pressed = eval("[/GetButtonExpr('on')/]")
+            py_pressed = eval("[/GetButtonExpr('py')/]")
+            th_pressed = eval("[/GetButtonExpr('th')/]")
+            if on_pressed:
+                selectNum = min(selectNum + 1, len(dispContent) - 1)
+            if py_pressed:
+                selectNum = max(selectNum - 1, 0)
+            if th_pressed:
                 return selectNum
-            time.sleep_ms(int(eval("[/Const('interval')/]")))
+            time.sleep_ms(Const('interval'))
             Text(dispContent[selectNum], 5, y, 2)
-            # oled.DispChar(tip[selectNum], 5, y, 1, True)
-            # oled.DispChar(dispContent[selectNum], 5, y + 27, 1)
             Text(dispContent[selectNum], 5, y + 27, 3)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 45, 1)
             oled.show()
+
+    @staticmethod
     def Style3():
         UITools()
         selectNum = 0
         while not button_a.is_pressed():
-            if eval("[/GetButtonExpr('py')/]"):
+            py_pressed = eval("[/GetButtonExpr('py')/]")
+            on_pressed = eval("[/GetButtonExpr('on')/]")
+            if py_pressed:
                 selectNum = 1
                 return selectNum
-            if eval("[/GetButtonExpr('on')/]"):
+            if on_pressed:
                 selectNum = 0
                 return selectNum
-            time.sleep_ms(int(eval("[/Const('interval')/]")))
+            time.sleep_ms(Const('interval'))
 
 def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
     # 请不要在激活 appTitle 时设置 window = True
     UITools()
-    _list = 0
     listNum = 0
     oled.fill(0)
-    if appTitle == "None":
-        pass
-    else:
+    if appTitle != "None":
         App.Style1(appTitle)
     oled.show()
     while not button_a.is_pressed():
         oled.fill_rect(0, 20, 128, 45, 0)
         oled.DispChar(Core.ListState(dispContent, listNum), 105, 40, 1)
         try:
-            Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
-            # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
-            Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
-            # oled.DispChar(str(dispContent[(listNum + 1)]), 5, y + 15, 1)
-            Text(str(dispContent[(listNum + 1)]), 5, y + 30, 3)
-            # oled.DispChar(str(dispContent[(listNum + 2)]), 5, y + 30, 1)
-        except:
+            Text(str(dispContent[listNum]), 5, y, 3, showMode=2)
+            Text(str(dispContent[listNum + 1]), 5, y + 15, 3)
+            Text(str(dispContent[listNum + 2]), 5, y + 30, 3)
+        except IndexError:
             try:
-                Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
-                # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
-                Text(str(dispContent[(listNum + 1)]), 5, y + 15, 3)
-            except:
-                Text(str(dispContent[listNum]), 5, y, 3, showMode = 2)
-                # oled.DispChar(str(dispContent[listNum]), 5, y, 2)
-        if window == True:
+                Text(str(dispContent[listNum]), 5, y, 3, showMode=2)
+                Text(str(dispContent[listNum + 1]), 5, y + 15, 3)
+            except IndexError:
+                Text(str(dispContent[listNum]), 5, y, 3, showMode=2)
+        if window:
             oled.RoundRect(2, y - 6, 124, 55, 2, 1)
-        else:
-            pass
         oled.show()
-        if eval("[/GetButtonExpr('on')/]"):
-            listNum = listNum + 1
-            if listNum + 1 > len(dispContent):
-                listNum = len(dispContent) - 1
-        if eval("[/GetButtonExpr('py')/]"):
-            listNum = listNum - 1
-            if listNum < 0:
-                listNum = 0
-        if eval("[/GetButtonExpr('th')/]"):
+        on_pressed = eval("[/GetButtonExpr('on')/]")
+        py_pressed = eval("[/GetButtonExpr('py')/]")
+        th_pressed = eval("[/GetButtonExpr('th')/]")
+        if on_pressed:
+            listNum = min(listNum + 1, len(dispContent) - 1)
+        if py_pressed:
+            listNum = max(listNum - 1, 0)
+        if th_pressed:
             return listNum
 
 class VastSea:
     speed = int(Core.Data.Get("text", "VastSeaSpeed"))
+
+    @staticmethod
     def Switch():
         while not button_a.is_pressed():
             oled.fill(0)
@@ -174,73 +159,54 @@ class VastSea:
             App.Style2(eval("[/Language('动效开关')/]"))
             time.sleep_ms(5)
             get = int(Core.Data.Get("text", "VastSeaSwitch"))
-            oled.DispChar([eval("[/Language('关闭')/]"),eval("[/Language('开启')/]")](get), 5, 18, 1)
+            oled.DispChar([eval("[/Language('关闭')/]"), eval("[/Language('开启')/]")][get], 5, 18, 1)
             oled.show()
             get = Select.Style3()
-            Core.Data.Write("text",'VastSeaSwitch', str(get))
+            Core.Data.Write("text", 'VastSeaSwitch', str(get))
         return
     
+    @staticmethod
     def Off():
         oled.fill(0)
         oled.show()
         time.sleep_ms(VastSea.speed * 90)
         return
+
+    @staticmethod
     def Progressive(mode):
         if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-            if mode == True:
-                luminance = int(Core.Data.Get("text", "luminance"))
-                for count in range(VastSea.speed):
-                    luminance = luminance - luminance // VastSea.speed
+            luminance = int(Core.Data.Get("text", "luminance"))
+            if mode:
+                for _ in range(VastSea.speed):
+                    luminance -= luminance // VastSea.speed
                     oled.contrast(luminance)
                 oled.fill(0)
                 UITools()
-            if mode == False:
-                luminance = int(Core.Data.Get("text", "luminance"))
+            else:
                 for _ in range(VastSea.speed):
-                    luminance = 0 + luminance // VastSea.speed
+                    luminance += (255 - luminance) // VastSea.speed
                     oled.contrast(luminance)
                 UITools()
 
     class SeniorMove:
+        @staticmethod
         def Line(nowX1:int, nowY1:int, nowX2:int, nowY2:int, newX1:int, newY1:int, newX2:int, newY2:int):
             oled.fill(0)
             oled.line(nowX1, nowY1, nowX2, nowY2, 1)
             oled.show()
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-                for count in range(VastSea.speed):
-                    oled.line(nowX1, nowY1, nowX2, nowY2, 0)
+                for _ in range(VastSea.speed):
+                    oled.fill(0)
                     nowX1 = nowX1 + ((newX1-nowX1) // VastSea.speed)
                     nowY1 = nowY1 - ((nowY1-newY1) // VastSea.speed + (newY1 - newY1//2))
                     nowX2 = nowX2 + ((newX2-nowX2) // VastSea.speed)
                     nowY2 = nowY2 - ((nowY2-newY2) // VastSea.speed + (newY2 - newY2//2))
-                    oled.line(nowX1, nowY1, nowX2, nowY2, 1)
-                    # oled.DispChar(str(nowX1), 0, 32, 1)
-                    # oled.DispChar(str(nowY1), 0, 48, 1)
-                    # oled.DispChar(str(nowX2), 50, 32, 1)
-                    # oled.DispChar(str(nowY2), 50, 48, 1)
+                    oled.line(newX1, newY1, newX2, newY2, 1)
                     oled.show()
-            else:
-                VastSea.Off()
-            oled.fill(0)
-            time.sleep_ms(200)
-
-        def Text(text, nowX:int, nowY:int, newX:int, newY:int):
-            if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
+                    time.sleep_ms(10)
                 oled.fill(0)
-                oled.DispChar(str(text), nowX, nowY)
                 oled.show()
-                for count in range(VastSea.speed):
-                    oled.fill_rect(0, nowY, 128, 16, 0)
-                    nowX = nowX + ((newX-nowX) // VastSea.speed)
-                    nowY = nowY - ((nowY-newY) // VastSea.speed + (newY - newY//2))
-                    oled.DispChar(str(text), nowX, nowY)
-                    # oled.DispChar(str(nowX), 0, 32, 1)
-                    # oled.DispChar(str(nowY), 0, 48, 1)
-                    oled.show()
-            else:
-                VastSea.Off()
-            oled.fill(0)
-            time.sleep_ms(300)
+            return
 
 def UITools():
     try:
