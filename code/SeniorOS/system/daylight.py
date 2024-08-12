@@ -1,5 +1,4 @@
 import SeniorOS.system.core as Core
-import micropython
 import gc
 import time
 from SeniorOS.system.devlib import *
