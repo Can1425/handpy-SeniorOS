@@ -3,6 +3,7 @@ import socket
 import gc
 import time
 import SeniorOS.system.log_manager as LogManager
+Log = LogManager.Log
 responseHeaders=b"""
 HTTP/1.1 200 OK
 Content-Type: text/html
@@ -15,7 +16,7 @@ HTML=b'''
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>设置WiFi</title>
+    <title>SeniorOS WiFi Configuration</title>
     <style>
         body { font-family: sans-serif; background: #f5f5f7; margin: 0; padding: 100px; color: #333; }
         .form-container { max-width: 400px; margin: 40px auto; background: #fff; padding: 20px; box-shadow: 0 8px 16px rgba(0,0,0,.2); border-radius: 19px; }
@@ -29,16 +30,16 @@ HTML=b'''
 <body>
     <div class="form-container">
         <form action="http://192.168.4.1" method="get">
-            <label for="ssid">WiFi名称:</label>
-            <input type="text" id="ssid" name="ssid" placeholder="输入WiFi名称">
-            <input type="submit" value="确定">
+            <label for="ssid">WiFiSSID</label>
+            <input type="text" id="ssid" name="ssid" placeholder="Type your wifiSSID">
+            <input type="submit" value="Upload">
         </form>
         <form action="http://192.168.4.1" method="get">
-            <label for="pwd">WiFi密码:</label>
-            <input type="text" id="pwd" name="pwd" placeholder="输入WiFi密码">
-            <input type="submit" value="确定">
+            <label for="pwd">WifiPassword</label>
+            <input type="text" id="pwd" name="pwd" placeholder="Type your wifiPassword">
+            <input type="submit" value="Upload">
         </form>
-        <a href="http://192.168.4.1/exit">退出</a>
+        <a href="http://192.168.4.1/exit">Exit</a>
     </div>
 </body>
 </html>
@@ -96,7 +97,7 @@ def main():
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(socket.getaddrinfo("0.0.0.0", 80)[0][-1])
     s.listen(5)
-    LogManager.Output('接入热点后可从浏览器访问下面地址:' + ap.ifconfig()[0], 'MSG')
+    Log.Info(ap.ifconfig()[0])
     ssid="";pwd=""
     while True:
         client_sock, client_addr = s.accept()

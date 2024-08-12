@@ -30,8 +30,6 @@ elif info == "1":
 elif info == "2":
     # 启动门户
     SmartWifi.main()
-#清理所有变量------
-del info, wifilist, net, wlanconfig, connect
 #-----------------
 def _____():
     while True:gc.collect()

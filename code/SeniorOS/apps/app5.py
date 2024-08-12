@@ -8,12 +8,8 @@ source = "https://" + Core.Data.Get("text", "poetrySource")
 
 def Poetry():
     global poetry, source
-    try:
-        _response = urequests.get(source, headers={})
-        poetry = (_response.text.split('，'))
-        return
-    except:
-        return
+    _response = urequests.get(source, headers={})
+    poetry = _response.text.split('，')
 
 def Main():
     Poetry()
@@ -27,10 +23,10 @@ def Main():
             oled.DispChar(poetry[1], 5, 34, 1)
             oled.DispChar('TH - 刷新', 5, 50, 1)
         except:
-            try:
-                oled.DispChar(poetry[0], 5, 18, 1)
-                oled.DispChar('TH - 刷新', 5, 50, 1)
-            except:
-                oled.DispChar('诗词走丢啦！', 5, 18, 1)
-                oled.DispChar('TH - 刷新', 5, 50, 1)
+            # try:
+            oled.DispChar(poetry[0], 5, 18, 1)
+            oled.DispChar('TH - 刷新', 5, 50, 1)
+            # except:
+                # oled.DispChar('诗词走丢啦！', 5, 18, 1)
+                # oled.DispChar('TH - 刷新', 5, 50, 1)
         oled.show()

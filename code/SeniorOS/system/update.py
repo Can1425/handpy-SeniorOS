@@ -1,11 +1,11 @@
-import uhashlib,os,requests
+import uhashlib,os,urequests
 import SeniorOS.system.log_manager as LogManager
 LogManager.Output("system/update.mpy", "INFO")
 
 # lambda: 值查找键
 valueFindKey=lambda dictObj,value:{v : k for k, v in dictObj.items()}[value]
 
-SERVER_URL="https://server.ip:port/Flag_OS_UPD/"
+SERVER_URL="https://gitee.com/can1425/mpython-senioros-radient/raw/update"
 SYSTEM_VERSION=eval("[/Const('version')/]")
 # 读取本地文件清单
 def GetFileList():
@@ -23,7 +23,7 @@ def FastHash(file_path, hash_type=uhashlib.md5):
 def GetUpdList(updVersion):
     global SERVER_URL,SYSTEM_VERSION
     try:
-        r=requests.get("{url}/GetUpdList/{sysversion}/{updversion}".format(SERVER_URL,SYSTEM_VERSION,updVersion))
+        r=urequests.get("{url}/GetUpdList/{sysversion}/{updversion}".format(SERVER_URL,SYSTEM_VERSION,updVersion))
     except OSError as e:
         if e.args[0]==113:
             raise AssertionError("连接超时/路由不可达")
@@ -33,7 +33,7 @@ def GetUpdList(updVersion):
 def GetLatestVer():
     global SERVER_URL
     try:
-        r=requests.get("{}/LatestVer/version".format(SERVER_URL))
+        r=urequests.get("{}/LatestVer/version".format(SERVER_URL))
     except OSError as e:
         if e.args[0]==113:
             raise AssertionError("连接超时/路由不可达")
@@ -43,7 +43,7 @@ def GetLatestVer():
 def GetUpdFile(fileMd5):
     global SERVER_URL
     try:
-        r=requests.get("{}/GetUpdFile/{}".format(SERVER_URL,fileMd5))
+        r=urequests.get("{}/GetUpdFile/{}".format(SERVER_URL,fileMd5))
     except OSError as e:
         if e.args[0]==113:
             raise AssertionError("连接超时/路由不可达")

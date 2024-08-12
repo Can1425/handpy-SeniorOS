@@ -7,6 +7,6 @@ barStyleNum:1
 poetrySource:v1.jinrishici.com/rensheng.txt
 radienPluginsSource:gitee.com/can1425/mpython-senioros-radient
 timingServer:time.windows.com
-connectWifiMode:1
+connectWifiMode:0
 pagesDataDump:0
 pagesVarDump:0

@@ -18,6 +18,6 @@ def upload_directory_to_device(local_dir, device_port):
 # DO NOT USE
 # clear_device_filesystem()
 
-print('> 在 Micropython 提示出现后,直接运行 import boot ')
+print(' > 在 Micropython 提示出现后,直接运行 import boot ')
 # 上传本地目录的所有内容到开发板根目录
-upload_directory_to_device("build", "/dev/ttyACM0")
+upload_directory_to_device("build", "COM3")

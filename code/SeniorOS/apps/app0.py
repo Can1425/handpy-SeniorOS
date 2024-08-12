@@ -50,10 +50,11 @@ def Main():
     while not button_a.value()==0:
         settingsNum = DayLight.Select.Style2(list, tip, 18, False, "设置")
         if eval("[/GetButtonExpr('th')/]"):
-            options = eval('DayLight.Select.Style1(list{}, 28, True, "选择")'.format(settingsNum),
+            options = eval('DayLight.Select.Style1(list{}, 28, True, "选择")'.format(str(settingsNum)),
                             {'list0':['重连网络', '同步时间', '新建网络配置','自动联网配置'],
                             'list1':['日光模式','亮度调节','动效开关','桌面风格','状态栏风格' '日光引擎信息'],
                             'list2':['释放内存', '内存信息'],
+                            'list3':['设备信息', '系统更新'],
                             'DayLight':DayLight}
                         )
             if settingsNum == 0:

@@ -56,16 +56,16 @@ class Select:
             if window:
                 oled.RoundRect(2, y - 26, 124, 55, 2, 1)
             oled.show()
-            on_pressed = GetButtonExpr('on')
-            py_pressed = GetButtonExpr('py')
-            th_pressed = GetButtonExpr('th')
+            on_pressed = eval("[/GetButtonExpr('on')/]")
+            py_pressed = eval("[/GetButtonExpr('py')/]")
+            th_pressed = eval("[/GetButtonExpr('th')/]")
             if on_pressed:
                 selectNum = min(selectNum + 1, len(dispContent) - 1)
             if py_pressed:
                 selectNum = max(selectNum - 1, 0)
             if th_pressed:
                 return selectNum
-            time.sleep_ms(Const('interval'))
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
         return
 
     @staticmethod
@@ -93,7 +93,7 @@ class Select:
                 selectNum = max(selectNum - 1, 0)
             if th_pressed:
                 return selectNum
-            time.sleep_ms(Const('interval'))
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
             Text(dispContent[selectNum], 5, y, 2)
             Text(dispContent[selectNum], 5, y + 27, 3)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 45, 1)
@@ -112,7 +112,7 @@ class Select:
             if on_pressed:
                 selectNum = 0
                 return selectNum
-            time.sleep_ms(Const('interval'))
+            time.sleep_ms(int(eval("[/Const('interval')/]")))
 
 def ListOptions(dispContent:list, y:int, window:False, appTitle:str):
     # 请不要在激活 appTitle 时设置 window = True

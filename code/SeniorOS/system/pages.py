@@ -70,7 +70,7 @@ def SettingPanel():
     def HS_CPU():
         while not button_a.is_pressed():
             oled.fill(0)
-            oled.DispChar(f"{str(machine.freq)/10000000} MHZ",0,16)
+            oled.DispChar("{} MHZ".format(str(machine.freq) + "/10000000"),0,16)
             oled.DispChar("CPU - ESP32 @ 160MHZ",0,0)
             oled.show()
         return
@@ -78,18 +78,18 @@ def SettingPanel():
         while not button_a.is_pressed():
             oled.fill(0)
             oled.DispChar("Ram - total:520kb",0,0)
-            oled.DispChar(f"内存可用:{gc.mem_free()}",0,16)
+            oled.DispChar(f"内存可用:{str(gc.mem_free())}",0,16)
             oled.DispChar("触摸键释放内存",0,32)
             oled.show()
             if eval("[/GetButtonExpr('python')/]"):
-                _thread.start_new_thread(Core.FullCollect())
+                Core.FullCollect()
         return 0
     def HS_flash():
         while not button_a.is_pressed():
             oled.fill(0)
-            oled.DispChar("Flash - total:8MB",0,0)
+            oled.DispChar("Flash - total: 8MB",0,0)
             oled.DispChar("可用:")
-    ListOperation = {#这里填对应的函数名（不加括号）#ok,哪里学的(
+    ListOperation = {
     0: HS_CPU,
     1: HS_Ram,
     2: HS_flash,
@@ -136,7 +136,9 @@ def Home():
 def About():
     oled.fill(0)
     while not button_a.is_pressed():
-        oled.Bitmap(16, 20, bytearray(Core.Data.Get("text", "SeniorLogo")), 98, 20, 1)
+        oled.Bitmap(16, 15, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
+        version = 'V' + eval("[/Const('version')/]")
+        DayLight.Text(version, DayLight.AutoCenter(version), 46, 3)
         oled.show()
 
 def Wlanscan():#定义扫描wifi函数
