@@ -1,6 +1,6 @@
 from SeniorOS.system.devlib import *
 import SeniorOS.system.pages_manager as PagesManager
-import SeniorOS.system.core as Core
+import SeniorOS.system.pages as Pages
 import SeniorOS.system.daylight as DayLight
 import urequests
 
@@ -12,6 +12,7 @@ def GetSeniWeather(_url, _location):
     return json
 
 def Main():
+    Pages.LoadWait()
     w1 = GetSeniWeather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
     w2 = GetSeniWeather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")
     oled.fill(0)
@@ -22,3 +23,4 @@ def Main():
         oled.DispChar('运动指数 : ' + str(w2["results"][0]["suggestion"]["sport"]["brief"]), 5, 34, 1)
         oled.DispChar('紫外线指数 : ' + str(w2["results"][0]["suggestion"]["uv"]["brief"]), 5, 50, 1)
         oled.show()
+    return

@@ -9,9 +9,6 @@ import time
 def homeStyleSet():
     Set("home")
 
-def barStyleSet():
-    Set("bar")
-
 def Set(dataName:str):
     while not button_a.is_pressed():
         oled.fill(0)

@@ -53,23 +53,6 @@ class wifi:
             time.sleep_ms(500)
         print("")
         LogManager.Output('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())), "INFO")
-    def disconnectWiFi(self):
-        if self.sta.isconnected():
-            self.sta.disconnect()
-        self.sta.active(False)
-        LogManager.Output('disconnect WiFi', "INFO")
-
-    def enable_APWiFi(self, essid, password=b'',channel=10):
-        self.ap.active(True)
-        if password:
-            authmode=4
-        else:
-            authmode=0
-        self.ap.config(essid=essid,password=password,authmode=authmode, channel=channel)
-
-    def disable_APWiFi(self):
-        self.ap.active(False)
-        LogManager.Output('disable AP WiFi', "INFO")
 
 
 class Colormode:

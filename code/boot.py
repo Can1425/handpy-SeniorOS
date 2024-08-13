@@ -2,8 +2,9 @@ from SeniorOS.system.devlib import *
 import time,uos
 import SeniorOS.system.core as Core
 
+Core.FullCollect()
+
 def RenameCode():
-    time.sleep(1.5)
     uos.rename('/main.py.bak','/main.py')
 while True:
     oled.fill(0)

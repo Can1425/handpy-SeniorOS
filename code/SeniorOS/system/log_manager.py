@@ -41,12 +41,6 @@ def getTime(format: bool = False):
 
 ntp_is_connect=False
 def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO') -> str:
-    try:
-        if not ntp_is_connect:
-            ntptime.settime(8,"time.windows.com")
-            ntp_is_connect=True
-        else:pass
-    except:print("settime failed")
     formatText=formatText.replace(f'{prefix}level{prefix}', level)\
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\
@@ -92,5 +86,3 @@ class LogManager:
 lm = LogManager()
 Output = lm.log
 Log = lm
-
-Output(str(gc.mem_alloc()), "MSG")

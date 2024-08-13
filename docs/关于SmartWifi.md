@@ -20,16 +20,16 @@ smartwifi位于./code/SeniorOS/system/smart_wifi.py
 
 ### 4.输入wifi名称和密码
 
-WiFi名称输入----访问192.168.4.1/ssid:____(下划线替换您的WiFi名称)
-回车，您的WiFi名称将会保存
-WiFi密码输入----访问192.168.4.1/pwd:____(下划线替换您的WiFi密码)
-回车，您的WiFi密码将会保存
+WiFi名称输入---- 在 "Type your wifiSSID" 内填写您的WiFi名称
+点击旁边的upload按钮，您的WiFi名称将会存储到handpy
+WiFi密码输入----在 "Type your wifiPassword" 内填写您的WiFi密码
+点击旁边的upload按钮，您的WiFi密码将会存储到handpy
 
 ### 5.连接
 
 请点击浏览器出现的"exit"按钮,这时您可以关闭浏览器,handpy将会自动连接到wifi.
 
-**注意** 如果您直接关闭浏览器,handpy将不会会连接到wifi,并且会崩溃
+**注意** 如果您直接关闭浏览器,handpy将不会会连接到wifi,并且会崩溃 我们 ***一律不负责***
 
 ### 6.连接成功
 

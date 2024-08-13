@@ -1,16 +1,15 @@
-from SeniorOS.apps.port import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
 import urequests
 import ntptime
-import network
+import micropython
 from SeniorOS.system.devlib import wifi,oled
 from SeniorOS.system.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 from SeniorOS.system.devlib import button_a,button_b
 import gc
-import time,uos
-import machine,_thread
+import time
+import machine
 import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 LogManager.Output("system/pages.mpy", "INFO")
@@ -37,27 +36,17 @@ def ConfigureWLAN(ssid, password):
 def WifiPages():
     oled.fill(0)
     DayLight.VastSea.Off()
-    wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), 18, False, eval("[/Language('请选择配置')/]"))
+    wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), False, eval("[/Language('请选择配置')/]"))
     oled.show()
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
 def CloudNotification():
     time.sleep_ms(int(eval("[/Const('interval')/]")))
     DayLight.App.Style1(eval("[/Language('云端通知')/]"))
-    try:
-        oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 2)
-        oled.show()
-        _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/Notifications.fos', headers={})
-        if _response.status_code != 200:
-            oled.DispChar('ERR HTTP CODE '+str(_response.status_code), 5, 18, 2)
-            oled.show()
-            return
-        notifications = (_response.text.split(';'))
-    except IndexError as error:
-        print(error)
-        oled.DispChar(eval("[/Language('加载失败')/]"), 5, 18, 2)
-        oled.show()
-        return
+    oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 2)
+    oled.show()
+    _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/Notifications.sros', headers={})
+    notifications = (_response.text.split(';'))
     while not button_a.is_pressed():
         DayLight.App.Style1(eval("[/Language('云端通知')/]"))
         oled.DispChar(notifications[1], 5, 18)
@@ -95,43 +84,44 @@ def SettingPanel():
     2: HS_flash,
     }
     hardware=["CPU","Ram","flash","RGB灯","麦克风","OLED"]
-    def hardwareSettings():
+    def HardwareSettings():
         while not button_a.is_pressed():
-            options = DayLight.ListOptions(hardware, 8, True, "None")
+            options = DayLight.ListOptions(hardware, 8, False, "板载设备")
             ListOperation.get(options)()
     while not button_a.is_pressed():
-        oled.fill(0)
-        oled.DispChar("PY-板载硬件",0,0)
-        oled.DispChar("ON-外设",0,16)
-        oled.show()
-        while not button_a.is_pressed():
-            if touchpad_p.is_pressed() or touchpad_y.is_pressed():
-                hardwareSettings()
-                break
-            elif touchpad_o.is_pressed() or touchpad_n.is_pressed():
-                pass
-                break
+        options = DayLight.Select.Style4(['板载设备','外设'], 8, False, "控制面板")
+        if options == 0:
+            HardwareSettings()
+        elif options == 1:
+            pass
+        else:
+            pass
         # 剩下的交给你
 
-
+@micropython.native
 def Home():
-    while not eval("[/GetButtonExpr('thab')/]"):
-        PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"))
+    oled.fill(0)
+    time.sleep_ms(int(eval("[/Const('interval')/]")))
+    while not eval("[/GetButtonExpr('pythonab')/]"):
+        PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
     if button_a.is_pressed():
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,15,-20)
-        Core.Load('system.pages', 'CloudNotification')
+        PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,4,-20,50)
     elif button_b.is_pressed():
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),148,-50,-50,-50)
-        SettingPanel()
+        PagesManager.Main.Import("SeniorOS.system.pages", "SettingPanel")
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),5,4,120,50)
     elif eval("[/GetButtonExpr('th')/]"):
         DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, 0, -128, 128, -128)
-        App()
+        PagesManager.Main.Import("SeniorOS.apps.port", "App")
         DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 0, 46, 128, 46)
     elif eval("[/GetButtonExpr('ab')/]"):
         pass
-    del sys.modules['SeniorOS.style.home']
+    elif eval("[/GetButtonExpr('py', 'and')/]"):
+        PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[0]), "Main")
+    elif eval("[/GetButtonExpr('on', 'and')/]"):
+        PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
 
 def About():
     oled.fill(0)
@@ -230,3 +220,8 @@ def AutoConnectWifi():
             if eval("[/GetButtonExpr('python')/]"):
                 Core.Data.Write("text","autoConnectWifi",info)
                 return 0
+
+def LoadWait(text=eval("[/Language('请稍等')/]")):
+    DayLight.Box(1,1,126,62,True)
+    DayLight.Text(text, DayLight.AutoCenter(text), 28, 2)
+    oled.show()

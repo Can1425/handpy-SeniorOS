@@ -1,5 +1,6 @@
 from SeniorOS.system.devlib import *
 import time
+import micropython
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
@@ -81,8 +82,6 @@ def App():
     while not eval("[/GetButtonExpr('ath')/]"):
         oled.hline(4, 46, 126, 1)
         oled.show()
-        oled.DispChar('〔', 30, 20, 1)
-        oled.DispChar('〕', 85, 20, 1)
         oled.DispChar('>', 120, 48, 1)
         oled.DispChar('<', 1, 48, 1)
         oled.DispChar(List[appNum],DayLight.AutoCenter(List[appNum]), 48, 1)

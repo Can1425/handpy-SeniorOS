@@ -28,7 +28,7 @@ def Main():
     while not button_a.is_pressed():
         settingsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
         if eval("[/GetButtonExpr('th')/]"):
-            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, True, "None")
+            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, True, "菜单")
             if options == 0:
                 DayLight.VastSea.Off()
                 DayLight.app('线上插件')
