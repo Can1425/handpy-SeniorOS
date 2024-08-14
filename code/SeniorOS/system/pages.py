@@ -36,7 +36,8 @@ def ConfigureWLAN(ssid, password):
 def WifiPages():
     oled.fill(0)
     DayLight.VastSea.Off()
-    wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), False, eval("[/Language('请选择配置')/]"))
+    while not eval("[/GetButtonExpr('th')/]"):
+        wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), False, eval("[/Language('请选择配置')/]"))
     oled.show()
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
@@ -206,11 +207,11 @@ def AutoConnectWifi():
         DayLight.App.Style2("自动连接 WiFi")#哥们这样塞不下( 我完成了,有事钉钉说
         oled.hline(0,16,128,1)
         if info==1:
-            oled.DispChar("状态:开",0,16)
+            oled.DispChar("状态:开",5,16)
         else:
-            oled.DispChar("状态:关",0,16)
-        oled.DispChar("A-退出 B-切换",0,32)
-        oled.DispChar("触摸键确认修改",0,48)
+            oled.DispChar("状态:关",5,16)
+        oled.DispChar("A-退出 B-切换",5,32)
+        oled.DispChar("触摸键确认修改",5,48)
         oled.show()
         while not button_a.is_pressed():
             if button_b.is_pressed():

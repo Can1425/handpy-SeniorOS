@@ -125,6 +125,7 @@ class Select:
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
 
+    @staticmethod        
     def Style4(dispContent:list, window:False, appTitle:str = "None"):
         lendispcontext = len(dispContent)
         maxdispcontextindex = lendispcontext - 1
@@ -183,14 +184,23 @@ class VastSea:
         return
 
     @staticmethod
-    def Transition():
+    def Transition(mode:bool = True):
         if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-            for i in range(13):
-                times = i * i
-                oled.vline(times, 0, 64, 1)
-                oled.vline(times+1, 0, 64, 0)
-                oled.fill_rect(0, 0, times, 64, 0)
-                oled.show()
+            if mode:
+                for i in range(13):
+                    times = i * i
+                    oled.vline(times, 0, 64, 1)
+                    oled.vline(times+1, 0, 64, 0)
+                    oled.fill_rect(0, 0, times, 64, 0)
+                    oled.show()
+            else:
+                for i in range(13):
+                    times = 13 - i
+                    times_squared = times * times
+                    oled.fill_rect(0, 0, 128, 64, 0)
+                    oled.vline(times_squared, 0, 64, 1)
+                    oled.vline(times_squared + 1, 0, 64, 0)
+                    oled.show()
         else:
             VastSea.Off()
 

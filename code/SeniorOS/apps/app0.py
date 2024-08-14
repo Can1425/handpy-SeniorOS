@@ -40,16 +40,19 @@ Settings3 = {
 def Main():
     while not button_a.value()==0:
         settingsNum = DayLight.Select.Style4(list, False, "设置")
-        if settingsNum != None:
-            DayLight.VastSea.Transition()
         if eval("[/GetButtonExpr('th')/]"):
-            options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
+            if settingsNum != None:
+                DayLight.VastSea.Transition()
+                options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
                             {'list0':['重连网络', '同步时间', '新建网络配置','自动联网配置'],
                             'list1':['日光模式','亮度调节','动效开关','桌面风格', '桌面快速启动', '日光引擎信息'],
                             'list2':['释放内存', '内存信息'],
                             'list3':['设备信息', '系统更新'],
                             'DayLight':DayLight})
-            DayLight.VastSea.Transition()
-            if options != None:
-                exec("Settings{}.get(options)()".format(settingsNum))
-            DayLight.VastSea.Transition()
+                if options != None:
+                    DayLight.VastSea.Transition()
+                    eval("{}.get({})()".format("Settings" + str(settingsNum), options), globals(), locals())
+                    DayLight.VastSea.Transition(False)
+
+                else:
+                    DayLight.VastSea.Transition(False)

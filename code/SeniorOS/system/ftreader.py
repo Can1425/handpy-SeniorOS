@@ -9,13 +9,22 @@ import os
 import gc
 import time
 class animations:
-    def clearFromLeftSide():
-        for i in range(13):
-            times = i * i
-            oled.vline(times, 0, 64, 1)
-            oled.vline(times+1, 0, 64, 0)
-            oled.fill_rect(0, 0, times, 64, 0)
-            oled.show()
+    def ClearFromLeftSide(mode:bool = True):
+        if mode:
+            for i in range(13):
+                times = i * i
+                oled.vline(times, 0, 64, 1)
+                oled.vline(times+1, 0, 64, 0)
+                oled.fill_rect(0, 0, times, 64, 0)
+                oled.show()
+        else:
+            for i in range(13):
+                times = 13 - i
+                times_squared = times * times
+                oled.fill_rect(0, 0, 128, 64, 0)
+                oled.vline(times_squared, 0, 64, 1)
+                oled.vline(times_squared + 1, 0, 64, 0)
+                oled.show()
     def textMove(text):
         Core.FullCollect()
         total=156
