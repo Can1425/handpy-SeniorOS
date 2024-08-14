@@ -201,6 +201,8 @@ class VastSea:
                     oled.vline(times_squared, 0, 64, 1)
                     oled.vline(times_squared + 1, 0, 64, 0)
                     oled.show()
+                oled.fill_rect(0, 0, 128, 64, 0)
+                oled.show()
         else:
             VastSea.Off()
 
@@ -308,7 +310,29 @@ def LuminanceSet():
             oled.contrast(luminance)
     oled.contrast(luminance)
     Core.Data.Write("text",'luminance',str(luminance))
-    return
+    return luminance
+
+def TouchPadValueSet():
+    sensitivity = int(Core.Data.Get("text", "touchPadValue"))
+    while not button_A.is_pressed():
+        oled.fill(0)
+        App.Style2(eval("[/Language('触摸键灵敏度')/]"))
+        time.sleep_ms(5)
+        oled.DispChar(eval("[/Language('当前值')/]") + str(sensitivity), 5, 18, 1)
+        oled.show()
+        if eval("[/GetButtonExpr('on')/]"):
+            sensitivity = sensitivity + 5
+            if sensitivity > 800:
+                sensitivity = 800
+            TouchPad.config(sensitivity)
+        if eval("[/GetButtonExpr('py')/]"):
+            sensitivity = sensitivity - 5
+            if sensitivity < -100:
+                sensitivity = -100
+            TouchPad.config(sensitivity)
+    TouchPad.config(sensitivity)
+    Core.Data.Write("text",'luminance',str(sensitivity))
+    return sensitivity
 
 def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16, showMode = 1):
     if outMode == 1:

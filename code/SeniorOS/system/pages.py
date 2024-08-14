@@ -124,6 +124,18 @@ def Home():
     elif eval("[/GetButtonExpr('on', 'and')/]"):
         PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
 
+def HomeomePlugInSet():
+    while not button_a.is_pressed():
+        options = DayLight.Select.Style4(["快捷启动1", "快捷启动2"], False, "桌面快捷启动")
+        if options != None:
+            DayLight.VastSea.Transition()
+            set = DayLight.Select.Style1(Core.Data.Get("list", "localAppName"), 25, True, "选择")
+            if set != None:
+                Core.Data.Write("list", "homePlug-in", "app{}".format(str(set)), options)
+                return
+            else:
+                DayLight.VastSea.Transition(False)
+
 def About():
     oled.fill(0)
     while not button_a.is_pressed():
@@ -204,7 +216,7 @@ def AutoConnectWifi():
     info=Core.Data.Get("text","autoConnectWifi")
     while not button_a.is_pressed():
         oled.fill(0)
-        DayLight.App.Style2("自动连接 WiFi")#哥们这样塞不下( 我完成了,有事钉钉说
+        DayLight.App.Style2("自动连接 WiFi")
         oled.hline(0,16,128,1)
         if info==1:
             oled.DispChar("状态:开",5,16)

@@ -4,18 +4,18 @@ from BuildConfig import *  # 此处按照逻辑上讲 Build.py已经做过一次
 
 class Tools:
     # 根据targetButton值生成一个纯or表达式
-    def GetButtonExpr(targetButton, connector="or", touchPadValue=100):
+    def GetButtonExpr(targetButton, connector="or"):
         targetButtonList = []
         for i in targetButton:
             targetButtonList.append(eval(i,
                                        {'a': "button_a.value()==0",
                                         'b': "button_b.value()==0",
-                                        'p': f"touchPad_P.read()<{touchPadValue}",
-                                        'y': f"touchPad_Y.read()<{touchPadValue}",
-                                        't': f"touchPad_T.read()<{touchPadValue}",
-                                        'h': f"touchPad_H.read()<{touchPadValue}",
-                                        'o': f"touchPad_O.read()<{touchPadValue}",
-                                        'n': f"touchPad_N.read()<{touchPadValue}"
+                                        'p': "touchPad_P.read()<Core.VitalData(1)",
+                                        'y': "touchPad_Y.read()<Core.VitalData(1)",
+                                        't': "touchPad_T.read()<Core.VitalData(1)",
+                                        'h': "touchPad_H.read()<Core.VitalData(1)",
+                                        'o': "touchPad_O.read()<Core.VitalData(1)",
+                                        'n': "touchPad_N.read()<Core.VitalData(1)"
             }))
         return f"({f' {connector} '.join(targetButtonList)})"
 

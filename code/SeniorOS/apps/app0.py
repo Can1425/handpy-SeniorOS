@@ -1,5 +1,5 @@
 from SeniorOS.system.devlib import *
-#import SeniorOS.system.core as Core
+import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import time
 
@@ -24,7 +24,9 @@ Settings1 = {
     1: DayLight.LuminanceSet,
     2: DayLight.VastSea.Switch,
     3: Style.homeStyleSet,
-    4: DayLight.About,
+    4: Pages.HomeomePlugInSet,
+    5: DayLight.TouchPadValueSet,
+    6: DayLight.About,
 }
 
 Settings2 = {
@@ -45,7 +47,7 @@ def Main():
                 DayLight.VastSea.Transition()
                 options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
                             {'list0':['重连网络', '同步时间', '新建网络配置','自动联网配置'],
-                            'list1':['日光模式','亮度调节','动效开关','桌面风格', '桌面快速启动', '日光引擎信息'],
+                            'list1':['日光模式','亮度调节','动效开关', '桌面风格', '桌面快速启动', '触摸键灵敏度', '日光引擎信息'],
                             'list2':['释放内存', '内存信息'],
                             'list3':['设备信息', '系统更新'],
                             'DayLight':DayLight})

@@ -3,10 +3,10 @@ VastSeaSpeed:3
 luminance:255
 lightMode:0
 homeStyleNum:3
-barStyleNum:1
 poetrySource:v1.jinrishici.com/rensheng.txt
 radienPluginsSource:gitee.com/can1425/mpython-senioros-radient
 timingServer:time.windows.com
 connectWifiMode:0
 pagesDataDump:0
 pagesVarDump:0
+touchPadValue:250

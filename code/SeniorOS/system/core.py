@@ -61,27 +61,110 @@ class DataCtrl:
             return data[index].strip("\r")
         elif controls == "list":
             return data[index].split(';')
-    def Write(self, controls, dataName, dataValue):
-        ConfigRead = Data.GetOriginal(controls)
-        Config=ConfigRead.split('\n')
-        TSList2=[]
-        for i in range(len(Config)):
-            TSList1=Config[i].split(':')
-            TSList2.append(TSList1[0])
-        try: index = TSList2.index(dataName)
-        except: index = 0
-        Config[index] = dataName + ":" + dataValue
-        
-        with open(self.dataFolderPath + 'text' + '.sros','w') as f:
-            f.write('\n'.join(Config))
-            self.data[controls]='\n'.join(Config)
-            print(Config)
-        with open(self.dataFolderPath + 'text' + '.sros','r') as f:
-            print(f.read())
-        return
+    def Write(self, controls, dataName, dataValue, ListReplacement = None):
+        if controls == "text":
+            ConfigRead = Data.GetOriginal(controls)
+            Config=ConfigRead.split('\n')
+            TSList2=[]
+            for i in range(len(Config)):
+                TSList1=Config[i].split(':')
+                TSList2.append(TSList1[0])
+            try: index = TSList2.index(dataName)
+            except: index = 0
+            Config[index] = dataName + ":" + dataValue
+            
+            with open(self.dataFolderPath + 'text' + '.sros','w') as f:
+                f.write('\n'.join(Config))
+                self.data[controls]='\n'.join(Config)
+                print(Config)
+            with open(self.dataFolderPath + 'text' + '.sros','r') as f:
+                print(f.read())
+            return
+        elif controls == "list":
+            ConfigRead = Data.GetOriginal('list')  # 获取原始数据
+            ConfigRead=ConfigRead.split('\n')  # 将原始数据按行分割
+            if ListReplacement == None:  # 如果ListReplacement为空
+                dtName=[];dtValue=[]
+                for i in ConfigRead:  # 遍历分割后的数据
+                    print(i)
+                    CFG=i.split(':')  # 将每行数据按冒号分割
+                    dtName.append(CFG[0])  # 将分割后的第一个元素添加到dtName列表中
+                    dtValue.append(CFG[1])
+                try: index = dtName.index(dataName)  # 尝试获取dataName在dtName列表中的索引
+                except: index = 0  # 如果dataName不在dtName列表中，则将索引设为0
+                dtValue[index] = str(dtValue[index]).replace("\n","") 
+                print(dtValue)
+                dtValue[index] += ";"+str(dataValue)
+                print(dtValue)
+                with open(self.dataFolderPath + 'list.sros','w') as f:
+                    for i in range(len(dtValue)):
+                        f.write("{}:{}\n".format(dtName[i],dtValue[i]))
+                    self.data[controls]='\n'.join(dtName)+':'+ ''.join(dtValue)
+            else:  # 如果 ListReplacement 不为空
+                data=[]
+                TSList2=[]
+                for i in ConfigRead:
+                    TSList1=i.split(':')
+                    TSList2.append(TSList1[0])
+                    data.append(TSList1[1]) 
+                try: index = TSList2.index(dataName)
+                except: index = 0
+                TSList3 = data[index].split(';')
+                TSList3[ListReplacement] = dataValue
+                TSList4 = ";".join(TSList3) 
+                ConfigRead[index] = dataName + ":" + TSList4 
+                f.write("\n".join(ConfigRead))
+                self.data[controls]='\n'.join(Config)
 
-Data=DataCtrl("/SeniorOS/data/")
 
+
+Data = DataCtrl("/SeniorOS/data/")
+
+def VitalData(data:int):
+    touchPadValue = (int(Data.Get("text", "touchPadValue")))
+    # ...
+    vitalDataList = ["Hello", touchPadValue]
+    return vitalDataList[data]
+
+class AppSetup:
+    def __init__(self,filePath):
+        self.filePath=filePath
+    def WriteLogoData(self,logoData):
+        print(os.getcwd())
+        with open("/SeniorOS/apps/logo.py","r") as f:
+            tmp=f.read()
+            t=f.read().split("\r\n")
+            print(t)
+            tl=len(t)
+            t[tl-1]=",   "+logoData
+            t.append("]")
+            print(t)
+        with open("/SeniorOS/apps/logo.py","w") as f:
+            f.write(tmp[:-1])
+        with open("/SeniorOS/apps/logo.py","a+") as f:
+            f.write("\r\n".join(t))
+    def setup(self):
+        #安装文件格式:
+        #------------------------------(安装example.py)
+        # #bytearray(#此处为LOGO 编码)
+        # #示例应用(名称)
+        # #example.py
+        # //以下都是文件数据
+        #---------------------------------------------
+        with open(self.filePath,"r") as app:
+            print(self.filePath)
+            appData=app.readlines()
+            appCFG=[appData[0],appData[1],appData[2]]
+            self.WriteLogoData(appCFG[0])
+            Data.Write("list","localAppName",appCFG[1])
+            with open("/SeniorOS/apps/{}".format(str(appCFG[2])),"w") as f:
+                lines=0
+                for i in appData:
+                    if lines>2:
+                        f.write(i+"\r\n")
+        return 
+
+    
 # 文件/路径 格式工厂
 class File_Path_Factory:
 
