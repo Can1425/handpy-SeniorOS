@@ -60,7 +60,7 @@ def SettingPanel():
     def HS_CPU():
         while not button_a.is_pressed():
             oled.fill(0)
-            oled.DispChar("{} MHZ".format(str(machine.freq) + "/10000000"),0,16)
+            oled.DispChar("{} MHZ".format(str(machine.freq()/10000000)),0,16)
             oled.DispChar("CPU - ESP32 @ 160MHZ",0,0)
             oled.show()
         return
