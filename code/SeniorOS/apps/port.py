@@ -4,13 +4,16 @@ import micropython
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
-import sys
+import sys,os
 import SeniorOS.system.pages_manager as PagesManager
 
 appNum = 0
 operationalJudgment = 0
 List = Core.Data.Get("list", "localAppName")
-
+appDir=os.listdir("SeniorOS/apps")
+for i in range(len(appDir)):
+    if appDir[i]!="port.py" or appDir[i]!="logo.py":
+        appDir[i]=appDir[i].replace(".mpy","")
 def AppDynamic():
     global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment
     if eval("[/GetButtonExpr('py')/]"):
@@ -80,18 +83,18 @@ def App():
     oled.Bitmap(select2X, 10, Logo[0], 25, 25, 1)
     oled.show()
     while not eval("[/GetButtonExpr('ath')/]"):
-        oled.hline(4, 46, 126, 1)
-        oled.show()
         oled.DispChar('>', 120, 48, 1)
         oled.DispChar('<', 1, 48, 1)
         oled.DispChar(List[appNum],DayLight.AutoCenter(List[appNum]), 48, 1)
+        oled.hline(4, 46, 126, 1)
         oled.show()
         AppDynamic()
         if eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
             # Core.Load('apps.app' + str(appNum))
-            PagesManager.Main.Import('SeniorOS.apps.app' + str(appNum), 'Main')
-            del sys.modules[eval("[/Const('systemName')/]") + '.apps.app' + str(appNum)]
+            PagesManager.Main.Import('SeniorOS.apps.' + str(appDir[appNum]), 'Main')
+            del sys.modules[eval("[/Const('systemName')/]") + '.apps.' + str(appDir[appNum])]
+            __import__("gc").collect()
             # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
             if operationalJudgment == 0:

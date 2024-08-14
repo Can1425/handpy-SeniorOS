@@ -26,7 +26,7 @@ def ConfigureWLAN(ssid, password):
     oled.show()
     try:
         wifi.connectWiFi(ssid, password)
-        ntptime.settime(8, Core.Data.Get("text", "timingServer"))
+        ntptime.settime(8,"time.windows.com")
         time.sleep(2)
         return True
     except:
