@@ -160,6 +160,7 @@ class AppSetup:
             with open("/SeniorOS/apps/{}".format(str(appCFG[2])),"w") as f:
                 lines=0
                 for i in appData:
+                    lines+=1
                     if lines>2:
                         f.write(i+"\r\n")
         return 
