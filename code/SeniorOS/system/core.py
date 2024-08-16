@@ -81,21 +81,22 @@ class DataCtrl:
                 print(f.read())
             return
         elif controls == "list":
-            ConfigRead = Data.GetOriginal('list')  # 获取原始数据
-            ConfigRead=ConfigRead.split('\n')  # 将原始数据按行分割
-            if ListReplacement == None:  # 如果ListReplacement为空
+            ConfigRead = Data.GetOriginal('list') 
+            ConfigRead=ConfigRead.split('\n') 
+            if ListReplacement == None: 
                 dtName=[];dtValue=[]
-                for i in ConfigRead:  # 遍历分割后的数据
-                    print(i)
-                    CFG=i.split(':')  # 将每行数据按冒号分割
-                    dtName.append(CFG[0])  # 将分割后的第一个元素添加到dtName列表中
+                for i in ConfigRead: 
+                    CFG=i.split(':')
+                    dtName.append(CFG[0]) 
                     dtValue.append(CFG[1])
-                try: index = dtName.index(dataName)  # 尝试获取dataName在dtName列表中的索引
-                except: index = 0  # 如果dataName不在dtName列表中，则将索引设为0
-                dtValue[index] = str(dtValue[index]).replace("\n","") 
-                print(dtValue)
+                try: index = dtName.index(dataName) 
+                except: return 
+                for i in ["\n","\r","\r\n",'\n','\r','\r\n']:
+                    dataValue=dataValue.replace(i,'')
+                for t in range(len(dtValue)):
+                    for i in ["\n","\r","\r\n",'\n','\r','\r\n']:
+                        dtValue[t]=dtValue.replace(i,'')
                 dtValue[index] += ";"+str(dataValue)
-                print(dtValue)
                 with open(self.dataFolderPath + 'list.sros','w') as f:
                     for i in range(len(dtValue)):
                         f.write("{}:{}\n".format(dtName[i],dtValue[i]))
@@ -160,9 +161,9 @@ class AppSetup:
             with open("/SeniorOS/apps/{}".format(str(appCFG[2])),"w") as f:
                 lines=0
                 for i in appData:
-                    lines+=1
                     if lines>2:
-                        f.write(i+"\r\n")
+                        f.write(i+'\n')
+                    lines+=1
         return 
 
     
