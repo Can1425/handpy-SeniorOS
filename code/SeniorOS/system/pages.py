@@ -14,10 +14,6 @@ import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 LogManager.Output("system/pages.mpy", "INFO")
 
-# Gxxk留言：
-# 以后写设置面板记得注意 有关 SeniorOS/data/light.fos 的部分 1是开（也就是每次会触发一个oled.invert(1)的那个） 0是关
-# PS: 这是我改的 毕竟cfgfile又不给用户看
-# 你写了忘记改了是吧 - LP    Gxxk/Reply:emm 实际上是改了内置逻辑忘记改配置文件
 wifi=wifi()
 
 def ConfigureWLAN(ssid, password):
@@ -129,7 +125,7 @@ def HomeomePlugInSet():
         options = DayLight.Select.Style4(["快捷启动1", "快捷启动2"], False, "桌面快捷启动")
         if options != None:
             DayLight.VastSea.Transition()
-            set = DayLight.Select.Style1(Core.Data.Get("list", "localAppName"), 25, True, "选择")
+            set = DayLight.Select.Style1(Core.Data.Get("list", "localAppName"), 25, False, "选择")
             if set != None:
                 Core.Data.Write("list", "homePlug-in", "app{}".format(str(set)), options)
                 return

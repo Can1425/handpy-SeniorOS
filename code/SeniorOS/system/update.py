@@ -1,23 +1,30 @@
 import uhashlib,os,urequests
 import SeniorOS.system.log_manager as LogManager
 LogManager.Output("system/update.mpy", "INFO")
-
+import ubinascii
 # lambda: 值查找键
 valueFindKey=lambda dictObj,value:{v : k for k, v in dictObj.items()}[value]
 
-SERVER_URL="https://gitee.com/can1425/mpython-senioros-radient/raw/update"
+SERVER_URL="https://senior.flowecho.org/update"
 SYSTEM_VERSION=eval("[/Const('version')/]")
 # 读取本地文件清单
 def GetFileList():
     with open("/SeniorOS/data/fileList.json",'rb')as f:
         return f.read().decode()
 # 快速hash By CodeGeeX
+def ReadChunk(c,bytes=4096):
+    return c.read(bytes)
+def hexdigest(digest):
+    return ubinascii.hexlify(digest)
+
 def FastHash(file_path, hash_type=uhashlib.md5):
     hash_obj = hash_type()
     with open(file_path, 'rb') as f:
-        for chunk in iter(lambda: f.read(4096), b""):
-            hash_obj.update(chunk)
-    return hash_obj.hexdigest()
+        '''
+        for chunk in iter(ReadChunk(f,4096), b""): # 这一行报错 TypeError: function takes 1 positional arguments but 2 were given
+            hash_obj.update(chunk)'''
+        hash_obj.update(f.read())
+    return hexdigest(hash_obj.digest())
 
 # 获取更新清单
 def GetUpdList(updVersion):

@@ -4,7 +4,7 @@ import micropython
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
-import sys,os
+import sys,os,gc
 import SeniorOS.system.pages_manager as PagesManager
 
 appNum = 0
@@ -22,7 +22,6 @@ def AppDynamic():
         if appNum + 1 > len(List):
             appNum = len(List) - 1
             return
-        waitTime = 5
         select1X = -77
         select2X = -23
         select3X = 31
@@ -42,15 +41,13 @@ def AppDynamic():
             except:pass
             oled.fill_rect(0, 47, 128, 18, 0)
             oled.show()
-            time.sleep_ms(waitTime)
-            waitTime += 20
+            time.sleep_ms(20)
     if eval("[/GetButtonExpr('on')/]"):
         operationalJudgment = 1
         appNum = appNum - 1
         if appNum < 0:
             appNum = 0
             return
-        waitTime = 5
         select1X = 172
         select2X = 118
         select3X = 64
@@ -70,8 +67,7 @@ def AppDynamic():
             except:pass
             oled.fill_rect(0, 47, 128, 18, 0)
             oled.show()
-            time.sleep_ms(waitTime)
-            waitTime += 20
+            time.sleep_ms(20)
 
 def App():
     global waitTime, select1X, select2X, select3X, select4X, appNum
@@ -94,7 +90,7 @@ def App():
             # Core.Load('apps.app' + str(appNum))
             PagesManager.Main.Import('SeniorOS.apps.' + str(appDir[appNum]), 'Main')
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.' + str(appDir[appNum])]
-            __import__("gc").collect()
+            gc.collect()
             # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
             if operationalJudgment == 0:

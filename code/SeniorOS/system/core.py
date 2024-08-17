@@ -95,7 +95,7 @@ class DataCtrl:
                     dataValue=dataValue.replace(i,'')
                 for t in range(len(dtValue)):
                     for i in ["\n","\r","\r\n",'\n','\r','\r\n']:
-                        dtValue[t]=dtValue.replace(i,'')
+                        dtValue[t]=dtValue[t].replace(i,'')
                 dtValue[index] += ";"+str(dataValue)
                 with open(self.dataFolderPath + 'list.sros','w') as f:
                     for i in range(len(dtValue)):
@@ -116,8 +116,6 @@ class DataCtrl:
                 ConfigRead[index] = dataName + ":" + TSList4 
                 f.write("\n".join(ConfigRead))
                 self.data[controls]='\n'.join(Config)
-
-
 
 Data = DataCtrl("/SeniorOS/data/")
 
@@ -144,6 +142,7 @@ class AppSetup:
             f.write(tmp[:-1])
         with open("/SeniorOS/apps/logo.py","a+") as f:
             f.write("\r\n".join(t))
+            f.write(",")
     def setup(self):
         #安装文件格式:
         #------------------------------(安装example.py)
@@ -154,9 +153,12 @@ class AppSetup:
         #---------------------------------------------
         with open(self.filePath,"r") as app:
             print(self.filePath)
-            appData=app.readlines()
+            appData=(app.read()).split('\r\n')
             appCFG=[appData[0],appData[1],appData[2]]
             self.WriteLogoData(appCFG[0])
+            for i in range(3):
+                for j in ["\n","\r","\r\n",'\n','\r','\r\n']:
+                    appCFG[i]=appCFG[i].replace(j,'')
             Data.Write("list","localAppName",appCFG[1])
             with open("/SeniorOS/apps/{}".format(str(appCFG[2])),"w") as f:
                 lines=0
@@ -165,7 +167,7 @@ class AppSetup:
                         f.write(i+'\n')
                     lines+=1
         return 
-
+#Core.AppSetup("/SeniorOS/download/test.spk").setup()
     
 # 文件/路径 格式工厂
 class File_Path_Factory:
