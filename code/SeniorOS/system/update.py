@@ -20,9 +20,6 @@ def hexdigest(digest):
 def FastHash(file_path, hash_type=uhashlib.md5):
     hash_obj = hash_type()
     with open(file_path, 'rb') as f:
-        '''
-        for chunk in iter(ReadChunk(f,4096), b""): # 这一行报错 TypeError: function takes 1 positional arguments but 2 were given
-            hash_obj.update(chunk)'''
         hash_obj.update(f.read())
     return hexdigest(hash_obj.digest())
 
