@@ -1,0 +1,16 @@
+[EntryPoint]
+requirements = 'requirements.txt'
+build = 'tools/Build.py'
+buildOouputType = 'dir'
+buildOouput = 'build'
+projectName = 'SeniorOS'
+
+[AutoInstall]
+enable = true
+installMethod = 'mount'
+afterMount = 'import boot'
+
+[AutoClone]
+enable = false
+repoPlatform = 'gitlab'
+repoUri = 'Can1425/handpy-senioros'
