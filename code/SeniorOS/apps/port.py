@@ -14,100 +14,58 @@ appDir=os.listdir("SeniorOS/apps")
 for i in range(len(appDir)):
     if appDir[i]!="port.py" or appDir[i]!="logo.py":
         appDir[i]=appDir[i].replace(".mpy","")
-def AppDynamic():
-    global waitTime, select1X, select2X, select3X, select4X, appNum, operationalJudgment
-    if eval("[/GetButtonExpr('py')/]"):
-        operationalJudgment = 0
-        appNum = appNum + 1
-        if appNum + 1 > len(List):
-            appNum = len(List) - 1
-            return
-        select1X = -77
-        select2X = -23
-        select3X = 31
-        select4X = 85
-        for count in range(4):
-            select1X += 18
-            select2X += 18
-            select3X += 18
-            select4X += 18
-            oled.fill_rect(0, 0, 128, 43, 0)
-            try:oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
-            except:pass
-            oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
-            try:
-                oled.Bitmap(select3X, 10, Logo[appNum-1], 25, 25, 1)
-                oled.Bitmap(select4X, 10, Logo[appNum-2], 25, 25, 1)
-            except:pass
-            oled.fill_rect(0, 47, 128, 18, 0)
+
+def Bitmap(bitMap1, bitMap2, bitMap3, startX, startY, endX, endY):
+    speed = int(Core.Data.Get("text", "VastSeaSpeed"))
+    if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
+        elapsedTime = 0  # 已过去的时间
+        timer = 10  # 定时器间隔（毫秒）
+        while elapsedTime < speed:
+            elapsedTime += timer
+            t = elapsedTime / speed
+            factor = -(math.cos(math.pi * t) - 1) / 2
+            currentX= startX + (endX - startX) * factor
+            currentY = startY + (endY - startY) * factor
+            # 根据计算出的 current_x 和 current_y 更新位置
+            oled.fill(0)
+            if bitMap1 != None:
+                oled.Bitmap(int(currentX - 60), int(currentY), bitMap1, 25, 25, 1)
+            oled.Bitmap(int(currentX), int(currentY), bitMap2, 25, 25, 1)
+            oled.Bitmap(int(currentX + 60), int(currentY), bitMap3, 25, 25, 1)
             oled.show()
-            time.sleep_ms(20)
-    if eval("[/GetButtonExpr('on')/]"):
-        operationalJudgment = 1
-        appNum = appNum - 1
-        if appNum < 0:
-            appNum = 0
-            return
-        select1X = 172
-        select2X = 118
-        select3X = 64
-        select4X = 10
-        for count in range(4):
-            select1X -= 18
-            select2X -= 18
-            select3X -= 18
-            select4X -= 18
-            oled.fill_rect(0, 0, 128, 43, 0)
-            try:oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
-            except:pass
-            oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
-            try:
-                oled.Bitmap(select3X, 10, Logo[appNum+1], 25, 25, 1)
-                oled.Bitmap(select4X, 10, Logo[appNum+2], 25, 25, 1)
-            except:pass
-            oled.fill_rect(0, 47, 128, 18, 0)
-            oled.show()
-            time.sleep_ms(20)
+    else:
+        DayLight.VastSea.Off()
 
 def App():
-    global waitTime, select1X, select2X, select3X, select4X, appNum
+    global appNum
     appNum = 0
-    select1X = -5
-    select2X = 49
-    oled.fill(0)
-    oled.Bitmap(select1X, 10, Logo[1], 25, 25, 1)
-    oled.Bitmap(select2X, 10, Logo[0], 25, 25, 1)
-    oled.show()
     while not eval("[/GetButtonExpr('ath')/]"):
         oled.DispChar('>', 120, 48, 1)
         oled.DispChar('<', 1, 48, 1)
         oled.DispChar(List[appNum],DayLight.AutoCenter(List[appNum]), 48, 1)
-        oled.hline(4, 46, 126, 1)
+        if appNum - 1 >= 0:
+            oled.Bitmap(-10, 10, Logo[appNum - 1], 25, 25, 1)
+        oled.Bitmap(50, 10, Logo[appNum], 25, 25, 1)
+        if appNum + 1 < len(Logo) - 1:
+            oled.Bitmap(110, 10, Logo[appNum + 1], 25, 25, 1)
+        oled.hline(0, 46, 128, 1)
         oled.show()
-        AppDynamic()
+        if eval("[/GetButtonExpr('py')/]"):
+            if appNum - 1 >= 0:
+                Bitmap(Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], 50, 10, 110, 10)
+                appNum -= 1
+        if eval("[/GetButtonExpr('on')/]"):
+            if appNum + 1 < len(Logo) - 1:
+                if appNum - 1 >= 0:
+                    Bitmap(None, Logo[appNum], Logo[appNum + 1], 50, 10, -10, 10)
+                else:
+                    Bitmap(Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], 50, 10, -10, 10)
+                appNum += 1
         if eval("[/GetButtonExpr('th')/]"):
-            DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, - DayLight.AutoCenter(List[appNum]) // DayLight.VastSea.speed, 40)
+            DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, 5, 2)
             # Core.Load('apps.app' + str(appNum))
             PagesManager.Main.Import('SeniorOS.apps.' + str(appDir[appNum]), 'Main')
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.' + str(appDir[appNum])]
             gc.collect()
             # exec(str("App"+ str(appNum) +".main()"))
-            DayLight.VastSea.SeniorMove.Text(List[appNum], 2, 0, DayLight.AutoCenter(List[appNum]) + DayLight.AutoCenter(List[appNum])//2, -134)
-            if operationalJudgment == 0:
-                try:oled.Bitmap(select1X, 10, Logo[appNum+1], 25, 25, 1)
-                except:pass
-                oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
-                try:
-                    oled.Bitmap(select3X, 10, Logo[appNum-1], 25, 25, 1)
-                    oled.Bitmap(select4X, 10, Logo[appNum-2], 25, 25, 1)
-                except:pass
-                oled.show()
-            elif operationalJudgment == 1:
-                try:oled.Bitmap(select1X, 10, Logo[appNum-1], 25, 25, 1)
-                except:pass
-                oled.Bitmap(select2X, 10, Logo[appNum], 25, 25, 1)
-                try:
-                    oled.Bitmap(select3X, 10, Logo[appNum+1], 25, 25, 1)
-                    oled.Bitmap(select4X, 10, Logo[appNum+2], 25, 25, 1)
-                except:pass
-                oled.show()
+            DayLight.VastSea.SeniorMove.Text(List[appNum], 5, 2, DayLight.AutoCenter(List[appNum]), 48)

@@ -39,9 +39,9 @@ elif info == "2":
     SmartWifi.main()
 del info;gc.collect()
 #-----------------
-def _____():
+def SmatrWifiGo():
     while True:gc.collect()
-_thread.start_new_thread(_____,())
+_thread.start_new_thread(SmatrWifiGo,())
 returnData=Pages.Home()
 while not returnData:
     returnData=Pages.Home()

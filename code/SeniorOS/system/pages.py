@@ -42,7 +42,7 @@ def CloudNotification():
     DayLight.App.Style1(eval("[/Language('云端通知')/]"))
     oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 2)
     oled.show()
-    _response = urequests.get('https://gitee.com/can1425/mpython-senioros-radient/raw/plugins/Notifications.sros', headers={})
+    _response = urequests.get('https://senior.flowecho.org/radient/plugins/Notifications.sros', headers={})
     notifications = (_response.text.split(';'))
     while not button_a.is_pressed():
         DayLight.App.Style1(eval("[/Language('云端通知')/]"))
@@ -80,20 +80,16 @@ def SettingPanel():
     1: HS_Ram,
     2: HS_flash,
     }
-    hardware=["CPU","Ram","flash","RGB灯","麦克风","OLED"]
-    def HardwareSettings():
-        while not button_a.is_pressed():
-            options = DayLight.ListOptions(hardware, 8, False, "板载设备")
-            ListOperation.get(options)()
+    hardware=["CPU","Ram","flash"]
     while not button_a.is_pressed():
-        options = DayLight.Select.Style4(['板载设备','外设'], 8, False, "控制面板")
-        if options == 0:
-            HardwareSettings()
-        elif options == 1:
-            pass
+        options = DayLight.ListOptions(hardware, 8, False, "板载设备")
+        if options != None:
+            DayLight.VastSea.Transition()
+            ListOperation.get(options)()
+            DayLight.VastSea.Transition(False)
+
         else:
-            pass
-        # 剩下的交给你
+            DayLight.VastSea.Transition(False)
 
 @micropython.native
 def Home():
@@ -102,17 +98,17 @@ def Home():
     while not eval("[/GetButtonExpr('pythonab')/]"):
         PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
     if button_a.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,15,-20)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,2)
         PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,4,-20,50)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,2,-10,-20)
     elif button_b.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),148,-50,-50,-50)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),138,-20,5,2)
         PagesManager.Main.Import("SeniorOS.system.pages", "SettingPanel")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),5,4,120,50)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),5,2,138,-20)
     elif eval("[/GetButtonExpr('th')/]"):
-        DayLight.VastSea.SeniorMove.Line(0, 0, 128, 0, 0, -128, 128, -128)
+        DayLight.VastSea.SeniorMove.Line(128, 0, 0, 0, 0, 46, 128, 46)
         PagesManager.Main.Import("SeniorOS.apps.port", "App")
-        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 0, 46, 128, 46)
+        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
     elif eval("[/GetButtonExpr('ab')/]"):
         pass
     elif eval("[/GetButtonExpr('py', 'and')/]"):

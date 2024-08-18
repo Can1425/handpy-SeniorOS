@@ -27,7 +27,7 @@ class DataCtrl:
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.strip('.sros')]=f.read().strip('\r')
-                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]");print(self.data[i.strip('.sros')])
+                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
 
