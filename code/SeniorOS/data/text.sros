@@ -8,5 +8,5 @@ timingServer:time.windows.com
 connectWifiMode:0
 pagesDataDump:0
 pagesVarDump:0
-touchPadValue:300
+touchPadValue:100
 test:1

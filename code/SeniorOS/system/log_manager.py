@@ -45,7 +45,7 @@ def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO')
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\
        .replace(f'{prefix}message{prefix}', message)
-    formatText+=f" mem-info:{gc.mem_free()} B"
+    formatText+=f"\nRam-info:{gc.mem_free()} B"
     return formatText
 
 class LogManager:

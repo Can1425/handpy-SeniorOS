@@ -26,7 +26,6 @@
 
 import SeniorOS.system.log_manager as LogManager
 import gc
-import sys
 
 Log = LogManager.Log
 
@@ -45,27 +44,19 @@ Log = LogManager.Log
 class Main:
     def __init__(self) -> None:
         pass
-
     @staticmethod
     def Import(moduleLoc: str, funcName: str, log = True, *argument) -> bool:
         gc.collect()
-        if log == True:
+        if log:
             Log.Info(moduleLoc + " " + funcName + "(func)")
         module = __import__(moduleLoc, globals(), locals(), [funcName])
         func = getattr(module, funcName)
         try:
             gc.collect()
-            func(*argument)# 等下，如果没有传参呢？# 就返回空元组,所以正常运行.so,看我这的报错
+            func(*argument)
             gc.collect()
         except Exception as e:
-            # e = sys.exc_info()
-            gc.collect()
             Log.Error(moduleLoc + " > " + funcName + ": " + e.__class__.__name__ + ": " + str(e))
-            # Log.Error("[PM] Error in" + moduleLoc + " > " + funcName + " line " + str(e[2].tb_lineno) + ": " + str(e[0].__name__) + ": " + str(e[1]))
-            gc.collect()
-            # example: SeniorOS.system.pages_manager > function: OSError: [Errno 2] ENOENT
-            # 感觉是 SeniorOS.system.pages_manager > function: OSError:  OSError: [Errno 2] ENOENT(emo)啊，funcName不是报错名 ，ee而是函数名 e 是完整的报错信息,包括报错类型(emo)6
-            # raise InternalPageError(f'在执行 {moduleLoc} 中的 {funcName} 时意外抛出异常: {e}')
             return False
         else:
             gc.collect()
