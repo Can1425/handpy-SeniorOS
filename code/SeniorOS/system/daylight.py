@@ -186,7 +186,9 @@ class VastSea:
                 VastSea.Transition()
                 Box(54,126,74,126,True)
                 oled.DispChar(eval("[/Language('加载成功')/]"), AutoCenter(eval("[/Language('加载成功')/]")), 55)
+                oled.show()
                 Core.Data.Write("text", "VastSeaSpeed", presuppose[options])
+                time.sleep_ms(int(eval("[/Const('interval')/]")))
                 VastSea.Transition(False)
 
         else:
@@ -221,12 +223,13 @@ class VastSea:
             VastSea.Off()
 
     class SeniorMove:
-        @staticmethod
+
         def Text(text, startX, startY, endX, endY):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
                 elapsedTime = 0  # 已过去的时间
                 timer = 10  # 定时器间隔（毫秒）
+                oled.fill(0)
                 while elapsedTime < speed:
                     elapsedTime += timer
                     t = elapsedTime / speed
@@ -234,7 +237,7 @@ class VastSea:
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
                     # 根据计算出的 current_x 和 current_y 更新位置
-                    oled.fill(0)
+                    oled.fill_rect(int(currentY) - 1, int(currentY), len(text) * 17, 17, 0)
                     oled.DispChar(text, int(currentX), int(currentY))
                     oled.show()
             else:
@@ -242,8 +245,8 @@ class VastSea:
 
         # 你希望实现与现在相反的效果？不是，从理论上说，我写的这个是可以做到的，但是在 某种情况（确实是某种情况，那只是个代表）下出现了那种问题，我暂时还没搞清楚为什么会这样
         # 什么意思(emo)问一下你是希望再写个函数还是基于原来的函数，我认为这是一个bug，所以基于原函数修改(emo)懂了，你的意思是说，调用Line(sx,sy,ex,ey,sl,el)的Line(ex,ey,sx,sy,el,sl)的动画效果不是相反的？这是一个典例，我想要表达的并不是这个意思，而是我发现，当这些值满足一定条件时，动画效果是不受控制的(emo)懂了，从数学角度上，sin和cos呈现周期性，所以会有这种情况（除非你能保证sin和cos的输入值都在±π）so，我们该做些什么(emo)先检查sin和cos的输入范围。对了，那个“当这些值满足一定条件时，动画效果是不受控制的”能细说一下条件吗？事实证明，我似乎还没探索出什么规律 (emo)检查发现sin和cos的输入范围确实在±π，所以得先检查一下atan2 诶我发现了，如果endY-startY≠0但是endX-startX=0的情况下，math.atan2(endY - startY, endX - startX)的输出貌似会出现一些截断情况（例如从-π突然跳到π） 啊，因为math.atan2(y,x)的函数原型是math.atan(y/x)，可能是这样，我在测试中的确输入了一些 0 嗯嗯所以看来如果要改的话只能改动画函数了 你可以试试吗？ 这不能帮你（因为我这里没有完整的SeniorOS编译环境）这一段没有使用 SROS API 可直接运行 哦哦不过对于这些大问题我懒得帮（ 6
-        @staticmethod
-        def Line(startX, startY, startX2,startY2, endX, endY, endX2, endY2):
+
+        def Line(startX, startY, startX2,startY2, endX, endY, endX2, endY2, fill:bool = True):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
                 elapsedTime = 0  # 已过去的时间
@@ -257,12 +260,15 @@ class VastSea:
                     currentX2 = startX2 + (endX2 - startX2) * factor
                     currentY2 = startY2 + (endY2 - startY2) * factor
                     # 根据计算出的 currentX、currentY、currentX2 和 currentY2 更新线条的位置
-                    oled.fill(0)
+                    if fill:
+                        oled.fill(0)
+                    else:
+                        oled.fill_rect(startX, startY, 128, 3, 0)
                     oled.line(int(currentX), int(currentY), int(currentX2), int(currentY2), 1)
                     oled.show()
             else:
                 VastSea.Off()
-        @staticmethod
+
         def Bitmap(bitMap, startX, startY, endX, endY, h, w):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:

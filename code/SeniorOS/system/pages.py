@@ -12,6 +12,7 @@ import time
 import machine
 import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
+import _thread
 LogManager.Output("system/pages.mpy", "INFO")
 
 wifi=wifi()
@@ -20,13 +21,17 @@ def ConfigureWLAN(ssid, password):
     oled.fill(0)
     oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
     oled.show()
+    Quit = False
+    # _thread.start_new_thread(LoadWait,(Quit,"None",False))
     try:
         wifi.connectWiFi(ssid, password)
         ntptime.settime(8,"time.windows.com")
         time.sleep(2)
+        Quit = True
         return True
     except:
         time.sleep(2)
+        whetherToQuit = True
         return False
 
 def WifiPages():
@@ -52,7 +57,7 @@ def CloudNotification():
         oled.show()
     return
 
-def SettingPanel(): 
+def EquipmentPanel(): 
     def HS_CPU():
         while not button_a.is_pressed():
             oled.fill(0)
@@ -68,13 +73,14 @@ def SettingPanel():
             oled.DispChar("触摸键释放内存",0,32)
             oled.show()
             if eval("[/GetButtonExpr('python')/]"):
-                Core.FullCollect()
+                Collect()
         return 0
     def HS_flash():
         while not button_a.is_pressed():
             oled.fill(0)
             oled.DispChar("Flash - total: 8MB",0,0)
             oled.DispChar("可用:")
+            oled.show()
     ListOperation = {
     0: HS_CPU,
     1: HS_Ram,
@@ -82,13 +88,10 @@ def SettingPanel():
     }
     hardware=["CPU","Ram","flash"]
     while not button_a.is_pressed():
-        options = DayLight.ListOptions(hardware, 8, False, "板载设备")
+        options = DayLight.Select.Style4(hardware, False, "设备面板")
         if options != None:
             DayLight.VastSea.Transition()
             ListOperation.get(options)()
-            DayLight.VastSea.Transition(False)
-
-        else:
             DayLight.VastSea.Transition(False)
 
 @micropython.native
@@ -98,13 +101,13 @@ def Home():
     while not eval("[/GetButtonExpr('pythonab')/]"):
         PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
     if button_a.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,2)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,0)
         PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,2,-10,-20)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,0,-10,-20)
     elif button_b.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),138,-20,5,2)
-        PagesManager.Main.Import("SeniorOS.system.pages", "SettingPanel")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('控制面板')/]"),5,2,138,-20)
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),138,-20,5,0)
+        PagesManager.Main.Import("SeniorOS.system.pages", "EquipmentPanel")
+        DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),5,0,138,-20)
     elif eval("[/GetButtonExpr('th')/]"):
         DayLight.VastSea.SeniorMove.Line(128, 0, 0, 0, 0, 46, 128, 46)
         PagesManager.Main.Import("SeniorOS.apps.port", "App")
@@ -226,7 +229,13 @@ def AutoConnectWifi():
                 Core.Data.Write("text","autoConnectWifi",info)
                 return 0
 
-def LoadWait(text=eval("[/Language('请稍等')/]")):
-    DayLight.Box(1,1,126,62,True)
-    DayLight.Text(text, DayLight.AutoCenter(text), 28, 2)
-    oled.show()
+def LoadWait(whetherToQuit:bool, text:str="None", fill:bool=False):
+    if fill:
+        oled.fill(0)
+    while not whetherToQuit:
+        if text != "None":
+            DayLight.Text(text, DayLight.AutoCenter(text), 28, 2)
+        DayLight.VastSea.SeniorMove.Line(0,63,0,63,0,63,128,63,False)
+        DayLight.VastSea.SeniorMove.Line(0,63,128,63,128,63,128,63,False)
+        oled.show()
+    _thread.exit()

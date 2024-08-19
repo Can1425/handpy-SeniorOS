@@ -3,6 +3,7 @@ import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.daylight as DayLight
 import urequests
+import _thread
 
 def GetSeniWeather(_url, _location):
     _url = _url + "&location=" + _location.replace(" ", "%20")
@@ -12,9 +13,11 @@ def GetSeniWeather(_url, _location):
     return json
 
 def Main():
-    Pages.LoadWait()
+    whetherToQuit = False
+    # _thread.start_new_thread(Pages.LoadWait, (whetherToQuit, eval("[/Language('请稍等')/]")), True)
     w1 = GetSeniWeather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
     w2 = GetSeniWeather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")
+    whetherToQuit = True
     oled.fill(0)
 
     while not button_a.is_pressed():
