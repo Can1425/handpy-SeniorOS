@@ -18,21 +18,23 @@ LogManager.Output("system/pages.mpy", "INFO")
 
 wifi=wifi()
 
+
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
     oled.Bitmap(16, 20, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
     oled.show()
-    Quit = False
-    # _thread.start_new_thread(LoadWait,(Quit,"None",False))
+    Quit = Core.SharedVar.LoadQuit()
+    Quit.value = False
+    _thread.start_new_thread(LoadWait,(Quit,"None",False))
     try:
         wifi.connectWiFi(ssid, password)
         ntptime.settime(8,"time.windows.com")
         time.sleep(2)
-        Quit = True
+        Quit.value = True
         return True
-    except:
+    except: # 看看这里，follow me 怎么了 
         time.sleep(2)
-        whetherToQuit = True
+        Quit.value = True
         return False
 
 def WifiPages():
@@ -280,13 +282,13 @@ def AutoConnectWifi():
                 Core.Data.Write("text","autoConnectWifi",info)
                 return 0
 
-def LoadWait(whetherToQuit:bool, text:str="None", fill:bool=False):
+def LoadWait(WhetherToQuit:SharedVar, text:str="None", fill:bool=False):
     if fill:
         oled.fill(0)
-    while not whetherToQuit:
+    while not WhetherToQuit:
         if text != "None":
             DayLight.Text(text, DayLight.AutoCenter(text), 28, 2)
         DayLight.VastSea.SeniorMove.Line(0,63,0,63,0,63,128,63,False)
         DayLight.VastSea.SeniorMove.Line(0,63,128,63,128,63,128,63,False)
         oled.show()
-    _thread.exit()
+    #_thread.exit() （会自动退出的）

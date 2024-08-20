@@ -172,6 +172,7 @@ class Select:
                         break
                 elif eval("[/GetButtonExpr('th')/]"):
                     return listNum
+                elif button_a.is_pressed():return None
 
 
 ListOptions = Select.Style4
@@ -210,14 +211,13 @@ class VastSea:
         else:
             VastSea.Transition(False)
     @staticmethod
-    @micropython.native
     def SelsetBoxMove(x,y,char,ToX,ToY,NewChar,MODE="rect"):
         ToWidth = GetCharWidth(NewChar)
         if ToWidth > 0:
             NowW=GetCharWidth(char)
             if MODE == "rect":
                 for i in range(7):
-                    gc.collect()
+                    #gc.collect()
                     oled.DispChar(NewChar,ToX,ToY)
                     oled.rect(x,y,NowW,16,1)
                     oled.show()
@@ -228,9 +228,8 @@ class VastSea:
                 return
             else:
                 for i in range(7):
-                    gc.collect()
+                    #gc.collect()
                     oled.fill_rect(x,y,NowW,16,1)
-                    #oled.DispChar(char,sx,sy,2)
                     oled.DispChar(NewChar,ToX,ToY,2)
                     oled.show()
                     oled.fill_rect(x,y,NowW,16,0)
@@ -249,7 +248,7 @@ class VastSea:
         if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
             if mode:
                 for i in range(13):
-                    times = i * i
+                    times = i**2
                     oled.vline(times, 0, 64, 1)
                     oled.vline(times+1, 0, 64, 0)
                     oled.fill_rect(0, 0, times, 64, 0)
@@ -257,7 +256,7 @@ class VastSea:
             else:
                 for i in range(13):
                     times = 13 - i
-                    times_squared = times * times
+                    times_squared = times ** 2
                     oled.fill_rect(0, 0, 128, 64, 0)
                     oled.vline(times_squared, 0, 64, 1)
                     oled.vline(times_squared + 1, 0, 64, 0)
@@ -282,7 +281,7 @@ class VastSea:
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
                     # 根据计算出的 current_x 和 current_y 更新位置
-                    oled.fill_rect(int(currentY) - 1, int(currentY), len(text) * 17, 17, 0)
+                    oled.fill_rect(int(currentY) - 1, int(currentY), len(text) * 17, 18, 0)
                     oled.DispChar(text, int(currentX), int(currentY))
                     oled.show()
             else:
@@ -345,6 +344,15 @@ class VastSea:
             oled.fill_rect(0,0,128,64,0)
             oled.rect(0,0,128,64,1)
             oled.show()
+        def thread_for_DarkForChangePages():
+            time.sleep(1)
+            UITools()
+        def DarkForChangePages():
+            for _ in range(7):
+                if _<0:_=0
+                oled.contrast(_**2)
+                oled.show()
+            
 
 def UITools():
     try:
@@ -427,13 +435,3 @@ mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
 def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16, showMode = 1):
     oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
     return
-    '''
-    if outMode == 1:
-        oled.DispChar(text, x, y, showMode, Outmode.stop, maximum_x, space, return_x = returnX, return_addy = returnAddy)
-        return
-    if outMode == 2:
-        oled.DispChar(text, x, y, showMode, Outmode.autoreturn, maximum_x, space, return_x = returnX, return_addy = returnAddy)
-        return
-    if outMode == 3:
-        oled.DispChar(text, x, y, showMode, Outmode.ellipsis, maximum_x, space, return_x = returnX, return_addy = returnAddy)
-        return'''

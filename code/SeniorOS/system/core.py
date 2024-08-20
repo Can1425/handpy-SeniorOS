@@ -17,6 +17,13 @@ LogManager.Output("system/core.mpy", "INFO")
 # 将大部分使用了 init_file write_file 类函数而只对 data 文件夹下的数据作读写的代码替换为此处代码
 
 # 初始化函数
+
+class SharedVar:
+    class LoadQuit: #没必要吧
+        def __init__(self):
+            self.value = None
+        def __bool__(self):
+            return bool(self.value)
 class DataCtrl:
     # 初始化函数，传入文件夹路径
     def __init__(self,dataFolderPath): # 文件夹传参结尾必须要有反斜杠！！！

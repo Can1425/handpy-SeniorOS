@@ -1,5 +1,4 @@
 import gc,_thread
-_thread.start_new_thread(____,())
 import SeniorOS.system.log_manager as LogManager
 Log = LogManager.Log
 LogManager.Output("system/main.mpy", "INFO")
