@@ -1,14 +1,13 @@
+import gc,_thread
+_thread.start_new_thread(____,())
 import SeniorOS.system.log_manager as LogManager
 Log = LogManager.Log
 LogManager.Output("system/main.mpy", "INFO")
-import uos as os;os.chdir('/')
+import os;os.chdir('/')
+import SeniorOS.system.core as Core#;gc.collect()
+from SeniorOS.system.devlib import wifi#;gc.collect()
 import SeniorOS.system.pages as Pages
-import SeniorOS.system.core as Core
-import SeniorOS.system.smart_wifi as SmartWifi
-from SeniorOS.system.devlib import wifi
-import _thread
 import ntptime
-import gc
 info=Core.Data.Get("text","connectWifiMode")
 wifilist=[]
 if info == "0":
@@ -32,16 +31,17 @@ elif info == "1":
                 except:
                     Log.Error("CONNECT WIFI FILLED")
                     Log.Message("USE SMARTWIFI NOW")
+                    import SeniorOS.system.smart_wifi as SmartWifi
                     SmartWifi.main()
+                    del SmartWifi;gc.collect()
     del wifilist,net,netscan,connect;gc.collect()
 elif info == "2":
     # 启动门户
+    import SeniorOS.system.smart_wifi as SmartWifi
     SmartWifi.main()
+    del SmartWifi;gc.collect()
 del info;gc.collect()
 #-----------------
-def SmatrWifiGo():
-    while True:gc.collect()
-_thread.start_new_thread(SmatrWifiGo,())
 returnData=Pages.Home()
 while not returnData:
     returnData=Pages.Home()

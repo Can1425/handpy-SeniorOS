@@ -118,12 +118,15 @@ class DataCtrl:
                 self.data[controls]='\n'.join(Config)
 
 Data = DataCtrl("/SeniorOS/data/")
-
+tmp_of_touchPadValue = -1
 def VitalData(data:int):
-    touchPadValue = (int(Data.Get("text", "touchPadValue")))
+    if tmp_of_touchPadValue == -1:
+        touchPadValue = (int(Data.Get("text", "touchPadValue")))
+        return touchPadValue
+    else:return tmp_of_touchPadValue
     # ...
-    vitalDataList = ["Hello", touchPadValue]
-    return vitalDataList[data]
+    #vitalDataList = ["Hello", touchPadValue]
+    #return vitalDataList[data]
 
 class AppSetup:
     def __init__(self,filePath):

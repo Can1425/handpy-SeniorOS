@@ -19,6 +19,7 @@ log_level_list = ['DEBUG', 'INFO', 'MSG', 'WARN', 'ERROR', 'FATAL']
 import time
 import gc
 import ntptime
+import esp32
 PYTHON = 'mpy' # 'cpy' or 'mpy'
 
 
@@ -45,7 +46,7 @@ def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO')
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\
        .replace(f'{prefix}message{prefix}', message)
-    formatText+=f"\nRam-info:{gc.mem_free()} B"
+    formatText+=f"\nRam-info:{gc.mem_free()} B\nCPU:{esp32.raw_temperature()}°C"
     return formatText
 
 class LogManager:

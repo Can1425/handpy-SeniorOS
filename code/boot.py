@@ -1,7 +1,8 @@
 from SeniorOS.system.devlib import *
-import time,uos
+import time
+import uos
 import SeniorOS.system.core as Core
-
+import SeniorOS.system.daylight as DayLight
 Core.FullCollect()
 
 def RenameCode():
@@ -16,6 +17,7 @@ while True:
     while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
     if eval("[/GetButtonExpr('py','and')/]"):
+        DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16,0,0)
         oled.fill(0)
         oled.DispChar('启动至 SeniorOS',5,0)
         oled.show()
@@ -25,12 +27,14 @@ while True:
         import SeniorOS.system.main
         break
     elif eval("[/GetButtonExpr('on','and')/]"):
+        DayLight.VastSea.SeniorMove.Box("ON - main.py",5,48,0,0)
         oled.fill(0)
         oled.DispChar('启动至 main.py',5,0)
         oled.show()
         time.sleep(0.5)
         break
     elif eval("[/GetButtonExpr('th','and')/]"):
+        DayLight.VastSea.SeniorMove.Box("'TH - REPL",5,32,0,0)
         oled.fill(0)
         oled.DispChar('启动至 REPL',5,0)
         oled.DispChar("缓冲区下 屏幕已oled.fill(0)",5,16,out=3,return_x=5,maximum_x=126)

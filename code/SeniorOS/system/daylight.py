@@ -5,6 +5,7 @@ import time
 from SeniorOS.system.devlib import *
 import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
+import micropython
 LogManager.Output("system/daylight.mpy", "INFO")
 
 # 缓存时间相关的字符串
@@ -140,7 +141,7 @@ class Select:
         maxdispcontextindex = lendispcontext - 1
         UITools()
         listNum = 0
-        while not eval("[/GetButtonExpr('ath')/]"):
+        while True:
             oled.fill(0)
             if appTitle:
                 App.Style1(appTitle,window)
@@ -151,16 +152,22 @@ class Select:
             for i, item in enumerate(displayItems):
                 Text(item, 5, 16 * (i + 1), 2, showMode=1)
             if len(displayItems) > 0:
-                oled.fill_rect(0, 16 + 16 * (listNum - start), 128, 16, 1)
+                oled.fill_rect(5, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
                 Text(displayItems[listNum - start], 5, 16 + 16 * (listNum - start), 2, showMode = 2)
             oled.show()
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
+                        VastSea.SelsetBoxMove(5, 16+16*(listNum-start),displayItems[listNum - start],
+                                              5,16+16*(listNum-start+1),displayItems[listNum - start+1],
+                                              MODE="fill_rect")
                         listNum += 1
                         break
                 elif eval("[/GetButtonExpr('py')/]"):
                     if listNum > 0:
+                        VastSea.SelsetBoxMove(5,16+16*(listNum-start),displayItems[listNum - start],
+                                              5,16+16*(listNum-start-1),displayItems[listNum - start-1],
+                                              MODE="fill_rect")
                         listNum -= 1
                         break
                 elif eval("[/GetButtonExpr('th')/]"):
@@ -203,19 +210,34 @@ class VastSea:
         else:
             VastSea.Transition(False)
     @staticmethod
-    def SelsetBoxMove(x,y,char,ToX,ToY,NewChar) -> None:
+    @micropython.native
+    def SelsetBoxMove(x,y,char,ToX,ToY,NewChar,MODE="rect"):
         ToWidth = GetCharWidth(NewChar)
-        sx=x;sy=y
         if ToWidth > 0:
             NowW=GetCharWidth(char)
-            for i in range(7):
-                oled.DispChar(char,sx,sy)
-                oled.DispChar(NewChar,ToX,ToY)
-                oled.rect(x,y,NowW,16,1)
-                oled.rect(x,y,NowW,16,0)
-                NowW+=(ToWidth-NowW)//2
-                x+=(ToX-x)//2
-                y+=(ToY-y)//2
+            if MODE == "rect":
+                for i in range(7):
+                    gc.collect()
+                    oled.DispChar(NewChar,ToX,ToY)
+                    oled.rect(x,y,NowW,16,1)
+                    oled.show()
+                    oled.rect(x,y,NowW,16,1)
+                    NowW+=(ToWidth-NowW)//2
+                    x+=(ToX-x)//2
+                    y+=(ToY-y)//2
+                return
+            else:
+                for i in range(7):
+                    gc.collect()
+                    oled.fill_rect(x,y,NowW,16,1)
+                    #oled.DispChar(char,sx,sy,2)
+                    oled.DispChar(NewChar,ToX,ToY,2)
+                    oled.show()
+                    oled.fill_rect(x,y,NowW,16,0)
+                    NowW+=(ToWidth-NowW)//2
+                    x+=(ToX-x)//2
+                    y+=(ToY-y)//2
+                return
     @staticmethod   
     def Off():
         oled.fill(0)
@@ -308,16 +330,18 @@ class VastSea:
                 VastSea.Off()
 
         @staticmethod
-        def Box(text):
+        def Box(text,x=0,y=0,ToX=0,ToY=0):
             boxlong=17+(len(text)*8)
             xb=128-boxlong
             yb=48
             for _ in range(7):
-                oled.fill_rect(0,0,xb,yb,0)
-                oled.rect(0,0,xb,yb,1)
+                oled.fill_rect(x,y,xb,yb,0)
+                oled.rect(x,y,xb,yb,1)
                 oled.show()
                 xb=(128-xb)//2+xb
                 yb=(64-yb)//2+yb
+                x+=(ToX-x)//2
+                y+=(ToY-y)//2
             oled.fill_rect(0,0,128,64,0)
             oled.rect(0,0,128,64,1)
             oled.show()
@@ -399,7 +423,11 @@ def TouchPadValueSet():
     Core.Data.Write("text",'luminance',str(sensitivity))
     return sensitivity
 
+mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
 def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16, showMode = 1):
+    oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
+    return
+    '''
     if outMode == 1:
         oled.DispChar(text, x, y, showMode, Outmode.stop, maximum_x, space, return_x = returnX, return_addy = returnAddy)
         return
@@ -408,4 +436,4 @@ def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAdd
         return
     if outMode == 3:
         oled.DispChar(text, x, y, showMode, Outmode.ellipsis, maximum_x, space, return_x = returnX, return_addy = returnAddy)
-        return
+        return'''
