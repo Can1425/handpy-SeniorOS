@@ -11,6 +11,16 @@ installMethod = 'mount'
 afterMount = 'import boot'
 
 [AutoClone]
-enable = false
+enable = true
 repoPlatform = 'gitlab'
 repoUri = 'Can1425/handpy-senioros'
+
+[AutoFlash]
+enable = true
+eraseBeforeFlash = true
+flashCommands = [
+    'esptool.py --chip esp32 --port {{ port }} --baud 460800 write_flash -z 0x1000 {{ flashFile }}'
+]
+flashFileServerEndpoint = 'https://micropython.org/resources/firmware/'
+flashFileServerFilename = 'ESP32_GENERIC-20240602-v1.23.0.bin'
+flashFileGetMethod = 'WEB/DOWNLOAD'
