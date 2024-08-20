@@ -21,7 +21,6 @@ def GetCharWidth(s):
 
 AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
 HomeTimeAutoCenter = AutoCenter
-
 def Box(x1, y1, x2, y2, fill = False, function = False):
     UITools()
     if fill:
@@ -29,7 +28,16 @@ def Box(x1, y1, x2, y2, fill = False, function = False):
     if function:
         function()
     oled.rect(x1, y1, x2, y2, 1)
-
+def ProgressBoxMove(x,y,w,h,progress,step=8):#progress使用百分制%
+    now=0
+    OurUI=UI(oled)#我们的 UI (苏里苏气)
+    for _ in range(step):
+        OurUI.ProgressBar(x, y, w, h, ((w - 0) / (100 - 0)) * (now - 0) + 0)
+        oled.show()
+        now+=(progress-now)//2
+        time.sleep_ms(25)
+    del OurUI#苏联解体力(悲)
+    del now;gc.collect()
 class App:
     def Style1(appTitle:str, window = False):
         gc.collect()

@@ -13,6 +13,7 @@ import machine
 import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 import _thread
+import os
 LogManager.Output("system/pages.mpy", "INFO")
 
 wifi=wifi()
@@ -59,41 +60,91 @@ def CloudNotification():
 
 def EquipmentPanel(): 
     def HS_CPU():
-        while not button_a.is_pressed():
-            oled.fill(0)
-            oled.DispChar("{} MHZ".format(str(machine.freq()/10000000)),0,16)
-            oled.DispChar("CPU - ESP32 @ 160MHZ",0,0)
-            oled.show()
-        return
+        oled.fill(0)
+        oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,32)
+        oled.DispChar("CPU - ESP32",0,0)
+        oled.DispChar("NORMAL 160HZ",0,16)
+        oled.show()
+        while True:
+            if button_a.is_pressed():return
     def HS_Ram():
         while not button_a.is_pressed():
             oled.fill(0)
             oled.DispChar("Ram - total:520kb",0,0)
-            oled.DispChar(f"内存可用:{str(gc.mem_free())}",0,16)
+            oled.DispChar(f"内存可用:{str(gc.mem_free())} Bytes",0,16)
             oled.DispChar("触摸键释放内存",0,32)
             oled.show()
             if eval("[/GetButtonExpr('python')/]"):
                 Collect()
         return 0
     def HS_flash():
+        fileSystemStatus=os.statvfs("/")
+        fileSystemFree=fileSystemStatus[3] * fileSystemStatus[1]
+        oled.fill(0)
+        oled.DispChar("Flash - total: 8MB",0,0)
+        oled.DispChar("可用:{} MB".format(fileSystemFree/81920),0,16)
+        DayLight.ProgressBoxMove(0,32,100,16,((100 - 0) / (8 - 0)) * ((fileSystemFree / 81920) - 0) + 0)
+        oled.show()
         while not button_a.is_pressed():
-            oled.fill(0)
-            oled.DispChar("Flash - total: 8MB",0,0)
-            oled.DispChar("可用:")
-            oled.show()
+            if button_a.is_pressed():
+                del fileSystemStatus,fileSystemFree
+                gc.collect()    
+                return 0
+    def PeripheralPanel():
+        PeripheralList = ["引脚控制","UART控制"]
+        PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
+        PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
+        while True:
+            options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
+            DayLight.VastSea.Transition()
+            if options == 0 and options != None:
+                options = DayLight.Select.Style4(PeripheralPin, False, "选择引脚")
+                DayLight.VastSea.Transition()
+                if options!=None:selsetPin=PeripheralPin[options];print(repr(selsetPin),type(selsetPin))
+                SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
+                DayLight.VastSea.Transition()
+                if SS == 0:
+                    while True:
+                        oled.fill(0)
+                        oled.DispChar("引脚{}的值为".format(selsetPin),0,0)
+                        PIN=eval("Pin({},Pin.IN)".format(selsetPin))
+                        oled.DispChar(str(PIN.value()),0,16)
+                        oled.show()
+                        while not button_a.is_pressed():
+                            pass
+                        return
+                else:
+                    while True:
+                        val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
+                        DayLight.VastSea.Transition()
+                        PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
+                        if val == 0:PIN.on()
+                        else:PIN.off()
+                        return 
+            elif options == 1 and options != None:
+                options = DayLight.Select.Style4(PeripheralUART, False, "选择TX口")
+                DayLight.VastSea.Transition()
+                TX=PeripheralUART[options]
+                options = DayLight.Select.Style4(PeripheralUART, False, "选择RX口")
+                DayLight.VastSea.Transition()
+                RX=PeripheralUART[options]
+                uart = UART(2,)
+
+
     ListOperation = {
     0: HS_CPU,
     1: HS_Ram,
     2: HS_flash,
+    3: PeripheralPanel
     }
-    hardware=["CPU","Ram","flash"]
+    hardware=["CPU","RAM","Flash","外设控制"]
     while not button_a.is_pressed():
         options = DayLight.Select.Style4(hardware, False, "设备面板")
         if options != None:
             DayLight.VastSea.Transition()
             ListOperation.get(options)()
             DayLight.VastSea.Transition(False)
-
+#测试用:import SeniorOS.system.pages as pg;pg.EquipmentPanel()
 @micropython.native
 def Home():
     oled.fill(0)
