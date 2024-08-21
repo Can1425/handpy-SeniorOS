@@ -19,7 +19,18 @@ repoUri = 'Can1425/handpy-senioros'
 enable = true
 eraseBeforeFlash = true
 flashCommands = [
-    'esptool.py --chip esp32 --port {{ port }} --baud 460800 write_flash -z 0x1000 {{ flashFile }}'
+    [
+        '--chip',
+        'esp32',
+        '--port',
+        '{{ port }}',
+        '--baud',
+        '460800',
+        'write_flash',
+        '-z',
+        '0x1000',
+        '{{ flashFile }}'
+    ]
 ]
 flashFileServerEndpoint = 'https://micropython.org/resources/firmware/'
 flashFileServerFilename = 'ESP32_GENERIC-20240602-v1.23.0.bin'
