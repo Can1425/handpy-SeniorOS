@@ -62,7 +62,7 @@ def App():
                     Bitmap(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
                 appNum -= 1
         if eval("[/GetButtonExpr('on')/]"):
-            if appNum + 2 < len(Logo) - 1:
+            if appNum + 2 <= len(Logo) - 1:
                 if appNum - 1 >= 0:
                     if appNum - 2 >= 0:
                         Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
@@ -70,7 +70,7 @@ def App():
                         Bitmap(None, Logo[appNum - 2], Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
                 else:
                     Bitmap(None, None, Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
-            elif appNum + 1 < len(Logo) - 1:
+            elif appNum + 1 <= len(Logo) - 1:
                 if appNum - 1 >= 0:
                     if appNum - 2 >= 0:
                         Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, -10, 10)

@@ -7,7 +7,6 @@ import gc
 import time
 import urequests
 import json
-import SeniorOS
 from machine import unique_id
 from SeniorOS.system.devlib import *
 import SeniorOS.system.log_manager as LogManager
@@ -19,7 +18,7 @@ LogManager.Output("system/core.mpy", "INFO")
 # 初始化函数
 
 class SharedVar:
-    class LoadQuit: #没必要吧
+    class LoadQuit:
         def __init__(self):
             self.value = None
         def __bool__(self):

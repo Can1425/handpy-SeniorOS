@@ -1,12 +1,18 @@
 from SeniorOS.system.devlib import *
 import time
 import uos
+import gc
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 Core.FullCollect()
 
 def RenameCode():
     uos.rename('/main.py.bak','/main.py')
+def ClearVar():
+    for var in globals():
+        if not var in ('time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count'):
+            del globals()[var]
+    gc.collect()
 while True:
     oled.fill(0)
     oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,5,0)
@@ -17,27 +23,27 @@ while True:
     while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
     if eval("[/GetButtonExpr('py','and')/]"):
-        DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16,0,0)
+        DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16)
         oled.fill(0)
         oled.DispChar('启动至 SeniorOS',5,0)
         oled.show()
         time.sleep(0.5)
-        import gc;gc.enable()
+        gc.enable()
         oled.contrast(int(Core.Data.Get("text", "luminance")))
         import SeniorOS.system.main
         break
     elif eval("[/GetButtonExpr('on','and')/]"):
-        DayLight.VastSea.SeniorMove.Box("ON - main.py",5,48,0,0)
+        DayLight.VastSea.SeniorMove.Box("ON - main.py",5,48)
         oled.fill(0)
         oled.DispChar('启动至 main.py',5,0)
         oled.show()
         time.sleep(0.5)
         break
     elif eval("[/GetButtonExpr('th','and')/]"):
-        DayLight.VastSea.SeniorMove.Box("'TH - REPL",5,32,0,0)
+        DayLight.VastSea.SeniorMove.Box("TH - REPL",5,32)
         oled.fill(0)
         oled.DispChar('启动至 REPL',5,0)
-        oled.DispChar("缓冲区下 屏幕已oled.fill(0)",5,16,out=3,return_x=5,maximum_x=126)
+        oled.DispChar("屏幕缓冲区已清空",5,16,out=3,return_x=5,maximum_x=126)
         oled.show()
         oled.fill(0)
         try:
@@ -45,4 +51,5 @@ while True:
             __import__("_thread").start_new_thread(RenameCode,()) # 开多线程 在1s后(已进入REPL)时重命名回去
         except:
             pass
+        ClearVar() # 清空全局变量
         break

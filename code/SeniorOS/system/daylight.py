@@ -174,7 +174,6 @@ class Select:
                     return listNum
                 elif button_a.is_pressed():return None
 
-
 ListOptions = Select.Style4
 
 class VastSea:
@@ -212,12 +211,13 @@ class VastSea:
             VastSea.Transition(False)
     @staticmethod
     def SelsetBoxMove(x,y,char,ToX,ToY,NewChar,MODE="rect"):
+        sx=x;sy=y
         ToWidth = GetCharWidth(NewChar)
         if ToWidth > 0:
             NowW=GetCharWidth(char)
             if MODE == "rect":
                 for i in range(7):
-                    #gc.collect()
+                    oled.DispChar(char,sx,sy)
                     oled.DispChar(NewChar,ToX,ToY)
                     oled.rect(x,y,NowW,16,1)
                     oled.show()
@@ -228,7 +228,7 @@ class VastSea:
                 return
             else:
                 for i in range(7):
-                    #gc.collect()
+                    oled.DispChar(char,sx,sy)
                     oled.fill_rect(x,y,NowW,16,1)
                     oled.DispChar(NewChar,ToX,ToY,2)
                     oled.show()
@@ -265,9 +265,36 @@ class VastSea:
                 oled.show()
         else:
             VastSea.Off()
-
+        
+    
     class SeniorMove:
-
+        @staticmethod
+        def Box(text,x=0,y=0,h=16):
+            speed = int(Core.Data.Get("text","VastSeaSpeed"))
+            w=GetCharWidth(text)
+            for i in range(2):
+                oled.fill_rect(x, y, w, 16, 0)
+                oled.DispChar(text,x,y)
+                oled.rect(x, y, w, 16, 1)
+                oled.show()
+                oled.fill_rect(x, y, w, 16, 0)
+                y-=i**2
+                time.sleep_ms(speed//5)
+            time.sleep_ms(speed//5)
+            for i in range(12):
+                oled.fill_rect(x, y, w, 16, 0)
+                oled.rect(x,y,w,h,1)
+                oled.show()
+                oled.rect(x,y,w,h,0)
+                x-=i**2
+                y-=i**2
+                w+=int(i**1.5)
+                h+=int(i**1.5)
+                if x<0:x=0
+                if y<0:y=0
+                if w>128:w=128
+                if h>64:h=64
+                time.sleep_ms(speed//5)
         def Text(text, startX, startY, endX, endY):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
@@ -281,7 +308,7 @@ class VastSea:
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
                     # 根据计算出的 current_x 和 current_y 更新位置
-                    oled.fill_rect(int(currentY) - 1, int(currentY), len(text) * 17, 18, 0)
+                    oled.fill_rect(int(currentX) - 4, int(currentY) - 4, len(text) * 20, 22, 0)
                     oled.DispChar(text, int(currentX), int(currentY))
                     oled.show()
             else:
@@ -327,31 +354,6 @@ class VastSea:
                     oled.show()
             else:
                 VastSea.Off()
-
-        @staticmethod
-        def Box(text,x=0,y=0,ToX=0,ToY=0):
-            boxlong=17+(len(text)*8)
-            xb=128-boxlong
-            yb=48
-            for _ in range(7):
-                oled.fill_rect(x,y,xb,yb,0)
-                oled.rect(x,y,xb,yb,1)
-                oled.show()
-                xb=(128-xb)//2+xb
-                yb=(64-yb)//2+yb
-                x+=(ToX-x)//2
-                y+=(ToY-y)//2
-            oled.fill_rect(0,0,128,64,0)
-            oled.rect(0,0,128,64,1)
-            oled.show()
-        def thread_for_DarkForChangePages():
-            time.sleep(1)
-            UITools()
-        def DarkForChangePages():
-            for _ in range(7):
-                if _<0:_=0
-                oled.contrast(_**2)
-                oled.show()
             
 
 def UITools():

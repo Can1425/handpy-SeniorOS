@@ -1,11 +1,14 @@
 from SeniorOS.system.devlib import *
-import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.daylight as DayLight
+import SeniorOS.system.pages as Pages
 import SeniorOS.system.core as Core
 import urequests
 import gc
 import os
+import _thread
+import SeniorOS.system.log_manager as LogManager
 source = "https://" + Core.Data.Get("text", "radienPluginsSource")
+Log = LogManager.Log
 
 def Main():
     global source
@@ -13,20 +16,27 @@ def Main():
     gc.enable()
     Core.FullCollect()
     DayLight.App.Style1('线上插件')
-    oled.DispChar('请稍等', 5, 18, 1, True)
-    oled.show()
-    _response = urequests.get(source + '/plugins/list.sros', headers={})
-    pluginsList = (_response.text.split(';'))
-    _response = urequests.get(source + '/plugins/author.sros', headers={})
-    pluginsTip = (_response.text.split(';'))
-    _response = urequests.get(source + '/plugins/tip.sros', headers={})
-    pluginsTip2 = (_response.text.split(';'))
-    Englist=((urequests.get(source + '/plugins/list_English.sros',headers={})).text).split(';')
-    print(len(pluginsList))
-    print(pluginsTip)
+    Quit = Core.SharedVar.LoadQuit()
+    Quit.value = False
+    _thread.start_new_thread(Pages.LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
+    try:
+        _response = urequests.get(source + '/plugins/list.sros', headers={})
+        pluginsList = (_response.text.split(';'))
+        _response = urequests.get(source + '/plugins/author.sros', headers={})
+        pluginsTip = (_response.text.split(';'))
+        _response = urequests.get(source + '/plugins/tip.sros', headers={})
+        pluginsTip2 = (_response.text.split(';'))
+        Englist=((urequests.get(source + '/plugins/list_English.sros',headers={})).text).split(';')
+        Log.Debug(len(pluginsList))
+        Log.Debug(pluginsTip)
+    except:
+        Core.FullCollect()
+        Quit.value = True
+        return
+    Quit.value = True
     Core.FullCollect()
     while not button_a.is_pressed():
-        settingsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
+        pluginsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
         if eval("[/GetButtonExpr('th')/]"):
             options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, False, "菜单")
             if options == 0:

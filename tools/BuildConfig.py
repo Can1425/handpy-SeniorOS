@@ -14,7 +14,7 @@ debugMessage={
 # 常量数据 大部分情况下不需要更改
 constData={
     "screenshotMethod":"fast", # 截屏模块方法
-    "version":"1.0.0.2.5.2", # 版本号
+    "version":"1.0.0.3", # 版本号
     "interval":"250",
     "systemName":"SeniorOS",
     "log":"SeniorOS > ",

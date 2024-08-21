@@ -14,10 +14,9 @@ import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PagesManager
 import _thread
 import os
+
 LogManager.Output("system/pages.mpy", "INFO")
-
 wifi=wifi()
-
 
 def ConfigureWLAN(ssid, password):
     oled.fill(0)
@@ -32,7 +31,7 @@ def ConfigureWLAN(ssid, password):
         time.sleep(2)
         Quit.value = True
         return True
-    except: # 看看这里，follow me 怎么了 
+    except: 
         time.sleep(2)
         Quit.value = True
         return False
@@ -46,12 +45,20 @@ def WifiPages():
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
 def CloudNotification():
+    source = "https://" + Core.Data.Get("text", "radienPluginsSource")
     time.sleep_ms(int(eval("[/Const('interval')/]")))
     DayLight.App.Style1(eval("[/Language('云端通知')/]"))
-    oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 2)
+    Quit = Core.SharedVar.LoadQuit()
+    Quit.value = False
+    _thread.start_new_thread(LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     oled.show()
-    _response = urequests.get('https://senior.flowecho.org/radient/plugins/Notifications.sros', headers={})
-    notifications = (_response.text.split(';'))
+    try:
+        _response = urequests.get(source + '/Notifications.sros', headers={})
+        notifications = (_response.text.split(';'))
+    except:
+        Quit.value = True
+        return
+    Quit.value = True
     while not button_a.is_pressed():
         DayLight.App.Style1(eval("[/Language('云端通知')/]"))
         oled.DispChar(notifications[1], 5, 18)
@@ -105,33 +112,31 @@ def EquipmentPanel():
                 if options!=None:selsetPin=PeripheralPin[options];print(repr(selsetPin),type(selsetPin))
                 SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
                 DayLight.VastSea.Transition()
-                if SS == 0:
-                    while True:
-                        oled.fill(0)
-                        oled.DispChar("引脚{}的值为".format(selsetPin),0,0)
-                        PIN=eval("Pin({},Pin.IN)".format(selsetPin))
-                        oled.DispChar(str(PIN.value()),0,16)
-                        oled.show()
+                try:
+                    if SS == 0:
                         while not button_a.is_pressed():
-                            pass
+                            oled.fill(0)
+                            oled.DispChar("引脚{}的值为".format(selsetPin),0,0)
+                            PIN=eval("Pin({},Pin.IN)".format(selsetPin))
+                            oled.DispChar(str(PIN.value()),0,16)
+                            oled.show()
                         return
-                else:
-                    while True:
-                        val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
-                        DayLight.VastSea.Transition()
-                        PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
-                        if val == 0:PIN.on()
-                        else:PIN.off()
+                    else:
+                        while not button_a.is_pressed():
+                            val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
+                            DayLight.VastSea.Transition()
+                            PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
+                            if val == 0:PIN.on()
+                            else:PIN.off()
                         return 
+                except:
+                    while not button_a.is_pressed():
+                        DayLight.Text("引脚状态获取失败，请尝试检查外设是否正确连接",5, 5, 1)
+                        oled.show()
             elif options == 1 and options != None:
-                options = DayLight.Select.Style4(PeripheralUART, False, "选择TX口")
-                DayLight.VastSea.Transition()
-                TX=PeripheralUART[options]
-                options = DayLight.Select.Style4(PeripheralUART, False, "选择RX口")
-                DayLight.VastSea.Transition()
-                RX=PeripheralUART[options]
-                uart = UART(2,)
-
+                while not button_a.is_pressed():
+                    DayLight.Text("暂不可用",5, 5, 1)
+                    oled.show()
 
     ListOperation = {
     0: HS_CPU,
@@ -189,7 +194,8 @@ def About():
     while not button_a.is_pressed():
         oled.Bitmap(16, 15, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
         version = 'V' + eval("[/Const('version')/]")
-        DayLight.Text(version, DayLight.AutoCenter(version), 46, 3)
+        DayLight.Text('senior.flowecho.org', DayLight.AutoCenter('senior.flowecho.org'), 40, 3)
+        DayLight.Text(version, DayLight.AutoCenter(version), 56, 3)
         oled.show()
 
 def Wlanscan():#定义扫描wifi函数
