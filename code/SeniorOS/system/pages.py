@@ -226,11 +226,9 @@ def Wlanscan():
 def Choosewifi():
     while not button_a.is_pressed():
         oled.fill(0)
-        wifiList = Wlanscan(); num = 0
+        wifiList = Wlanscan()
         num = DayLight.ListOptions(wifiList, 8, True, "请选择")
-        oled.fill(0)
-        import network
-        wifi = network.WLAN()
+        wifi = wifiList[num]
         pwd = Typer.main()
         try:
             Quit = Core.SharedVar.LoadQuit()
@@ -284,7 +282,7 @@ def Time():
         oled.show()
 
 def ConnectWiFiMode():
-    mode = ['预配置选择','顺次连接预配置','SmartWiFi']
+    mode = ['预配置选择','自动连接预配置','SmartWiFi']
     oled.fill(0)
     while not button_a.is_pressed():
         options = DayLight.Select.Sytle4(mode, False, '网络连接方式')

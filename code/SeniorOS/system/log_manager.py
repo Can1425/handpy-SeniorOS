@@ -36,11 +36,9 @@ def getTime(format: bool = False):
         nowTime = int(time.time())
     if not format:
         return nowTime
-    else:
-        formatted_time = format_timestamp()
-        return formatted_time
+    else: 
+        return format_timestamp()
 
-ntp_is_connect=False
 def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO') -> str:
     formatText=formatText.replace(f'{prefix}level{prefix}', level)\
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
