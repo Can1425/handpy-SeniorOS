@@ -1,6 +1,7 @@
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
+import SeniorOS.system.ftreader as FTReader
 import urequests
 import ntptime
 import micropython
@@ -15,7 +16,9 @@ import SeniorOS.system.pages_manager as PagesManager
 import _thread
 import os
 
-LogManager.Output("system/pages.mpy", "INFO")
+source = "https://" + Core.Data.Get("text", "radienPluginsSource")
+Log = LogManager.Log
+Log.Info("system/pages.mpy")
 wifi=wifi()
 
 def ConfigureWLAN(ssid, password):
@@ -44,8 +47,8 @@ def WifiPages():
     oled.show()
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
+
 def CloudNotification():
-    source = "https://" + Core.Data.Get("text", "radienPluginsSource")
     time.sleep_ms(int(eval("[/Const('interval')/]")))
     DayLight.App.Style1(eval("[/Language('云端通知')/]"))
     Quit = Core.SharedVar.LoadQuit()
@@ -90,9 +93,9 @@ def EquipmentPanel():
         fileSystemStatus=os.statvfs("/")
         fileSystemFree=fileSystemStatus[3] * fileSystemStatus[1]
         oled.fill(0)
-        oled.DispChar("Flash - total: 8MB",0,0)
-        oled.DispChar("可用:{} MB".format(fileSystemFree/81920),0,16)
-        DayLight.ProgressBoxMove(0,32,100,16,((100 - 0) / (8 - 0)) * ((fileSystemFree / 81920) - 0) + 0)
+        oled.DispChar("Flash - total: 8MB",5,0)
+        oled.DispChar("可用:{} MB".format(fileSystemFree/81920),5,16)
+        DayLight.ProgressBoxMove(5,32,100,10,((100 - 0) / (8 - 0)) * ((fileSystemFree / 81920) - 0) + 0)
         oled.show()
         while not button_a.is_pressed():
             if button_a.is_pressed():
@@ -103,40 +106,52 @@ def EquipmentPanel():
         PeripheralList = ["引脚控制","UART控制"]
         PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
         PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
-        while True:
+        while not button_a.is_pressed():
             options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
-            DayLight.VastSea.Transition()
-            if options == 0 and options != None:
+            if options == 0:
                 options = DayLight.Select.Style4(PeripheralPin, False, "选择引脚")
                 DayLight.VastSea.Transition()
-                if options!=None:selsetPin=PeripheralPin[options];print(repr(selsetPin),type(selsetPin))
+                if options!=None:selsetPin=PeripheralPin[options]
                 SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
-                DayLight.VastSea.Transition()
                 try:
                     if SS == 0:
                         while not button_a.is_pressed():
                             oled.fill(0)
-                            oled.DispChar("引脚{}的值为".format(selsetPin),0,0)
+                            oled.DispChar("引脚 {} 的值为".format(selsetPin),5,0)
                             PIN=eval("Pin({},Pin.IN)".format(selsetPin))
-                            oled.DispChar(str(PIN.value()),0,16)
+                            oled.DispChar(str(PIN.value()),5,16)
                             oled.show()
+                        DayLight.VastSea.Transition(False)
                         return
                     else:
                         while not button_a.is_pressed():
                             val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
-                            DayLight.VastSea.Transition()
-                            PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
-                            if val == 0:PIN.on()
-                            else:PIN.off()
+                            if val != None:
+                                DayLight.VastSea.Transition()
+                                PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
+                                if val == 0:PIN.on()
+                                else:PIN.off()
+                            else:
+                                DayLight.VastSea.Transition(False)
+                                return
                         return 
                 except:
                     while not button_a.is_pressed():
+                        oled.fill(0)
                         DayLight.Text("引脚状态获取失败，请尝试检查外设是否正确连接",5, 5, 1)
                         oled.show()
-            elif options == 1 and options != None:
+                    DayLight.VastSea.Transition(False)
+                    return
+            elif options == 1:
                 while not button_a.is_pressed():
+                    oled.fill(0)
                     DayLight.Text("暂不可用",5, 5, 1)
                     oled.show()
+                DayLight.VastSea.Transition(False)
+                return
+            else:
+                return
+                
 
     ListOperation = {
     0: HS_CPU,
@@ -151,8 +166,10 @@ def EquipmentPanel():
             DayLight.VastSea.Transition()
             ListOperation.get(options)()
             DayLight.VastSea.Transition(False)
-#测试用:import SeniorOS.system.pages as pg;pg.EquipmentPanel()
-@micropython.native
+        else:
+            DayLight.VastSea.Transition(False)
+            return
+        
 def Home():
     oled.fill(0)
     time.sleep_ms(int(eval("[/Const('interval')/]")))
@@ -196,40 +213,41 @@ def About():
         version = 'V' + eval("[/Const('version')/]")
         DayLight.Text(version, DayLight.AutoCenter(version), 40, 3)
         oled.show()
+        if eval("[/GetButtonExpr('th', 'and')/]"):
+            FTReader.Textreader(Core.Data.GetOriginal('Hello_World')).Main()
 
-def Wlanscan():#定义扫描wifi函数
+def Wlanscan():
+    #定义扫描WiFi函数
     import network
     wlan = network.WLAN()#定义类
     wlan.active(True)#打开
     return [i[0].decode() for i in network.WLAN().scan()]#返回
 
 def Choosewifi():
-    oled.fill(0)
-    oled.DispChar(eval("[/Language('请稍等')/]"),0,0)
-    oled.show()
-    wifilist = Wlanscan()
-    num=0
-    num = DayLight.ListOptions(wifilist, 8, True, "None")
-    oled.fill(0)
-    oled.DispChar(eval("[/Language('请稍等')/]"),0,0)
-    oled.show()
-    time.sleep(2)#经典
-    oled.fill(0)
-    import network
-    wifi=network.WLAN()
-    pwd=Typer.main()
-    try:
-        wifi.connectWiFi(wifilist[num],pwd)
+    while not button_a.is_pressed():
         oled.fill(0)
-        oled.DispChar(eval("[/Language('加载成功')/]"), 0, 0)
-        oled.show()
-        # open("/SeniorOS/data/userWifi.sros",'a+').write("\n{},{}".format(wifilist[num],pwd))
-        return True
-    except:
+        wifiList = Wlanscan(); num = 0
+        num = DayLight.ListOptions(wifiList, 8, True, "请选择")
         oled.fill(0)
-        oled.DispChar(eval("[/Language('加载失败')/]"), 0, 0)
-        oled.show()
-        return False
+        import network
+        wifi = network.WLAN()
+        pwd = Typer.main()
+        try:
+            Quit = Core.SharedVar.LoadQuit()
+            Quit.value = False
+            _thread.start_new_thread(LoadWait,(Quit,"正在尝试建立连接", True))
+            try:
+                wifi.connectWiFi(wifiList[num], pwd)
+                Core.Data.Write('list', 'wifiName', wifiList[num])
+                Core.Data.Write('list', 'wifiName', wifiList[num])
+                Quit.value = True
+            except:
+                Quit.value = True
+            Massage('好耶 添加成功')
+            return True
+        except:
+            Massage('添加失败')
+            return False
     
 def Collect():
     oled.fill(0)
@@ -265,29 +283,21 @@ def Time():
         oled.DispChar(eval("[/Language('加载失败')/]"), 5, 45, 1)
         oled.show()
 
-def AutoConnectWifi():
-    info=Core.Data.Get("text","autoConnectWifi")
+def ConnectWiFiMode():
+    mode = ['预配置选择','顺次连接预配置','SmartWiFi']
+    oled.fill(0)
     while not button_a.is_pressed():
-        oled.fill(0)
-        DayLight.App.Style2("自动连接 WiFi")
-        oled.hline(0,16,128,1)
-        if info==1:
-            oled.DispChar("状态:开",5,16)
+        options = DayLight.Select.Sytle4(mode, False, '网络连接方式')
+        if options != None:
+            DayLight.VastSea.Transition()
+            Core.Data.Write('text', 'connectWifiMode', str(options))
+            Massage('好耶 设置成功')
+            DayLight.VastSea.Transition(False)
         else:
-            oled.DispChar("状态:关",5,16)
-        oled.DispChar("A-退出 B-切换",5,32)
-        oled.DispChar("触摸键确认修改",5,48)
-        oled.show()
-        while not button_a.is_pressed():
-            if button_b.is_pressed():
-                if info==1:info=0
-                else:info=1
-                break
-            if eval("[/GetButtonExpr('python')/]"):
-                Core.Data.Write("text","autoConnectWifi",info)
-                return 0
+            DayLight.VastSea.Transition(False)
+            return
 
-def LoadWait(WhetherToQuit:SharedVar, text:str="None", fill:bool=False):
+def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=False):
     if fill:
         oled.fill(0)
     while not WhetherToQuit:
@@ -297,3 +307,11 @@ def LoadWait(WhetherToQuit:SharedVar, text:str="None", fill:bool=False):
         DayLight.VastSea.SeniorMove.Line(0,63,128,63,128,63,128,63,False)
         oled.show()
     #_thread.exit() （会自动退出的）
+
+def Massage(text) -> bool:
+    DayLight.Box(1, 20, 126, 44, True)
+    DayLight.Text(text, DayLight.AutoCenter(text), 24, 2)
+    Log.Message(text)
+    oled.show()
+    time.sleep_ms(int(eval("[/Const('interval')/]")))
+    return True

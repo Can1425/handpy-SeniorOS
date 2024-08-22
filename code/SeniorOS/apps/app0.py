@@ -16,7 +16,7 @@ Settings0 = {
     0: Pages.WifiPages,
     1: Pages.Time,
     2: Pages.Choosewifi,
-    3: Pages.AutoConnectWifi
+    3: Pages.ConnectWiFiMode
 }
 
 Settings1 = {
@@ -47,7 +47,7 @@ def Main():
             if settingsNum != None:
                 DayLight.VastSea.Transition()
                 options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
-                            {'list0':['重连网络', '同步时间', '新建网络配置','自动联网配置'],
+                            {'list0':['重连网络', '同步时间', '新建网络配置','网络连接方式'],
                             'list1':['日光模式','亮度调节','动效开关', '动画速率', '桌面风格', '桌面快速启动', '触摸键灵敏度', '日光引擎信息'],
                             'list2':['释放内存', '内存信息'],
                             'list3':['设备信息', '系统更新'],

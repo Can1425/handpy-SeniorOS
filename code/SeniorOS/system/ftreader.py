@@ -57,7 +57,6 @@ class animations:
         oled.fill_rect(0,0,128,64,0)
         oled.rect(0,0,128,64,1)
         oled.show()
-
 class picture:
     pathpic=bytearray([0X00,0X00,0X3E,0X00,0X41,0X00,0X80,0X80,0X81,0XFC,0XFE,0X02,0X80,0X01,0X80,0X01,0XFF,0XFF,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X40,0X02,0X3F,0XFC,])
     filepic=bytearray([0X00,0X00,0X3F,0XC0,0X20,0X60,0X2F,0X50,0X20,0X48,0X2F,0X7C,0X20,0X04,0X23,0XC4,0X22,0X04,0X23,0X84,0X22,0X04,0X22,0X04,0X22,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
@@ -105,16 +104,17 @@ class Textreader:
                     else:
                         n+=3
                     break
-                if button_a.is_pressed():
+                if button_b.is_pressed():
                     offset+=8
                     if offset > 512:
                         offset = 512
                     break
-                elif button_b.is_pressed():
+                elif button_a.is_pressed():
                     offset-=8
                     if offset < 0:
                         offset = 0
                     break
+
 
 class FileViewer:
     def __init__(self):

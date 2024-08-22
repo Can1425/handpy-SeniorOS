@@ -200,11 +200,8 @@ class VastSea:
             options = Select.Style4(["高效", "优雅", "柔和"], False, "动画速率")
             if options != None:
                 VastSea.Transition()
-                Box(54,126,74,126,True)
-                oled.DispChar(eval("[/Language('加载成功')/]"), AutoCenter(eval("[/Language('加载成功')/]")), 55)
-                oled.show()
                 Core.Data.Write("text", "VastSeaSpeed", presuppose[options])
-                time.sleep_ms(int(eval("[/Const('interval')/]")))
+                PagesManager.Main.Import('SeniorOS.system.pages', 'Message', True, '你也是个{}的人呀'.format(["高效", "优雅", "温柔"](options)))
                 VastSea.Transition(False)
 
         else:
@@ -269,32 +266,52 @@ class VastSea:
     
     class SeniorMove:
         @staticmethod
-        def Box(text,x=0,y=0,h=16):
-            speed = int(Core.Data.Get("text","VastSeaSpeed"))
-            w=GetCharWidth(text)
-            for i in range(2):
-                oled.fill_rect(x, y, w, 16, 0)
-                oled.DispChar(text,x,y)
-                oled.rect(x, y, w, 16, 1)
+        def LoadText(text,x,y):
+            gc.collect()
+            total=x+140
+            for i in range(7):
+                oled.DispChar(text,total,y)
+                total=total-((7-i)**2)
                 oled.show()
-                oled.fill_rect(x, y, w, 16, 0)
-                y-=i**2
-                time.sleep_ms(speed//5)
-            time.sleep_ms(speed//5)
+                oled.DispChar(text,total,y,2)
+        @staticmethod
+        def Box(text, x=0, y=0, h=16):
+            speed = int(Core.Data.Get("text", "VastSeaSpeed"))
+            w = GetCharWidth(text)
+            target_w = 128
+            target_h = 64
+            remaining_steps = 12
+            step_x_total = x
+            step_y_total = y
+            step_w_total = target_w - w
+            step_h_total = target_h - h
+            step_x = step_x_total / remaining_steps
+            step_y = step_y_total / remaining_steps
+            step_w = step_w_total / remaining_steps
+            step_h = step_h_total / remaining_steps
+            oled.fill_rect(x, y, w, h, 0)
+            oled.DispChar(text, x, y)
+            oled.rect(x, y, w, h, 1)
+            oled.show()
+            time.sleep_ms(100)
             for i in range(12):
-                oled.fill_rect(x, y, w, 16, 0)
-                oled.rect(x,y,w,h,1)
+                oled.fill_rect(x, y, w, h, 0)
+                oled.rect(x, y, w, h, 1)
                 oled.show()
-                oled.rect(x,y,w,h,0)
-                x-=i**2
-                y-=i**2
-                w+=int(i**1.5)
-                h+=int(i**1.5)
-                if x<0:x=0
-                if y<0:y=0
-                if w>128:w=128
-                if h>64:h=64
-                time.sleep_ms(speed//5)
+                oled.rect(x, y, w, h, 0)
+                x -= int(step_x)
+                y -= int(step_y)
+                w += int(step_w)
+                h += int(step_h)
+                remaining_steps -= 1
+                if remaining_steps > 0:
+                    step_x = (x / remaining_steps) if remaining_steps > 0 else 0
+                    step_y = (y / remaining_steps) if remaining_steps > 0 else 0
+                    step_w = ((target_w - w) / remaining_steps) if remaining_steps > 0 else 0
+                    step_h = ((target_h - h) / remaining_steps) if remaining_steps > 0 else 0
+            oled.fill(0)
+            time.sleep_ms(100)
+
         def Text(text, startX, startY, endX, endY):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
@@ -434,6 +451,6 @@ def TouchPadValueSet():
     return sensitivity
 
 mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
-def Text(text, x, y, outMode, space = 1, maximum_x = 122, returnX = 5, returnAddy = 16, showMode = 1):
+def Text(text, x, y, outMode, space = 1, maximum_x = 126, returnX = 5, returnAddy = 16, showMode = 1):
     oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
     return
