@@ -54,7 +54,7 @@ def Main():
                             'DayLight':DayLight})
                 if options != None:
                     DayLight.VastSea.Transition()
-                    eval("{}.get({})()".format("Settings" + str(settingsNum), options), globals(), locals())
+                    eval("{}.get({})()".format("Settings" + str(settingsNum), options))
                     DayLight.VastSea.Transition(False)
 
                 else:

@@ -145,8 +145,6 @@ class Select:
             oled.fill(0)
             if appTitle:
                 App.Style1(appTitle,window)
-            elif window:
-                Box(1, 1, 126, 62)
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
@@ -154,6 +152,8 @@ class Select:
             if len(displayItems) > 0:
                 oled.fill_rect(5, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
                 Text(displayItems[listNum - start], 5, 16 + 16 * (listNum - start), 2, showMode = 2)
+            if window:
+                Box(1, 1, 126, 62)
             oled.show()
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):

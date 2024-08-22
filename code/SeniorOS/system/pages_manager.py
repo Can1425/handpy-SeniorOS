@@ -25,7 +25,7 @@
 # 
 
 import SeniorOS.system.log_manager as LogManager
-import gc
+import gc,sys
 
 Log = LogManager.Log
 
@@ -57,6 +57,7 @@ class Main:
             gc.collect()
         except Exception as e:
             Log.Error(moduleLoc + " > " + funcName + ": " + e.__class__.__name__ + ": " + str(e))
+            sys.print_exception(e)
             return False
         else:
             gc.collect()

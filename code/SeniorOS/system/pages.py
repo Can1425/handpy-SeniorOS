@@ -227,7 +227,8 @@ def Choosewifi():
     while not button_a.is_pressed():
         oled.fill(0)
         wifiList = Wlanscan()
-        num = DayLight.ListOptions(wifiList, 8, True, "请选择")
+        num = DayLight.ListOptions(wifiList, True, "请选择")
+        if num == None:return
         wifi = wifiList[num]
         pwd = Typer.main()
         try:
@@ -237,7 +238,7 @@ def Choosewifi():
             try:
                 wifi.connectWiFi(wifiList[num], pwd)
                 Core.Data.Write('list', 'wifiName', wifiList[num])
-                Core.Data.Write('list', 'wifiName', wifiList[num])
+                Core.Data.Write('list', 'wifiPassword', pwd)
                 Quit.value = True
             except:
                 Quit.value = True
@@ -285,7 +286,7 @@ def ConnectWiFiMode():
     mode = ['预配置选择','自动连接预配置','SmartWiFi']
     oled.fill(0)
     while not button_a.is_pressed():
-        options = DayLight.Select.Sytle4(mode, False, '网络连接方式')
+        options = DayLight.Select.Style4(mode, False, '网络连接方式')
         if options != None:
             DayLight.VastSea.Transition()
             Core.Data.Write('text', 'connectWifiMode', str(options))
