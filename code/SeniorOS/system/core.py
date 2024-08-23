@@ -125,7 +125,7 @@ class DataCtrl:
 
 Data = DataCtrl("/SeniorOS/data/")
 tmp_of_touchPadValue = -1
-def VitalData(data:int):
+def VitalData(*nothing):
     if tmp_of_touchPadValue == -1:
         touchPadValue = (int(Data.Get("text", "touchPadValue")))
         return touchPadValue

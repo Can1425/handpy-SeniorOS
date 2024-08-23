@@ -45,7 +45,7 @@ def main():
             Pages.ConfigureWLAN(ssid,pwd)
             del s,ap,client_sock,client_addr,ssid,pwd,returnText,h
             gc.collect()
-            return True
+            return(ssid,pwd)
         else:
             pass
         client_sock.write(b"""
@@ -88,6 +88,5 @@ def main():
                         </html>
                         ''')
         client_sock.close()
-    return(ssid,pwd)
 
 #main()#运行

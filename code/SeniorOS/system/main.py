@@ -28,8 +28,8 @@ elif info == "1":
                     ntptime.settime(8,"time.windows.com")
                     connect=True
                 except:
-                    Log.Error("CONNECT WIFI FILLED")
-                    Log.Message("USE SMARTWIFI NOW")
+                    Log.Error("连接WiFi失败")
+                    Log.Message("请使用浏览器打开https://ys.mihoyo.com/进行求助")
                     import SeniorOS.system.smart_wifi as SmartWifi
                     SmartWifi.main()
                     del SmartWifi;gc.collect()

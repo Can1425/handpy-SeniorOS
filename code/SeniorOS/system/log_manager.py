@@ -20,7 +20,7 @@ import time
 import gc
 import ntptime
 import esp32
-PYTHON = 'mpy' # 'cpy' or 'mpy'
+import _thread
 
 
 def format_timestamp():
@@ -28,12 +28,7 @@ def format_timestamp():
     return f'{t[0]}-{t[1]}-{t[2]} {t[3]}:{t[4]}:{t[5]}'
 
 def getTime(format: bool = False):
-    if PYTHON == 'cpy':
-        # time = __import__('time', globals(), locals(), [], 0)
-        nowTime = int(time.time())
-    else:
-        # time = __import__('time', globals(), locals(), [], 0)
-        nowTime = int(time.time())
+    nowTime = int(time.time())
     if not format:
         return nowTime
     else: 
@@ -65,23 +60,23 @@ class LogManager:
             print(eval("[/Const('log')/]") + log)
 
     def Info(self, text: str):
-        self.log(text, 'INFO')
+        _thread.start_new_thread(self.log,(text, 'INFO'))
     
     def Debug(self, text: str):
-        self.log(text, 'DEBUG')
+        _thread.start_new_thread(self.log,(text, 'DEBUG'))
     
     def Message(self, text: str):
-        self.log(text, 'MSG')
+        _thread.start_new_thread(self.log,(text, 'MSG'))
     
     def Warn(self, text: str):
-        self.log(text, 'WARN')
+        _thread.start_new_thread(self.log,(text, 'WARN'))
     
     def Error(self, text: str):
-        self.log(text, 'ERROR')
+        _thread.start_new_thread(self.log,(text, 'ERROR'))
     
     def Fatal(self, text: str):
-        self.log(text, 'FATAL')
+        _thread.start_new_thread(self.log,(text, 'FATAL'))
 
 lm = LogManager()
-Output = lm.log
+Output = lambda text,status:_thread.start_new_thread(lm.log,(text, status))
 Log = lm
