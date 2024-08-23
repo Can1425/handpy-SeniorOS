@@ -71,15 +71,15 @@ class Textreader:
     def showText(self,lines=0,offset=0,y=0):
         for i in [0,1,2]:
             try:oled.DispChar(self.text[i+lines],0-offset,i*16+y)
-            except Exception as e:sys.print_traceback(e)
-            return
+            except:continue
+        return
     def text_info(self,info):
         if info:return int(len(self.text)/3)
         else:return len(self.text)%3
     
     def test2(self):
         self.showText()
-        animations.clearFromLeftSide()
+        animations.ClearFromLeftSide()
             
     def Main(self):
         page_num=self.text_info(True)+self.text_info(False)
@@ -89,7 +89,7 @@ class Textreader:
             oled.fill(0)
             self.showText(n,offset)
             oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
-            oled.DispChar("{}/{}".format(int(n/3),int(page_num)),52,48)
+            oled.DispChar("{}/{}".format(int(n/3)+1,int(page_num)),52,48)
             oled.hline(0,48,128,1)
             oled.show()
             while not (touchpad_t.is_pressed() or touchpad_h.is_pressed()):
@@ -98,7 +98,7 @@ class Textreader:
                     else:n-=3
                     break
                 elif touchpad_n.is_pressed() or touchpad_o.is_pressed():
-                    if n+3>page_num:n=page_num
+                    if n+3>page_num*3:n=page_num*3
                     else:n+=3
                     break
                 if button_b.is_pressed():
@@ -112,17 +112,14 @@ class Textreader:
 class FileViewer:
     def __init__(self):
         self.copy=""
+    def Copy(self):
+        self.copy=f"{path}/{self.Dir[num]}"
     def UseTextReader(self):
-        global path,Dir,num
-        with open("{}/{}".format(path,Dir[num]),"r") as f:
-            data=f.read()
-            data=data.replace("\r\n","\n")
-        with open("{}/{}".format(path,Dir[num]),"w") as f:
-            f.write(data)
-        with open("{}/{}".format(path,Dir[num]),"r") as f:
+        global path,num
+        with open("{}/{}".format(path,self.Dir[num]),"r") as f:
             readFile=Textreader(f.read())
-            animations.clearFromLeftSide()
-            readFile.main()
+            animations.ClearFromLeftSide()
+            readFile.Main()
             readFile.test2()
         del readFile;gc.collect()
     def IsFile(self,f):
@@ -135,7 +132,7 @@ class FileViewer:
         elif last4==".pbm" or last4==".bmp":return "图片"
         else:return "文件"
     def fileviewer(self,initpath:str):
-        global path,Dir,num
+        global path,num
         PictureMap={"目录":picture.pathpic,"文件":picture.filepic,
                     "可执行文件":picture.runpic,"图片":picture.picpic}
         path=initpath
@@ -145,18 +142,18 @@ class FileViewer:
             return "/".join(path.split("/")[:-1])
         while not button_a.is_pressed():
             Core.FullCollect()
-            Dir=os.listdir(path)
-            Dir.append('..')
-            DIRlen=len(Dir)
+            self.Dir=os.listdir(path)
+            self.Dir.append('..')
+            TMPOFDDIRLEN=len(self.Dir)
             num=0
             while not button_a.is_pressed():
-                t=self.IsFile("{}/{}".format(path,Dir[num]))
+                t=self.IsFile("{}/{}".format(path,self.Dir[num]))
                 oled.fill(0)
                 oled.vline(16,2,12,1)
-                oled.DispChar(Dir[num],18,0)
+                oled.DispChar(self.Dir[num],18,0)
                 oled.DispChar("属性:{}".format(t),0,16)
-                oled.DispChar("B)默认打开 O)其他方式",0,32)
-                oled.DispChar("<PY          {}/{}          ON>".format(num+1,DIRlen),1,48)
+                oled.DispChar("TH)打开 B)其他方式",0,32)
+                oled.DispChar("<PY          {}/{}          ON>".format(num+1,TMPOFDDIRLEN),1,48)
                 oled.Bitmap(0,0,PictureMap[t],16,16,1)
                 oled.hline(0,16,130,1)
                 oled.show()
@@ -166,10 +163,8 @@ class FileViewer:
                         animations.boxMove("selset")
                         temp=["文本阅读器","复制","删除","粘贴"]
                         selset=DayLight.Select.Style4(temp, appTitle="选择操作")
-                        def Copy():
-                            self.copy=f"{path}/{Dir[num]}"
                         def Delete():
-                            fileORdir=f"{path}/{Dir[num]}"
+                            fileORdir=f"{path}/{self.Dir[num]}"
                             if self.fileattribute(fileORdir)=="目录":
                                 os.rmdir(fileORdir)
                             else:
@@ -183,7 +178,7 @@ class FileViewer:
                                         f2.write(f.read())
                         mode = {
                             0: self.UseTextReader,
-                            1: Copy,
+                            1: self.Copy,
                             2: Delete,
                             3: Paste,
                         }
@@ -194,18 +189,17 @@ class FileViewer:
                             DayLight.VastSea.Transition(False)
                             return
                     elif touchpad_t.is_pressed() or touchpad_h.is_pressed():
-                        if Dir[num]=='..':
+                        if self.Dir[num]=='..':
                             if path=="/":pass
                             path=lastpath(path)
-                            Dir=os.listdir(path);num=0;DIRlen=len(Dir)
+                            self.Dir=os.listdir(path);num=0;TMPOFDDIRLEN=len(self.Dir)
                             animations.lineMove()
-                        def Menu():
-                            global Dir,num,path
-                            animations.boxMove(Dir[num])
-                            path="{}/{}".format(path,Dir[num])
-                            Dir=os.listdir(path);num=0;DIRlen=len(Dir)
-                        def ExecFile():
-                            libname=("{}/{}".format(path,Dir[num]))[:-3].replace("/",".")
+                        if t=="目录":
+                            animations.boxMove(self.Dir[num])
+                            path="{}/{}".format(path,self.Dir[num])
+                            self.Dir=os.listdir(path);num=0;TMPOFDDIRLEN=len(self.Dir)
+                        if t=="可执行文件":
+                            libname=("{}/{}".format(path,self.Dir[num]))[:-3].replace("/",".")
                             while libname[0]==".":
                                 libname=libname[1:]
                             try:
@@ -213,32 +207,31 @@ class FileViewer:
                                 exec("del {}".format(libname));gc.collect()
                             except Exception as e:
                                 print("导入失败，错误信息如下：\n",e.__class__.__name__,e)
-                        def Picture():
+                        if t=="图片":
                             animations.boxMove("image")
                             oled.fill(0)
-                            oled.blit(Image().load('{}/{}'.format(path,Dir[num])), 0, 0)
+                            oled.blit(Image().load('{}/{}'.format(path,self.Dir[num])), 0, 0)
                             oled.show()
                             while not (touchpad_t.is_pressed() or touchpad_h.is_pressed()):
                                 pass
                             animations.lineMove()
-                        config={"目录":Menu,"文件":self.UseTextReader,"可执行文件":ExecFile,"图片":Picture}
-                        config[t]()
+                        if t=="文件":self.UseTextReader()
                         break
                     if touchpad_n.is_pressed() or touchpad_o.is_pressed():
                         try:
-                            animations.textMove(Dir[num+1])
+                            animations.textMove(self.Dir[num+1])
                         except:
-                            animations.textMove(Dir[0])
+                            animations.textMove(self.Dir[0])
                         num+=1
-                        if num>=DIRlen:num=0
+                        if num>=TMPOFDDIRLEN:num=0
                         break
                     elif touchpad_p.is_pressed() or touchpad_y.is_pressed():
                         try:
-                            animations.textMove(Dir[num-1])
+                            animations.textMove(self.Dir[num-1])
                         except:
-                            animations.textMove(Dir[DIRlen-1])
+                            animations.textMove(self.Dir[TMPOFDDIRLEN-1])
                         num-=1
-                        if num<0:num=DIRlen-1
+                        if num<0:num=TMPOFDDIRLEN-1
                         break
         return 0
     #鸣谢名单
