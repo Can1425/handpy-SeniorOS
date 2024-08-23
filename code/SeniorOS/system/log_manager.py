@@ -78,5 +78,5 @@ class LogManager:
         _thread.start_new_thread(self.log,(text, 'FATAL'))
 
 lm = LogManager()
-Output = lambda text,status:_thread.start_new_thread(lm.log,(text, status))
+Output = lm.log
 Log = lm
