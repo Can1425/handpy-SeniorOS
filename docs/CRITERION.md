@@ -37,7 +37,7 @@ ACCEPT : touchPad_X
 
 本项目禁止网页单文件 Commit！
 
-请使用 **Github IDE** 或 Git 手动 Push
+请使用 **Gitlab IDE** 或 Git 手动 Push
 
 违者将被强行回滚其 Commit
 

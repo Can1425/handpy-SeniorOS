@@ -27,7 +27,6 @@ Settings1 = {
     4: Style.homeStyleSet,
     5: Pages.HomeomePlugInSet,
     6: DayLight.TouchPadValueSet,
-    7: DayLight.About,
 }
 
 Settings2 = {
@@ -48,7 +47,7 @@ def Main():
                 DayLight.VastSea.Transition()
                 options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
                             {'list0':['重连网络', '同步时间', '新建网络配置','网络连接方式'],
-                            'list1':['日光模式','亮度调节','动效开关', '动画速率', '桌面风格', '桌面快速启动', '触摸键灵敏度', '日光引擎信息'],
+                            'list1':['日光模式','亮度调节','动效开关', '动画速率', '桌面风格', '桌面快速启动', '触摸键灵敏度'],
                             'list2':['释放内存', '内存信息'],
                             'list3':['设备信息', '系统更新'],
                             'DayLight':DayLight})

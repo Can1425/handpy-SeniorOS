@@ -105,7 +105,6 @@ def main():
         oled.DispChar("字母/数字(P)",0,16)
         oled.DispChar("符号(Y)",0,32)
         oled.DispChar("删除(N) 完成(A)",0,48)
-        oled.hline(0,16,128,1)
         oled.show()
         if touchpad_p.is_pressed():text+=typeOfNL()
         elif touchpad_y.is_pressed():text+=typeOfPM()

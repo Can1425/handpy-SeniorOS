@@ -109,9 +109,14 @@ def EquipmentPanel():
         while not button_a.is_pressed():
             options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
             if options == 0:
+                DayLight.VastSea.Transition() 
                 options = DayLight.Select.Style4(PeripheralPin, False, "选择引脚")
-                DayLight.VastSea.Transition()
-                if options!=None:selsetPin=PeripheralPin[options]
+                if options!=None:
+                    DayLight.VastSea.Transition() 
+                    selsetPin=PeripheralPin[options]
+                else: 
+                    DayLight.VastSea.Transition(False)
+                    return
                 SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
                 try:
                     if SS == 0:
@@ -150,6 +155,7 @@ def EquipmentPanel():
                 DayLight.VastSea.Transition(False)
                 return
             else:
+                DayLight.VastSea.Transition(False)
                 return
                 
 
@@ -167,7 +173,6 @@ def EquipmentPanel():
             ListOperation.get(options)()
             DayLight.VastSea.Transition(False)
         else:
-            DayLight.VastSea.Transition(False)
             return
         
 def Home():
@@ -189,9 +194,9 @@ def Home():
         DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
     elif eval("[/GetButtonExpr('ab')/]"):
         pass
-    elif eval("[/GetButtonExpr('py', 'and')/]"):
+    elif eval("[/GetButtonExpr('py')/]"):
         PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[0]), "Main")
-    elif eval("[/GetButtonExpr('on', 'and')/]"):
+    elif eval("[/GetButtonExpr('on')/]"):
         PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
 
 def HomeomePlugInSet():
@@ -201,8 +206,9 @@ def HomeomePlugInSet():
             DayLight.VastSea.Transition()
             set = DayLight.Select.Style1(Core.Data.Get("list", "localAppName"), 25, False, "选择")
             if set != None:
-                Core.Data.Write("list", "homePlug-in", "app{}".format(str(set)), options)
-                return
+                Core.Data.Write("list", "homePlugIn", "app{}".format(str(set)), options)
+                Message('好耶，设置成功')
+                return True
             else:
                 DayLight.VastSea.Transition(False)
 
@@ -213,8 +219,10 @@ def About():
         version = 'V' + eval("[/Const('version')/]")
         DayLight.Text(version, DayLight.AutoCenter(version), 40, 3)
         oled.show()
-        if eval("[/GetButtonExpr('th', 'and')/]"):
+        if eval("[/GetButtonExpr('on')/]"):
+            DayLight.VastSea.Transition()
             FTReader.Textreader(Core.Data.GetOriginal('Hello_World')).Main()
+            DayLight.VastSea.Transition(False)
 
 def Wlanscan():
     #定义扫描WiFi函数
@@ -223,29 +231,29 @@ def Wlanscan():
     wlan.active(True)#打开
     return [i[0].decode() for i in network.WLAN().scan()]#返回
 
-def Choosewifi():
+def Choosewifi() -> bool:
     while not button_a.is_pressed():
         oled.fill(0)
         wifiList = Wlanscan()
-        num = DayLight.ListOptions(wifiList, True, "请选择")
-        if num == None:return
-        wifi = wifiList[num]
-        pwd = Typer.main()
+        num = DayLight.Select.Style4(wifiList, False, "请选择")
+        if num == None:
+            DayLight.VastSea.Transition(False)
+            return
+        wifiName = wifiList[num]
+        wifiPassword = Typer.main()
+        Quit = Core.SharedVar.LoadQuit()
+        Quit.value = False
+        _thread.start_new_thread(LoadWait,(Quit, "正在尝试建立连接", True))
         try:
-            Quit = Core.SharedVar.LoadQuit()
-            Quit.value = False
-            _thread.start_new_thread(LoadWait,(Quit,"正在尝试建立连接", True))
-            try:
-                wifi.connectWiFi(wifiList[num], pwd)
-                Core.Data.Write('list', 'wifiName', wifiList[num])
-                Core.Data.Write('list', 'wifiPassword', pwd)
-                Quit.value = True
-            except:
-                Quit.value = True
-            Massage('好耶 添加成功')
+            wifi.connectWiFi(wifiName, wifiPassword)
+            Core.Data.Write('list', 'wifiName', wifiName)
+            Core.Data.Write('list', 'wifiPassword', wifiPassword)
+            Quit.value = True
+            Message('好耶，添加成功')
             return True
         except:
-            Massage('添加失败')
+            Quit.value = True
+            Message('添加失败')
             return False
     
 def Collect():
@@ -288,10 +296,8 @@ def ConnectWiFiMode():
     while not button_a.is_pressed():
         options = DayLight.Select.Style4(mode, False, '网络连接方式')
         if options != None:
-            DayLight.VastSea.Transition()
             Core.Data.Write('text', 'connectWifiMode', str(options))
-            Massage('好耶 设置成功')
-            DayLight.VastSea.Transition(False)
+            Message('好耶，设置成功')
         else:
             DayLight.VastSea.Transition(False)
             return
@@ -307,10 +313,11 @@ def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=F
         oled.show()
     #_thread.exit() （会自动退出的）
 
-def Massage(text) -> bool:
-    DayLight.Box(1, 20, 126, 44, True)
-    DayLight.Text(text, DayLight.AutoCenter(text), 24, 2)
+def Message(text) -> bool:
+    DayLight.Box(1, 1, 126, 62, True)
+    oled.DispChar('消息', DayLight.AutoCenter('一个消息'), 5)
+    DayLight.Text(text, 5, 24, 1)
     Log.Message(text)
     oled.show()
-    time.sleep_ms(int(eval("[/Const('interval')/]")))
+    time.sleep_ms(3000)
     return True

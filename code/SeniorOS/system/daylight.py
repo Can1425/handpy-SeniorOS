@@ -22,14 +22,14 @@ def GetCharWidth(s):
 
 AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
 HomeTimeAutoCenter = AutoCenter
-def Box(x1, y1, x2, y2, fill = False, function = False):
+def Box(x1, y1, x2, y2, fill = False):
     UITools()
     if fill:
         oled.fill_rect(x1 + 1, y1 + 1, x2 - 2, y2 - 2, 0)
-    if function:
-        function()
     oled.rect(x1, y1, x2, y2, 1)
-def ProgressBoxMove(x,y,w,h,progress,step=8):#progress使用百分制%
+
+def ProgressBoxMove(x,y,w,h,progress,step=8):
+    #progress使用百分制%
     now=0
     OurUI=UI(oled)#我们的 UI (苏里苏气)
     for _ in range(step):
@@ -55,7 +55,7 @@ class App:
         if window:
             Box(1, 1, 126, 62)
         UITools()
-        Text(appTitle, 5, 5, 3, 90)
+        Text(appTitle, 5, 5, 3, 1, 90)
 
 class Select:
     @staticmethod
@@ -125,12 +125,10 @@ class Select:
         UITools()
         selectNum = 0
         while not button_a.is_pressed():
-            py_pressed = eval("[/GetButtonExpr('py')/]")
-            on_pressed = eval("[/GetButtonExpr('on')/]")
-            if py_pressed:
+            if eval("[/GetButtonExpr('on')/]"):
                 selectNum = 1
                 return selectNum
-            if on_pressed:
+            if eval("[/GetButtonExpr('py')/]"):
                 selectNum = 0
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
@@ -201,7 +199,7 @@ class VastSea:
             if options != None:
                 VastSea.Transition()
                 Core.Data.Write("text", "VastSeaSpeed", presuppose[options])
-                PagesManager.Main.Import('SeniorOS.system.pages', 'Message', True, '你也是个{}的人呀'.format(["高效", "优雅", "温柔"](options)))
+                PagesManager.Main.Import('SeniorOS.system.pages', 'Message', True, "设置成功\n{}".format(["故事半古之人，功必倍之", "用心聆听，深深呼吸", "松风吹解带，山月照弹琴"][options]))
                 VastSea.Transition(False)
 
         else:
@@ -325,7 +323,7 @@ class VastSea:
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
                     # 根据计算出的 current_x 和 current_y 更新位置
-                    oled.fill_rect(int(currentX) - 4, int(currentY) - 4, len(text) * 20, 22, 0)
+                    oled.fill(0)
                     oled.DispChar(text, int(currentX), int(currentY))
                     oled.show()
             else:
@@ -380,25 +378,16 @@ def UITools():
     except:
         pass
 
-def About():
-    while not button_a.is_pressed():
-        oled.fill(0)
-        UITools()
-        oled.DispChar('关于日光引擎', 5, 5, 1)
-        oled.DispChar("这是一个 GUI 框架，", 5, 20, 1)
-        oled.DispChar("负责渲染部分特有 GUI", 5,35 , 1)
-        oled.DispChar("鸣谢POLA在的巨大贡献", 5, 50, 1)
-        oled.show()
-    return
-
 def LightModeSet():
+    mode = [eval("[/Language('关闭')/]"),
+            eval("[/Language('开启')/]")]
     while not button_a.is_pressed():
         oled.fill(0)
         UITools()
         App.Style2(eval("[/Language('日光模式')/]"))
         time.sleep_ms(5)
-        get = int(Core.Data.Get("text", "luminance"))
-        oled.DispChar([eval("[/Language('关闭')/]"),eval("[/Language('开启')/]")](get), 5, 18, 1)
+        get = int(Core.Data.Get("text", "lightMode"))
+        oled.DispChar(mode[get], 5, 18, 1)
         oled.show()
         get = Select.Style3()
         Core.Data.Write("text",'lightMode', str(get))

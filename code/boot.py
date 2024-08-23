@@ -22,7 +22,7 @@ while True:
     oled.show()
     while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
-    if eval("[/GetButtonExpr('py','and')/]"):
+    if eval("[/GetButtonExpr('py')/]"):
         DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16)
         oled.fill(0)
         oled.DispChar('启动至 SeniorOS',5,0)
@@ -32,14 +32,14 @@ while True:
         oled.contrast(int(Core.Data.Get("text", "luminance")))
         import SeniorOS.system.main
         break
-    elif eval("[/GetButtonExpr('on','and')/]"):
+    elif eval("[/GetButtonExpr('on')/]"):
         DayLight.VastSea.SeniorMove.Box("ON - main.py",5,48)
         oled.fill(0)
         oled.DispChar('启动至 main.py',5,0)
         oled.show()
         time.sleep(0.5)
         break
-    elif eval("[/GetButtonExpr('th','and')/]"):
+    elif eval("[/GetButtonExpr('th')/]"):
         DayLight.VastSea.SeniorMove.Box("TH - REPL",5,32)
         oled.fill(0)
         oled.DispChar('启动至 REPL',5,0)

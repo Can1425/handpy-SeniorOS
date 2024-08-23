@@ -18,10 +18,7 @@ log_level_list = ['DEBUG', 'INFO', 'MSG', 'WARN', 'ERROR', 'FATAL']
 
 import time
 import gc
-import ntptime
 import esp32
-import _thread
-
 
 def format_timestamp():
     t=time.localtime()
@@ -39,7 +36,7 @@ def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO')
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\
        .replace(f'{prefix}message{prefix}', message)
-    formatText+=f"\nRam-info:{gc.mem_free()} B\nCPU:{esp32.raw_temperature()}°C"
+    formatText+=f"\nRam-info:{gc.mem_free()} B\nCPU:{esp32.raw_temperature()}°F"
     return formatText
 
 class LogManager:
@@ -60,22 +57,22 @@ class LogManager:
             print(eval("[/Const('log')/]") + log)
 
     def Info(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'INFO'))
+        self.log(text, 'INFO')
     
     def Debug(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'DEBUG'))
+        self.log(text, 'DEBUG')
     
     def Message(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'MSG'))
-    
+        self.log(text, 'MSG')
+
     def Warn(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'WARN'))
+        self.log(text, 'WARN')
     
     def Error(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'ERROR'))
+        self.log(text, 'ERROR')
     
     def Fatal(self, text: str):
-        _thread.start_new_thread(self.log,(text, 'FATAL'))
+        self.log(text, 'FATAL')
 
 lm = LogManager()
 Output = lm.log

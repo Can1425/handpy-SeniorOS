@@ -56,8 +56,11 @@ class Main:
             func(*argument)
             gc.collect()
         except Exception as e:
-            Log.Error(moduleLoc + " > " + funcName + ": " + e.__class__.__name__ + ": " + str(e))
+            Log.Error(moduleLoc + " > ERROR LOG THROWN:")
+            separator = "--------------------------------------------------"
+            print(separator)
             sys.print_exception(e)
+            print(separator)
             return False
         else:
             gc.collect()
