@@ -1,7 +1,7 @@
 #ssd1106_dpr - by emofailing
 from micropython import const
 import framebuf
-print("\n\n\nimported ssd1106_dpr\n\n\n")
+print("imported ssd1106_dpr")
 
 # register definitions
 SET_CONTRAST        = const(0x81)

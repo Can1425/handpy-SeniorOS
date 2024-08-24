@@ -47,8 +47,7 @@ class Main:
     @staticmethod
     def Import(moduleLoc: str, funcName: str, log = True, *argument) -> bool:
         gc.collect()
-        if log:
-            Log.Info(moduleLoc + " " + funcName + "(func)")
+        if log:Log.Info(moduleLoc + " " + funcName + "(func)")
         module = __import__(moduleLoc, globals(), locals(), [funcName])
         func = getattr(module, funcName)
         try:
@@ -57,10 +56,9 @@ class Main:
             gc.collect()
         except Exception as e:
             Log.Error(moduleLoc + " > ERROR LOG THROWN:")
-            separator = "--------------------------------------------------"
-            print(separator)
+            print("--------------------------------------------------\n")
             sys.print_exception(e)
-            print(separator)
+            print("--------------------------------------------------\n")
             return False
         else:
             gc.collect()
