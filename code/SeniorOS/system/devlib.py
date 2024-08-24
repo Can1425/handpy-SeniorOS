@@ -2,7 +2,7 @@
 from machine import Pin,I2C,TouchPad,ADC
 from esp import flash_read
 from neopixel import NeoPixel
-from ssd1106 import SSD1106_I2C
+from SeniorOS.system.ssd1106_dpr import SSD1106_I2C
 from micropython import schedule,const
 from gui import *
 import micropython
