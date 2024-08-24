@@ -7,8 +7,9 @@ from SeniorOS.system.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import os
-import gc,sys
+import gc
 import SeniorOS.system.log_manager as LogManager
+import SeniorOS.system.pages_manager as PageManager
 Log = LogManager.Log
 
 class animations:
@@ -111,134 +112,78 @@ class Textreader:
 
 class FileViewer:
     def __init__(self):
-        self.copy=""
-    def Copy(self):
-        self.copy=f"{path}/{self.Dir[num]}"
-    def UseTextReader(self):
-        global path,num
-        with open("{}/{}".format(path,self.Dir[num]),"r") as f:
+        self.Dir=os.listdir("/")
+        self.Dir.insert(0,"返回上一层")
+        self.DirLen=len(self.Dir)
+        self.config={0:"目录",1:"文件",2:"可执行文件",3:"图片"}
+        self.PictureConfig={"目录":picture.pathpic,"文件":picture.filepic,
+                            "可执行文件":picture.runpic,"图片":picture.picpic}
+    def UseTextReader(self,Path):
+        with open(Path,"r") as f:
             readFile=Textreader(f.read())
             animations.ClearFromLeftSide()
             readFile.Main()
             readFile.test2()
         del readFile;gc.collect()
-    def IsFile(self,f):
-        if os.stat(f)[0]<20000:return "目录"
-        else:return self.fileattribute(f)
-    def fileattribute(self,f):
-        last4=f[-4:]
-        last3=f[-3:]
-        if last3==".py":return "可执行文件"
-        elif last4==".pbm" or last4==".bmp":return "图片"
-        else:return "文件"
-    def fileviewer(self,initpath:str):
-        global path,num
-        PictureMap={"目录":picture.pathpic,"文件":picture.filepic,
-                    "可执行文件":picture.runpic,"图片":picture.picpic}
-        path=initpath
-        if path[:2]=="//":
-            path=path[1:]
-        def lastpath(path:str):
-            return "/".join(path.split("/")[:-1])
-        while not button_a.is_pressed():
-            Core.FullCollect()
-            self.Dir=os.listdir(path)
-            self.Dir.append('..')
-            TMPOFDDIRLEN=len(self.Dir)
-            num=0
-            while not button_a.is_pressed():
-                t=self.IsFile("{}/{}".format(path,self.Dir[num]))
-                oled.fill(0)
-                oled.vline(16,2,12,1)
-                oled.DispChar(self.Dir[num],18,0)
-                oled.DispChar("属性:{}".format(t),0,16)
-                oled.DispChar("TH)打开 B)其他方式",0,32)
-                oled.DispChar("<PY          {}/{}          ON>".format(num+1,TMPOFDDIRLEN),1,48)
-                oled.Bitmap(0,0,PictureMap[t],16,16,1)
-                oled.hline(0,16,130,1)
-                oled.show()
-                while not button_a.is_pressed():
-                    Core.FullCollect()
-                    if button_b.is_pressed():
-                        animations.boxMove("selset")
-                        temp=["文本阅读器","复制","删除","粘贴"]
-                        selset=DayLight.Select.Style4(temp, appTitle="选择操作")
-                        def Delete():
-                            fileORdir=f"{path}/{self.Dir[num]}"
-                            if self.fileattribute(fileORdir)=="目录":
-                                os.rmdir(fileORdir)
-                            else:
-                                os.remove(fileORdir)
-                        def Paste():
-                            if self.fileattribute(self.copy)=="目录":
-                                print("[FileViewer/ERROR]目录暂时不支持粘贴")
-                            else:
-                                with open(self.copy,"r") as f:
-                                    with open("{}/{}".format(path,self.copy),"w") as f2:
-                                        f2.write(f.read())
-                        mode = {
-                            0: self.UseTextReader,
-                            1: self.Copy,
-                            2: Delete,
-                            3: Paste,
-                        }
-                        if selset != None:
-                            mode(selset)()
-                            break
-                        else:
-                            DayLight.VastSea.Transition(False)
-                            return
-                    elif touchpad_t.is_pressed() or touchpad_h.is_pressed():
-                        if self.Dir[num]=='..':
-                            if path=="/":pass
-                            path=lastpath(path)
-                            self.Dir=os.listdir(path);num=0;TMPOFDDIRLEN=len(self.Dir)
-                            animations.lineMove()
-                        if t=="目录":
-                            animations.boxMove(self.Dir[num])
-                            path="{}/{}".format(path,self.Dir[num])
-                            self.Dir=os.listdir(path);num=0;TMPOFDDIRLEN=len(self.Dir)
-                        if t=="可执行文件":
-                            libname=("{}/{}".format(path,self.Dir[num]))[:-3].replace("/",".")
-                            while libname[0]==".":
-                                libname=libname[1:]
-                            try:
-                                __import__(libname)
-                                exec("del {}".format(libname));gc.collect()
-                            except Exception as e:
-                                print("导入失败，错误信息如下：\n",e.__class__.__name__,e)
-                        if t=="图片":
-                            animations.boxMove("image")
-                            oled.fill(0)
-                            oled.blit(Image().load('{}/{}'.format(path,self.Dir[num])), 0, 0)
-                            oled.show()
-                            while not (touchpad_t.is_pressed() or touchpad_h.is_pressed()):
-                                pass
-                            animations.lineMove()
-                        if t=="文件":self.UseTextReader()
-                        break
-                    if touchpad_n.is_pressed() or touchpad_o.is_pressed():
-                        try:
-                            animations.textMove(self.Dir[num+1])
-                        except:
-                            animations.textMove(self.Dir[0])
-                        num+=1
-                        if num>=TMPOFDDIRLEN:num=0
-                        break
-                    elif touchpad_p.is_pressed() or touchpad_y.is_pressed():
-                        try:
-                            animations.textMove(self.Dir[num-1])
-                        except:
-                            animations.textMove(self.Dir[TMPOFDDIRLEN-1])
-                        num-=1
-                        if num<0:num=TMPOFDDIRLEN-1
-                        break
+    def ShowImage(self,Path):
+        animations.boxMove("image")
+        oled.fill(0)
+        oled.blit(Image().load(Path), 0, 0)
+        oled.show()
+        while not button_a.is_pressed():pass
         return 0
-    #鸣谢名单
-    #程序设计---LP_OVER/emofalling
-    #界面设计---LP_OVER
-    #bug修复/优化---emofalling
-    #运行平台提供---W-Can1425
+
+    def FileConfig(self,filePath:str):#文件类型判断
+        if filePath.endswith("返回上一层"):return 0#上一层是目录(
+        if os.stat(filePath)[0]<20000:return 0
+        else:
+            stringEnd=filePath.endswith
+            if stringEnd(".py") or stringEnd(".mpy"):return 2
+            elif stringEnd(".pbm") or stringEnd(".bmp"):return 3
+            else:return 1
+    def fileviewer(self,path:str="/"):
+        selset_num = 0
+        while True:
+            print("{}/{}".format(path,self.Dir[selset_num]))
+            file_config=self.config[self.FileConfig("{}/{}".format(path,self.Dir[selset_num]))]#获取文件属性
+            oled.fill(0)
+            oled.DispChar(self.Dir[selset_num],16,0)
+            oled.DispChar("属性:{}".format(file_config),0,16)
+            oled.DispChar("TH-打开",0,32)
+            oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
+            oled.DispChar("{}/{}".format(selset_num+1,self.DirLen),DayLight.AutoCenter("{}/{}".format(selset_num+1,self.DirLen)),48)
+            oled.Bitmap(0,0,self.PictureConfig[file_config],16,16,1)
+            oled.hline(0,16,130,1)
+            oled.show()
+            while True:
+                if button_a.is_pressed():return 0
+                elif touchpad_t.is_pressed() or touchpad_h.is_pressed():
+                    RealPath = "{}/{}".format(path,self.Dir[selset_num])
+                    if file_config=="目录":
+                        if self.Dir[selset_num]=="返回上一层":self.Dir[selset_num]=".."
+                        RealPath = "{}/{}".format(path,self.Dir[selset_num])
+                        path=RealPath
+                        self.Dir=os.listdir(RealPath)
+                        self.Dir.insert(0,"返回上一层")
+                        self.DirLen=len(self.Dir)
+                        selset_num=0
+                        animations.ClearFromLeftSide()
+                    elif file_config=="可执行文件":__import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
+                    elif file_config=="图片":self.ShowImage("{}/{}".format(path,self.Dir[selset_num]))
+                    else:self.UseTextReader("{}/{}".format(path,self.Dir[selset_num]))
+                    break
+                if touchpad_n.is_pressed() or touchpad_o.is_pressed():
+                    try:animations.textMove(self.Dir[selset_num+1])
+                    except:animations.textMove(self.Dir[0])
+                    selset_num+=1
+                    if selset_num>=self.DirLen:selset_num=0
+                    break
+                elif touchpad_p.is_pressed() or touchpad_y.is_pressed():
+                    try:animations.textMove(self.Dir[selset_num-1])
+                    except:animations.textMove(self.Dir[self.DirLen-1])
+                    selset_num-=1
+                    if selset_num<0:selset_num=self.DirLen-1
+                    break
 
 def Main():
     path='/'
