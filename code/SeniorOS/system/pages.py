@@ -105,7 +105,7 @@ def EquipmentPanel():
     def PeripheralPanel():
         PeripheralList = ["引脚控制","UART控制"]
         PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
-        PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
+        #PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
         while not button_a.is_pressed():
             options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
             if options == 0:
