@@ -115,7 +115,7 @@ class Select:
             if th_pressed:
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
-            Text(dispContent[selectNum], 5, y, 2)
+            Text(tip[selectNum], 5, y, 2)
             Text(dispContent[selectNum], 5, y + 27, 3)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 45, 1)
             oled.show()

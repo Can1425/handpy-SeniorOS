@@ -152,7 +152,7 @@ class AppSetup:
         with open("/SeniorOS/apps/logo.py","a+") as f:
             f.write("\r\n".join(t))
             f.write(",")
-    def setup(self):
+    def Main(self):
         #安装文件格式:
         #------------------------------(安装example.py)
         # #bytearray(#此处为LOGO 编码)
