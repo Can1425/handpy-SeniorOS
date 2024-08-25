@@ -2,7 +2,7 @@ from SeniorOS.system.devlib import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.core as Core
-import urequests
+import SeniorOS.lib.mrequests
 import gc
 import os
 import _thread
@@ -20,13 +20,13 @@ def Main():
     Quit.value = False
     _thread.start_new_thread(Pages.LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     try:
-        _response = urequests.get(source + '/plugins/list.sros', headers={})
+        _response = SeniorOS.lib.mrequests.get(source + '/plugins/list.sros', headers={})
         pluginsList = (_response.text.split(';'))
-        _response = urequests.get(source + '/plugins/author.sros', headers={})
+        _response = SeniorOS.lib.mrequests.get(source + '/plugins/author.sros', headers={})
         pluginsTip = (_response.text.split(';'))
-        _response = urequests.get(source + '/plugins/tip.sros', headers={})
+        _response = SeniorOS.lib.mrequests.get(source + '/plugins/tip.sros', headers={})
         pluginsTip2 = (_response.text.split(';'))
-        Englist=((urequests.get(source + '/plugins/list_English.sros',headers={})).text).split(';')
+        Englist=((SeniorOS.lib.mrequests.get(source + '/plugins/list_English.sros',headers={})).text).split(';')
         Log.Debug(len(pluginsList))
         Log.Debug(pluginsTip)
     except:
@@ -46,7 +46,7 @@ def Main():
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text('Tips - 由于适配问题，部分情况下A键无法退出，请尝试软重启解决', 5, 36, 2)
                 oled.show()
-                _response = urequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                _response = SeniorOS.lib.mrequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
                 oled.fill(0)
                 exec(_response.text)
                 DayLight.VastSea.Off()
@@ -64,7 +64,7 @@ def Main():
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text(eval("[/Language('正在进行操作')/]"), 5, 36, 2)
                 oled.show()
-                _response = urequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                _response = SeniorOS.lib.mrequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
                 try:
                     os.chdir("/SeniorOS/downloads")
                 except:

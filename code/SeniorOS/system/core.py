@@ -5,7 +5,7 @@ import framebuf
 import network
 import gc
 import time
-import urequests
+import SeniorOS.lib.mrequests
 import json
 from machine import unique_id
 from SeniorOS.system.devlib import *

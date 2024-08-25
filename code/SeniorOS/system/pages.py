@@ -2,7 +2,7 @@ import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
 import SeniorOS.system.ftreader as FTReader
-import urequests
+import SeniorOS.lib.mrequests
 import ntptime
 import micropython
 from SeniorOS.system.devlib import wifi,oled
@@ -56,7 +56,7 @@ def CloudNotification():
     _thread.start_new_thread(LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     oled.show()
     try:
-        _response = urequests.get(source + '/Notifications.sros', headers={})
+        _response = SeniorOS.lib.mrequests.get(source + '/Notifications.sros', headers={})
         notifications = (_response.text.split(';'))
     except:
         Quit.value = True

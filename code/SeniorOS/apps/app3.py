@@ -3,12 +3,12 @@ import SeniorOS.system.core as Core
 import SeniorOS.system.pages_manager as PagesManager
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.daylight as DayLight
-import urequests
+import SeniorOS.lib.mrequests
 import _thread
 
 def GetSeniWeather(_url, _location):
     _url = _url + "&location=" + _location.replace(" ", "%20")
-    response = urequests.get(_url)
+    response = SeniorOS.lib.mrequests.get(_url)
     json = response.json()
     response.close()
     return json
