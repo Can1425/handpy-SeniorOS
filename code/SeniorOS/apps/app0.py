@@ -13,10 +13,11 @@ import SeniorOS.style.port as Style
 time.sleep_ms(5)
 
 Settings0 = {
-    0: Pages.WifiPages,
-    1: Pages.Time,
-    2: Pages.Choosewifi,
-    3: Pages.ConnectWiFiMode
+    0: Pages.WiFiConfig,
+    1: Pages.WifiPages,
+    2: Pages.Time,
+    3: Pages.Choosewifi,
+    4: Pages.ConnectWiFiMode
 }
 
 Settings1 = {
@@ -31,12 +32,15 @@ Settings1 = {
 
 Settings2 = {
     0: Pages.Collect,
-    1: Pages.Collect,
+    1: Pages.HS_Ram,
+    2: Pages.HS_Flash,
 }
 
 Settings3 = {
     0: Pages.About,
     1: Pages.About,
+    2: Pages.HS_CPU,
+    3: Pages.DeviceID,
 }
 
 def Main():
@@ -46,10 +50,10 @@ def Main():
             if settingsNum != None:
                 DayLight.VastSea.Transition()
                 options = eval('DayLight.Select.Style4(list{}, False, "选择")'.format(str(settingsNum)),
-                            {'list0':['重连网络', '同步时间', '新建网络配置','网络连接方式'],
+                            {'list0':['网络连接情况', '重连网络', '同步时间', '新建网络配置','网络连接方式'],
                             'list1':['日光模式','亮度调节','动效开关', '动画速率', '桌面风格', '桌面快速启动', '触摸键灵敏度'],
-                            'list2':['释放内存', '内存信息'],
-                            'list3':['设备信息', '系统更新'],
+                            'list2':['回收内存碎片', 'RAM 信息', 'Flash'],
+                            'list3':['系统信息', '系统更新', 'CPU 信息', '设备标识符'],
                             'DayLight':DayLight})
                 if options != None:
                     DayLight.VastSea.Transition()

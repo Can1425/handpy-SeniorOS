@@ -1,7 +1,8 @@
-from SeniorOS.system.devlib import *
+from SeniorOS.system.devlib import oled,touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
 import time
 import uos
 import gc
+import sys
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 Core.FullCollect()
@@ -9,9 +10,10 @@ Core.FullCollect()
 def RenameCode():
     uos.rename('/main.py.bak','/main.py')
 def ClearVar():
-    for var in globals():
-        if not var in ('time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count'):
-            del globals()[var]
+    Core.FullCollect()
+    for var in sys.modules:
+        if not var in ('Core', 'DayLight', 'time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count', 'oled', 'touchPad_P', 'touchPad_Y', 'touchPad_H', 'touchPad_O', 'touchPad_N', 'touchPad_T', 'sys'):
+            del sys.modules[var]
     gc.collect()
 while True:
     oled.fill(0)
@@ -20,7 +22,7 @@ while True:
     oled.DispChar('TH - REPL',5,32)
     oled.DispChar("ON - main.py",5,48)
     oled.show()
-    while not eval("[/GetButtonExpr('pythonb')/]"):
+    while not eval("[/GetButtonExpr('python')/]"):
         pass
     if eval("[/GetButtonExpr('py')/]"):
         DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16)
@@ -37,6 +39,7 @@ while True:
         oled.fill(0)
         oled.DispChar('启动至 main.py',5,0)
         oled.show()
+        ClearVar()
         time.sleep(0.5)
         break
     elif eval("[/GetButtonExpr('th')/]"):

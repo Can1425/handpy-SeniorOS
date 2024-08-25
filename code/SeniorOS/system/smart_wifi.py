@@ -52,7 +52,7 @@ def main():
                         HTTP/1.1 200 OK
                         Content-Type: text/html
                         Connection: close
-                        """)#插句嘴,HTML和协议头都不可以放中文!!!
+                        """)
         client_sock.write(b'''
                         <!DOCTYPE html>
                         <html lang="en">
@@ -88,5 +88,3 @@ def main():
                         </html>
                         ''')
         client_sock.close()
-
-#main()#运行
