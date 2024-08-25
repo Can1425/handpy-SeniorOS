@@ -1,11 +1,11 @@
-from SeniorOS.system.devlib import *
+from SeniorOS.lib.devlib import *
 import time
 import micropython
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import sys,os,gc
-import SeniorOS.system.pages_manager as PagesManager
+import SeniorOS.lib.pages_manager as PagesManager
 
 appNum = 0
 operationalJudgment = 0

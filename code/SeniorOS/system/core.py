@@ -5,11 +5,11 @@ import framebuf
 import network
 import gc
 import time
-import urequests
+import SeniorOS.lib.mrequests
 import json
 from machine import unique_id
-from SeniorOS.system.devlib import *
-import SeniorOS.system.log_manager as LogManager
+from SeniorOS.lib.devlib import *
+import SeniorOS.lib.log_manager as LogManager
 LogManager.Output("system/core.mpy", "INFO")
 
 # 适用于 data/ 下 .sros 扩展名文件的信息读写操作
@@ -233,14 +233,14 @@ def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
 # 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
 # 这里Enumerate部分使用的算法取决于构建阶段 对本代码作EXPR操作时 constData["screenMethod"] 的值是 fast 还是 ram
 class Screenshot:
-    def CopyFramebuf(path,oledObj=__import__("SeniorOS.system.devlib")):
+    def CopyFramebuf(path,oledObj=__import__("SeniorOS.lib.devlib")):
         bufb=bytearray(128*64)
         with open(path,"wb")as f:
             f.write(b"P4\n128 64\n")
             buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
             buf.blit(oledObj.buffer,0,0)
             f.write(bufb)
-    def Enumerate(path,oledObj=__import__("SeniorOS.system.devlib")):# 以「枚举」为核心 的算法
+    def Enumerate(path,oledObj=__import__("SeniorOS.lib.devlib")):# 以「枚举」为核心 的算法
         if eval("[/Const('screenshotMethod')/]")=="fast": # 速度优先
             with open(path, 'wb') as f:
                 f.write(b'P4\n128 64\n')

@@ -5,7 +5,7 @@
 import network
 import socket
 import gc
-import SeniorOS.system.log_manager as LogManager
+import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.system.pages as Pages
 ap = network.WLAN(network.AP_IF)
 ap.config(essid='SeniorOS-WIFI', authmode=4, password='12345678')

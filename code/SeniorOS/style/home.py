@@ -1,4 +1,4 @@
-from SeniorOS.system.devlib import *
+from SeniorOS.lib.devlib import *
 import SeniorOS.system.daylight as DayLight
 import time
 import SeniorOS.fonts.misans
