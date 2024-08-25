@@ -24,7 +24,7 @@
 #     determined with CycleBai.
 # 
 
-import SeniorOS.system.log_manager as LogManager
+import SeniorOS.lib.log_manager as LogManager
 import gc,sys
 
 Log = LogManager.Log

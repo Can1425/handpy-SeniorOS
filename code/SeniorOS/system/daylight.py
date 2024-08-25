@@ -2,9 +2,9 @@ import SeniorOS.system.core as Core
 import math
 import gc
 import time
-from SeniorOS.system.devlib import *
-import SeniorOS.system.log_manager as LogManager
-import SeniorOS.system.pages_manager as PagesManager
+from SeniorOS.lib.devlib import *
+import SeniorOS.lib.log_manager as LogManager
+import SeniorOS.lib.pages_manager as PagesManager
 import micropython
 LogManager.Output("system/daylight.mpy", "INFO")
 

@@ -1,12 +1,13 @@
-from SeniorOS.system.devlib import *
+from SeniorOS.lib.devlib import *
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.core as Core
-import SeniorOS.lib.mrequests
+import SeniorOS.system.radient as Radient
+# import SeniorOS.lib.mrequests
 import gc
 import os
 import _thread
-import SeniorOS.system.log_manager as LogManager
+import SeniorOS.lib.log_manager as LogManager
 source = "https://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 
@@ -20,18 +21,19 @@ def Main():
     Quit.value = False
     _thread.start_new_thread(Pages.LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     try:
-        _response = SeniorOS.lib.mrequests.get(source + '/plugins/list.sros', headers={})
+        _response = Radient.Get(source + '/plugins/list.sros')
         pluginsList = (_response.text.split(';'))
-        _response = SeniorOS.lib.mrequests.get(source + '/plugins/author.sros', headers={})
+        _response = Radient.Get(source + '/plugins/author.sros')
         pluginsTip = (_response.text.split(';'))
-        _response = SeniorOS.lib.mrequests.get(source + '/plugins/tip.sros', headers={})
+        _response = Radient.Get(source + '/plugins/tip.sros')
         pluginsTip2 = (_response.text.split(';'))
-        Englist=((SeniorOS.lib.mrequests.get(source + '/plugins/list_English.sros',headers={})).text).split(';')
+        Englist=((Radient.Get(source + '/plugins/list_English.sros')).text).split(';')
         Log.Debug(len(pluginsList))
         Log.Debug(pluginsTip)
-    except:
+    except IndexError as e:
         Core.FullCollect()
         Quit.value = True
+        Log.Error(e)
         return
     Quit.value = True
     Core.FullCollect()
@@ -46,7 +48,7 @@ def Main():
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text('Tips - 由于适配问题，部分情况下A键无法退出，请尝试软重启解决', 5, 36, 1)
                 oled.show()
-                _response = SeniorOS.lib.mrequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
                 oled.fill(0)
                 exec(_response.text)
                 DayLight.VastSea.Off()
@@ -64,7 +66,7 @@ def Main():
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text(eval("[/Language('正在进行操作')/]"), 5, 36, 2)
                 oled.show()
-                _response = SeniorOS.lib.mrequests.get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
                 try:
                     os.chdir("/SeniorOS/downloads")
                 except:

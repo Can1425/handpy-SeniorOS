@@ -13,7 +13,7 @@
 
 ```python
 # from mpython import *
-from SeniorOS.system.devlib import *
+from SeniorOS.lib.devlib import *
 ```
 
 ## 代码风格

@@ -2,7 +2,7 @@
 from machine import Pin,I2C,TouchPad,ADC
 from esp import flash_read
 from neopixel import NeoPixel
-from SeniorOS.system.ssd1106_dpr import SSD1106_I2C
+from SeniorOS.lib.ssd1106_dpr import SSD1106_I2C
 from micropython import schedule,const
 from gui import *
 import micropython
@@ -11,7 +11,7 @@ import ustruct,math,time
 import calibrate_img
 import NVS
 import network
-import SeniorOS.system.log_manager as LogManager
+import SeniorOS.lib.log_manager as LogManager
 LogManager.Output("system/devlib.mpy", "INFO")
 
 overclock=True

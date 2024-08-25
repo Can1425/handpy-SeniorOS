@@ -2,17 +2,17 @@ import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
 import SeniorOS.system.ftreader as FTReader
-import SeniorOS.lib.mrequests
+import SeniorOS.system.radient as Radient
 import ntptime
 import micropython
-from SeniorOS.system.devlib import wifi,oled
-from SeniorOS.system.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from SeniorOS.system.devlib import button_a,button_b
+from SeniorOS.lib.devlib import wifi,oled
+from SeniorOS.lib.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
+from SeniorOS.lib.devlib import button_a,button_b
 import gc
 import time
 import machine
-import SeniorOS.system.log_manager as LogManager
-import SeniorOS.system.pages_manager as PagesManager
+import SeniorOS.lib.log_manager as LogManager
+import SeniorOS.lib.pages_manager as PagesManager
 import _thread
 import os
 
@@ -56,10 +56,13 @@ def CloudNotification():
     _thread.start_new_thread(LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     oled.show()
     try:
-        _response = SeniorOS.lib.mrequests.get(source + '/Notifications.sros', headers={})
-        notifications = (_response.text.split(';'))
-    except:
+        _notifications = Radient.Get(source + '/Notifications.sros')
+        print(_notifications)
+        notifications = Radient.ParseResponse(_notifications[1]).text.split(';')
+        print(notifications)
+    except IndexError as e:
         Quit.value = True
+        print(e)
         return
     Quit.value = True
     while not button_a.is_pressed():

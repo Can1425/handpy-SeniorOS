@@ -1,6 +1,6 @@
-from SeniorOS.system.devlib import *
+from SeniorOS.lib.devlib import *
 import SeniorOS.system.core as Core
-import SeniorOS.system.pages_manager as PagesManager
+import SeniorOS.lib.pages_manager as PagesManager
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.lib.mrequests

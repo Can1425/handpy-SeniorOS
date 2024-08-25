@@ -1,5 +1,5 @@
 import uhashlib,os,SeniorOS.lib.mrequests
-import SeniorOS.system.log_manager as LogManager
+import SeniorOS.lib.log_manager as LogManager
 LogManager.Output("system/update.mpy", "INFO")
 import ubinascii
 # lambda: 值查找键

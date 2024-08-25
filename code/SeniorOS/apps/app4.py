@@ -1,5 +1,5 @@
-from SeniorOS.system.devlib import *
-import SeniorOS.system.pages_manager as PagesManager
+from SeniorOS.lib.devlib import *
+import SeniorOS.lib.pages_manager as PagesManager
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 image_picture = Image()
