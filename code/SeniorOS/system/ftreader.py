@@ -12,7 +12,7 @@ import SeniorOS.system.log_manager as LogManager
 import SeniorOS.system.pages_manager as PageManager
 Log = LogManager.Log
 
-class animations:
+class Animations:
     def ClearFromLeftSide(mode:bool = True):
         if mode:
             for i in range(13):
@@ -80,7 +80,7 @@ class Textreader:
     
     def test2(self):
         self.showText()
-        animations.ClearFromLeftSide()
+        Animations.ClearFromLeftSide()
             
     def Main(self):
         page_num=self.text_info(True)+self.text_info(False)
@@ -121,12 +121,12 @@ class FileViewer:
     def UseTextReader(self,Path):
         with open(Path,"r") as f:
             readFile=Textreader(f.read())
-            animations.ClearFromLeftSide()
+            Animations.ClearFromLeftSide()
             readFile.Main()
             readFile.test2()
         del readFile;gc.collect()
     def ShowImage(self,Path):
-        animations.boxMove("image")
+        Animations.boxMove("image")
         oled.fill(0)
         oled.blit(Image().load(Path), 0, 0)
         oled.show()
@@ -167,20 +167,20 @@ class FileViewer:
                         self.Dir.insert(0,"返回上一层")
                         self.DirLen=len(self.Dir)
                         selset_num=0
-                        animations.ClearFromLeftSide()
+                        Animations.ClearFromLeftSide()
                     elif file_config=="可执行文件":__import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
                     elif file_config=="图片":self.ShowImage("{}/{}".format(path,self.Dir[selset_num]))
                     else:self.UseTextReader("{}/{}".format(path,self.Dir[selset_num]))
                     break
                 if touchpad_n.is_pressed() or touchpad_o.is_pressed():
-                    try:animations.textMove(self.Dir[selset_num+1])
-                    except:animations.textMove(self.Dir[0])
+                    try:Animations.textMove(self.Dir[selset_num+1])
+                    except:Animations.textMove(self.Dir[0])
                     selset_num+=1
                     if selset_num>=self.DirLen:selset_num=0
                     break
                 elif touchpad_p.is_pressed() or touchpad_y.is_pressed():
-                    try:animations.textMove(self.Dir[selset_num-1])
-                    except:animations.textMove(self.Dir[self.DirLen-1])
+                    try:Animations.textMove(self.Dir[selset_num-1])
+                    except:Animations.textMove(self.Dir[self.DirLen-1])
                     selset_num-=1
                     if selset_num<0:selset_num=self.DirLen-1
                     break

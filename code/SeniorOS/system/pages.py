@@ -70,99 +70,98 @@ def CloudNotification():
         oled.show()
     return
 
-def EquipmentPanel(): 
-    def HS_CPU():
+def HS_CPU():
+    oled.fill(0)
+    oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,32)
+    oled.DispChar("CPU - ESP32",0,0)
+    oled.DispChar("NORMAL 160HZ",0,16)
+    oled.show()
+    while True:
+        if button_a.is_pressed():return
+def HS_Ram():
+    while not button_a.is_pressed():
         oled.fill(0)
-        oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,32)
-        oled.DispChar("CPU - ESP32",0,0)
-        oled.DispChar("NORMAL 160HZ",0,16)
+        oled.DispChar("Ram - total:520kb",0,0)
+        oled.DispChar(f"内存可用:{str(gc.mem_free())} Bytes",0,16)
+        oled.DispChar("触摸键释放内存",0,32)
         oled.show()
-        while True:
-            if button_a.is_pressed():return
-    def HS_Ram():
-        while not button_a.is_pressed():
-            oled.fill(0)
-            oled.DispChar("Ram - total:520kb",0,0)
-            oled.DispChar(f"内存可用:{str(gc.mem_free())} Bytes",0,16)
-            oled.DispChar("触摸键释放内存",0,32)
-            oled.show()
-            if eval("[/GetButtonExpr('python')/]"):
-                Collect()
-        return 0
-    def HS_flash():
-        fileSystemStatus=os.statvfs("/")
-        fileSystemFree=fileSystemStatus[3] * fileSystemStatus[1]
-        oled.fill(0)
-        oled.DispChar("Flash - total: 8MB",5,0)
-        oled.DispChar("可用:{} MB".format(fileSystemFree/81920),5,16)
-        DayLight.ProgressBoxMove(5,32,100,10,((100 - 0) / (8 - 0)) * ((fileSystemFree / 81920) - 0) + 0)
-        oled.show()
-        while not button_a.is_pressed():
-            if button_a.is_pressed():
-                del fileSystemStatus,fileSystemFree
-                gc.collect()    
-                return 0
-    def PeripheralPanel():
-        PeripheralList = ["引脚控制","UART控制"]
-        PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
-        #PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
-        while not button_a.is_pressed():
-            options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
-            if options == 0:
+        if eval("[/GetButtonExpr('python')/]"):
+            Collect()
+    return 0
+def HS_Flash():
+    fileSystemStatus=os.statvfs("/")
+    fileSystemFree=fileSystemStatus[3] * fileSystemStatus[1]
+    oled.fill(0)
+    oled.DispChar("Flash - total: 8MB",5,0)
+    oled.DispChar("可用:{} MB".format(fileSystemFree/81920),5,16)
+    DayLight.ProgressBoxMove(5,32,100,10,((100 - 0) / (8 - 0)) * ((fileSystemFree / 81920) - 0) + 0)
+    oled.show()
+    while not button_a.is_pressed():
+        if button_a.is_pressed():
+            del fileSystemStatus,fileSystemFree
+            gc.collect()    
+            return 0
+def PeripheralPanel():
+    PeripheralList = ["引脚控制","UART控制"]
+    PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
+    #PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
+    while not button_a.is_pressed():
+        options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
+        if options == 0:
+            DayLight.VastSea.Transition() 
+            options = DayLight.Select.Style4(PeripheralPin, False, "选择引脚")
+            if options!=None:
                 DayLight.VastSea.Transition() 
-                options = DayLight.Select.Style4(PeripheralPin, False, "选择引脚")
-                if options!=None:
-                    DayLight.VastSea.Transition() 
-                    selsetPin=PeripheralPin[options]
-                else: 
-                    DayLight.VastSea.Transition(False)
-                    return
-                SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
-                try:
-                    if SS == 0:
-                        while not button_a.is_pressed():
-                            oled.fill(0)
-                            oled.DispChar("引脚 {} 的值为".format(selsetPin),5,0)
-                            PIN=eval("Pin({},Pin.IN)".format(selsetPin))
-                            oled.DispChar(str(PIN.value()),5,16)
-                            oled.show()
-                        DayLight.VastSea.Transition(False)
-                        return
-                    else:
-                        while not button_a.is_pressed():
-                            val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
-                            if val != None:
-                                DayLight.VastSea.Transition()
-                                PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
-                                if val == 0:PIN.on()
-                                else:PIN.off()
-                            else:
-                                DayLight.VastSea.Transition(False)
-                                return
-                        return 
-                except:
+                selsetPin=PeripheralPin[options]
+            else: 
+                DayLight.VastSea.Transition(False)
+                return
+            SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
+            try:
+                if SS == 0:
                     while not button_a.is_pressed():
                         oled.fill(0)
-                        DayLight.Text("引脚状态获取失败，请尝试检查外设是否正确连接",5, 5, 1)
+                        oled.DispChar("引脚 {} 的值为".format(selsetPin),5,0)
+                        PIN=eval("Pin({},Pin.IN)".format(selsetPin))
+                        oled.DispChar(str(PIN.value()),5,16)
                         oled.show()
                     DayLight.VastSea.Transition(False)
                     return
-            elif options == 1:
+                else:
+                    while not button_a.is_pressed():
+                        val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
+                        if val != None:
+                            DayLight.VastSea.Transition()
+                            PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
+                            if val == 0:PIN.on()
+                            else:PIN.off()
+                        else:
+                            DayLight.VastSea.Transition(False)
+                            return
+                    return 
+            except:
                 while not button_a.is_pressed():
                     oled.fill(0)
-                    DayLight.Text("暂不可用",5, 5, 1)
+                    DayLight.Text("引脚状态获取失败，请尝试检查外设是否正确连接",5, 5, 1)
                     oled.show()
                 DayLight.VastSea.Transition(False)
                 return
-            else:
-                DayLight.VastSea.Transition(False)
-                return
-                
+        elif options == 1:
+            while not button_a.is_pressed():
+                oled.fill(0)
+                DayLight.Text("暂不可用",5, 5, 1)
+                oled.show()
+            DayLight.VastSea.Transition(False)
+            return
+        else:
+            DayLight.VastSea.Transition(False)
+            return
 
+def EquipmentPanel():
     ListOperation = {
     0: HS_CPU,
     1: HS_Ram,
-    2: HS_flash,
+    2: HS_Flash,
     3: PeripheralPanel
     }
     hardware=["CPU","RAM","Flash","外设控制"]
@@ -217,7 +216,7 @@ def About():
     while not button_a.is_pressed():
         oled.Bitmap(16, 15, bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X3C,0X00,0X00,0X00,0X30, 0X00,0X00,0X00,0X70,0X00,0X78,0X00,0X03,0XFE,0X00,0X00,0X00,0X70,0X00,0X00,0X03, 0XFE,0X03,0XFE,0X00,0X07,0XFC,0X00,0X00,0X00,0X30,0X00,0X00,0X07,0X8F,0X07,0XFE, 0X00,0X06,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0E,0X03,0X86,0X00,0X00,0X06,0X00, 0X0E,0X03,0XE0,0X20,0X38,0X01,0X8C,0X01,0X8E,0X00,0X00,0X0E,0X00,0X3F,0X87,0XF8, 0X71,0XFE,0X0F,0X98,0X00,0XCE,0X00,0X00,0X0F,0X00,0X7B,0XC7,0XFC,0X71,0XFF,0X1F, 0X98,0X00,0XCE,0X00,0X00,0X07,0XF0,0X60,0XCE,0X0C,0X63,0X83,0X18,0X18,0X00,0XC7, 0XF0,0X00,0X03,0XFC,0XE0,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC3,0XFC,0X00,0X00, 0X1C,0XFF,0XCE,0X0C,0X63,0X03,0X38,0X18,0X00,0XC0,0X1C,0X00,0X00,0X0C,0XFF,0XCC, 0X0C,0X67,0X03,0X30,0X18,0X00,0XC0,0X0C,0X00,0X00,0X0C,0XC0,0X0C,0X0C,0X67,0X03, 0X30,0X0C,0X01,0XC0,0X0C,0X00,0X00,0X1C,0XC0,0X0C,0X1C,0XE7,0X07,0X30,0X0E,0X03, 0X80,0X1C,0X00,0X00,0X3C,0XE0,0X0C,0X1C,0XE7,0X8E,0X30,0X07,0X8F,0X00,0X3C,0X00, 0X1F,0XF8,0X7F,0X8C,0X1C,0XE3,0XFE,0X30,0X03,0XFE,0X1F,0XF8,0X00,0X1F,0XE0,0X3F, 0X8C,0X18,0XC1,0XF8,0X30,0X00,0XF8,0X1F,0XE0,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00, 0X00,0X00,0X00,0X00,]), 98, 20, 1)
         version = 'V' + eval("[/Const('version')/]")
-        DayLight.Text(version, DayLight.AutoCenter(version), 40, 3)
+        DayLight.Text(version, DayLight.AutoCenter(version), 40, 2)
         oled.show()
         if eval("[/GetButtonExpr('on')/]"):
             DayLight.VastSea.Transition()
@@ -313,11 +312,35 @@ def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=F
         oled.show()
     #_thread.exit() （会自动退出的）
 
-def Message(text) -> bool:
+def Message(text, center=False) -> bool:
     DayLight.Box(1, 1, 126, 62, True)
     oled.DispChar('消息', DayLight.AutoCenter('一个消息'), 5)
-    DayLight.Text(text, 5, 24, 1)
+    if center:
+        DayLight.Text(text, DayLight.AutoCenter(text), 26, 2)
+    else:
+        DayLight.Text(text, 8, 20, 1)
     Log.Message(text)
     oled.show()
     time.sleep_ms(3000)
     return True
+
+def WiFiConfig():
+    if wifi.sta.isconnected():
+        connected = True
+    else:
+        connected = False
+    IP = wifi.sta.isconfig()[0]
+    netmask = wifi.sta.isconfig()[1]
+    gateWay = wifi.sta.isconfig()[2]
+    DNS = wifi.sta.isconfig()[3]
+    FTReader.Textreader('是否连接: ' + str(connected) + "\n" + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS)
+
+def DeviceID():
+    oled.fill(0)
+    while not button_a.is_pressed():
+        ID1 = Core.GetDeviceID(mode=0)
+        ID2 = Core.GetDeviceID(mode=1)
+        DayLight.App.Style1('设备标识符')
+        DayLight.Text('ID1 ' + ID1, 5, 16, 1)
+        DayLight.Text('ID2 ' + ID2, 5, 48, 1)
+        oled.show()

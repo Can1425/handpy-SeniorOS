@@ -176,7 +176,7 @@ class AppSetup:
                         f.write(i+'\n')
                     lines+=1
         return 
-#Core.AppSetup("/SeniorOS/download/test.spk").setup()
+# Core.AppSetup("/SeniorOS/download/test.spk").setup()
     
 # 文件/路径 格式工厂
 class File_Path_Factory:
