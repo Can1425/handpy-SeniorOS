@@ -1,8 +1,10 @@
 import socket
-#实现HTTP协议的GET
+
 def NormalGet(url,timeout=2):
     #解析url
+    print("访问:"+url)
     url_parse = url.split('/')
+    print("目标"+url_parse[2])
     host = url_parse[2]
     path = '/'
     if len(url_parse) > 3:
@@ -20,6 +22,7 @@ def NormalGet(url,timeout=2):
     while True:
         try:data = s.recv(1024)
         except:break
+        if data == b"" and len(response)>0:break
         response += data
     #关闭socket
     s.close()
@@ -39,5 +42,27 @@ def ParseResponse(response):
 def Get(url, timeout=2):
     response = NormalGet(url, timeout)
     status_code, body = ParseResponse(response)
+    if status_code == "308" or status_code == "301" or status_code == "302":
+        print("重定向找我干嘛")
+        redirect_data = body.split('\r\n')
+        redirect_item = ""
+        for i in redirect_data:
+            if i.startswith('Location:'):redirect_item = i[10:]
+        print("返回数据:"+str(redirect_item))
+        print("重定向地址:"+redirect_item)
+        Redirect(redirect_item, timeout)
+    elif status_code == "404":print("无页面找我干嘛")
+    elif status_code == "502":print("服务器问题找我干嘛")
     return status_code, body
     # [0]是状态码 , [1]是响应体 , 建议放变量里面
+#实现HTTP的重定向
+def Redirect(url, timeout=2):
+    response = NormalGet(url, timeout)
+    status_code, body = ParseResponse(response)
+    if status_code == "308" or status_code == "301" or status_code == "302":
+        print("重定向找我干嘛")
+        redirect_data = body.split('\r\n')
+        redirect_item = ""
+        for i in redirect_data:
+            if i.startswith('Location:'):redirect_item = i[10:]
+        return Redirect(redirect_item, timeout)

@@ -90,15 +90,17 @@ class Textreader:
             oled.fill(0)
             self.showText(n,offset)
             oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
-            oled.DispChar("{}/{}".format(int(n/3)+1,int(page_num)),52,48)
+            oled.DispChar("{}/{}".format(int(n/3)+1,int(page_num)+1),52,48)
             oled.hline(0,48,128,1)
             oled.show()
             while not (touchpad_t.is_pressed() or touchpad_h.is_pressed()):
                 if touchpad_p.is_pressed() or touchpad_y.is_pressed():
+                    time.sleep_ms(100)
                     if n-3<0:n=0
                     else:n-=3
                     break
                 elif touchpad_n.is_pressed() or touchpad_o.is_pressed():
+                    time.sleep_ms(100)
                     if n+3>page_num*3:n=page_num*3
                     else:n+=3
                     break

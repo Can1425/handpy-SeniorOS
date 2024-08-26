@@ -15,7 +15,7 @@ import SeniorOS.lib.pages_manager as PagesManager;gc.collect()
 import _thread
 import os;gc.collect()
 
-source = "https://" + Core.Data.Get("text", "radienPluginsSource")
+source = "http://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 Log.Info("system/pages.mpy")
 wifi=wifi()
@@ -58,9 +58,9 @@ def CloudNotification():
     _thread.start_new_thread(LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     oled.show()
     try:
-        _notifications = Radient.Get(source + '/Notifications.sros')
+        _notifications = Radient.Get(source + '/Notifications.sros')[1]
         print(_notifications)
-        notifications = Radient.ParseResponse(_notifications[1]).text.split(';')
+        notifications = _notifications.split(';')
         print(notifications)
     except IndexError as e:
         Quit.value = True
@@ -69,9 +69,9 @@ def CloudNotification():
     Quit.value = True
     while not button_a.is_pressed():
         DayLight.App.Style1(eval("[/Language('云端通知')/]"))
-        oled.DispChar(notifications[1], 5, 18)
-        oled.DispChar(notifications[2], 5, 32)
-        oled.DispChar(notifications[3], 5, 45)
+        oled.DispChar(notifications[0], 5, 18)
+        oled.DispChar(notifications[1], 5, 32)
+        oled.DispChar(notifications[2], 5, 45)
         oled.show()
     return
 
@@ -319,7 +319,7 @@ def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=F
 
 def Message(text, center=False) -> bool:
     DayLight.Box(1, 1, 126, 62, True)
-    oled.DispChar('消息', DayLight.AutoCenter('一个消息'), 5)
+    oled.DispChar('消息', DayLight.AutoCenter('消息'), 5)
     if center:
         DayLight.Text(text, DayLight.AutoCenter(text), 26, 2)
     else:
@@ -330,15 +330,10 @@ def Message(text, center=False) -> bool:
     return True
 
 def WiFiConfig():
-    if wifi.sta.isconnected():
-        connected = True
-    else:
-        connected = False
-    IP = wifi.sta.isconfig()[0]
-    netmask = wifi.sta.isconfig()[1]
-    gateWay = wifi.sta.isconfig()[2]
-    DNS = wifi.sta.isconfig()[3]
-    FTReader.Textreader('是否连接: ' + str(connected) + "\n" + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS)
+    connected = wifi.sta.isconnected()
+    IP,netmask,gateway,DNS = wifi.sta.ifconfig()
+    status = str(wifi.sta.status())
+    FTReader.Textreader('是否连接: ' + "是" if connected else "否" + "\n" + "状态码: "  + status + '\n' + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS + '\n' + 'Gateway: ' + gateway).Main()
 
 def DeviceID():
     oled.fill(0)
@@ -347,5 +342,5 @@ def DeviceID():
         ID2 = Core.GetDeviceID(mode=1)
         DayLight.App.Style1('设备标识符')
         DayLight.Text('ID1 ' + ID1, 5, 16, 1)
-        DayLight.Text('ID2 ' + ID2, 5, 48, 1)
+        DayLight.Text('ID2 ' + ID2, 5, 32, 1)
         oled.show()

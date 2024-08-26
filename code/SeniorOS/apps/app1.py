@@ -3,12 +3,11 @@ import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.core as Core
 import SeniorOS.system.radient as Radient
-# import SeniorOS.lib.mrequests
 import gc
 import os
 import _thread
 import SeniorOS.lib.log_manager as LogManager
-source = "https://" + Core.Data.Get("text", "radienPluginsSource")
+source = "http://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 
 def Main():
@@ -21,36 +20,37 @@ def Main():
     Quit.value = False
     _thread.start_new_thread(Pages.LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     try:
-        _response = Radient.Get(source + '/plugins/list.sros')
-        pluginsList = (_response.text.split(';'))
-        _response = Radient.Get(source + '/plugins/author.sros')
-        pluginsTip = (_response.text.split(';'))
-        _response = Radient.Get(source + '/plugins/tip.sros')
-        pluginsTip2 = (_response.text.split(';'))
-        Englist=((Radient.Get(source + '/plugins/list_English.sros')).text).split(';')
+        _response = Radient.Get(source + '/plugins/list.sros')[1]
+        pluginsList = (_response.split(';'))
+        _response = Radient.Get(source + '/plugins/author.sros')[1]
+        pluginsTip = (_response.split(';'))
+        _response = Radient.Get(source + '/plugins/tip.sros')[1]
+        pluginsTip2 = (_response.split(';'))
+        Englist=((Radient.Get(source + '/plugins/list_English.sros'))[1]).split(';')
         Log.Debug(len(pluginsList))
         Log.Debug(pluginsTip)
     except IndexError as e:
         Core.FullCollect()
         Quit.value = True
-        Log.Error(e)
+        Log.Error(str(e))
         return
     Quit.value = True
     Core.FullCollect()
     while not button_a.is_pressed():
         pluginsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
         if eval("[/GetButtonExpr('th')/]"):
-            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], 8, False, "菜单")
+            options = DayLight.ListOptions(['获取并运行', '插件详情', '缓存该插件'], False, "菜单")
             if options == 0:
                 DayLight.VastSea.Off()
                 DayLight.App.Style1('线上插件')
                 DayLight.Text(eval("[/Language('请稍等')/]"), 5, 18, 2)
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
-                DayLight.Text('Tips - 由于适配问题，部分情况下A键无法退出，请尝试软重启解决', 5, 36, 1)
+                DayLight.Text('由于适配问题，部分情况下A键无法退出，请尝试重启', 5, 36, 1)
                 oled.show()
-                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                Core.FullCollect()
+                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])))
                 oled.fill(0)
-                exec(_response.text)
+                exec(_response)
                 DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()
@@ -66,7 +66,7 @@ def Main():
                 # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text(eval("[/Language('正在进行操作')/]"), 5, 36, 2)
                 oled.show()
-                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])), headers={})
+                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])))
                 try:
                     os.chdir("/SeniorOS/downloads")
                 except:

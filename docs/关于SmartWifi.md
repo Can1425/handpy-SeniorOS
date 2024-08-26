@@ -44,7 +44,7 @@ import smart_wifi#导入smartwifi模块
 
 smart_wifi.main()#main()函数是smartwifi模块的入口函数,调用该函数即可使用smartwifi模块,这时您可以从"如何使用"中的第一步开始
 ```
-##关于
+## 关于
 
 想法/尝试:***CycleBai***
 

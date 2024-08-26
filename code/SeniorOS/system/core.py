@@ -5,13 +5,12 @@ import framebuf
 import network
 import gc
 import time
-import SeniorOS.lib.mrequests
 import json
 from machine import unique_id
 from SeniorOS.lib.devlib import *
 import SeniorOS.lib.log_manager as LogManager
 LogManager.Output("system/core.mpy", "INFO")
-
+#
 # 适用于 data/ 下 .sros 扩展名文件的信息读写操作
 # 将大部分使用了 init_file write_file 类函数而只对 data 文件夹下的数据作读写的代码替换为此处代码
 
