@@ -1,20 +1,19 @@
-import SeniorOS.system.daylight as DayLight
+import gc
+import SeniorOS.system.daylight as DayLight;gc.collect()
 import SeniorOS.system.core as Core
 import SeniorOS.system.typer as Typer
 import SeniorOS.system.ftreader as FTReader
-import SeniorOS.system.radient as Radient
+import SeniorOS.system.radient as Radient ;gc.collect()
 import ntptime
-import micropython
 from SeniorOS.lib.devlib import wifi,oled
 from SeniorOS.lib.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from SeniorOS.lib.devlib import button_a,button_b
-import gc
+from SeniorOS.lib.devlib import button_a,button_b;gc.collect()
 import time
 import machine
 import SeniorOS.lib.log_manager as LogManager
-import SeniorOS.lib.pages_manager as PagesManager
+import SeniorOS.lib.pages_manager as PagesManager;gc.collect()
 import _thread
-import os
+import os;gc.collect()
 
 source = "https://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
@@ -29,11 +28,14 @@ def ConfigureWLAN(ssid, password):
     Quit.value = False
     _thread.start_new_thread(LoadWait,(Quit,"None",False))
     try:
-        wifi.connectWiFi(ssid, password)
-        ntptime.settime(8,"time.windows.com")
-        time.sleep(2)
-        Quit.value = True
-        return True
+        if wifi.connectWiFi(ssid, password):
+            ntptime.settime(8,"time.windows.com")
+            time.sleep(2)
+            Quit.value = True
+            return True
+        else:
+            Quit.value = True
+            return False
     except: 
         time.sleep(2)
         Quit.value = True

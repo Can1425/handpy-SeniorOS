@@ -24,35 +24,26 @@ i2c = I2C(0, scl=Pin(Pin.P19), sda=Pin(Pin.P20), freq=i2cclock)
 class wifi:
     def __init__(self):
         self.sta = network.WLAN(network.STA_IF)
-        self.ap = network.WLAN(network.AP_IF)
 
-    def connectWiFi(self, ssid, passwd, timeout=10):
-        if self.sta.isconnected():
-            self.sta.disconnect()
+    def connectWiFi(self, ssid, passwd):
+        self.sta.active(False)
         self.sta.active(True)
-        list = self.sta.scan()
-        for i, wifi_info in enumerate(list):
-            try:
-                if wifi_info[0].decode() == ssid:
-                    self.sta.connect(ssid, passwd)
-                    wifi_dbm = wifi_info[3]
-                    break
-            except UnicodeError:
-                self.sta.connect(ssid, passwd)
-                wifi_dbm = '?'
-                break
-            if i == len(list) - 1:
-                LogManager.Output("SSID invalid / failed to scan this wifi", "ERROR")
-        start = time.time()
+        self.sta.connect(ssid, passwd)
         LogManager.Output("Connection WiFi", "INFO")
-        while (self.sta.ifconfig()[0] == '0.0.0.0'):
-            if time.ticks_diff(time.time(), start) > timeout:
-                print("")
-                LogManager.Output("Timeout!,check your wifi password and keep your network unblocked", "Error")
-            print("_ ", end="")
+        STATUS=self.sta.status()
+        while (STATUS != 1010):
+            if STATUS == 200 or STATUS == 204:
+                LogManager.lm.Error("Timeout!,check your wifi password and keep your network unblocked")
+                break
+            elif STATUS == 202: 
+                LogManager.lm.Error("WiFi password was wrong!")
+                break
+            print(".", end="")
+            STATUS=self.sta.status()
             time.sleep_ms(500)
-        print("")
-        LogManager.Output('WiFi(%s,%sdBm) Connection Successful, Config:%s' % (ssid, str(wifi_dbm), str(self.sta.ifconfig())), "INFO")
+        print(self.sta.ifconfig())
+        LogManager.Output('WiFi Connection Successful, Config:%s' % (str(self.sta.ifconfig())), "INFO")
+        return True
 
 
 class Colormode:
