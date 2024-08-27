@@ -32,6 +32,7 @@ def Main():
     except IndexError as e:
         Core.FullCollect()
         Quit.value = True
+        __import__("sys").print_exception(e)
         Log.Error(str(e))
         return
     Quit.value = True

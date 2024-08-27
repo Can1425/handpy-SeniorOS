@@ -3,15 +3,19 @@ import SeniorOS.system.core as Core
 import SeniorOS.lib.pages_manager as PagesManager
 import SeniorOS.system.pages as Pages
 import SeniorOS.system.daylight as DayLight
-import SeniorOS.lib.mrequests
-import _thread
+import SeniorOS.system.radient as Radient
+import _thread,json
 
 def GetSeniWeather(_url, _location):
     _url = _url + "&location=" + _location.replace(" ", "%20")
-    response = SeniorOS.lib.mrequests.get(_url)
-    json = response.json()
-    response.close()
-    return json
+    response = Radient.Get(_url)#TUPLE
+    _json = json.loads(response[1].encode())
+    #with open("temp.json", "w") as f:
+    #    f.write(response)
+    #with open("temp.json", "r") as f:
+    #    response = json.load(f)
+    #_json = response
+    return _json
 # Can，我觉得可以把SharedVar放到core.py里面,好，或许我们还可以拓展它的功能，不仅仅只限于服务于这个 确实，毕竟SharedVar原本是避免python的低内存变量传递复制行为而构建的一个类（里面的任何值在传递的时候都不会复制）
 def Main():
     DayLight.App.Style1('天气')
@@ -22,7 +26,8 @@ def Main():
     try:
         w1 = GetSeniWeather("https://api.seniverse.com/v3/weather/daily.json?key=SMhSshUxuTL0GLVLS", "ip")
         w2 = GetSeniWeather("https://api.seniverse.com/v3/life/suggestion.json?key=SMhSshUxuTL0GLVLS", "ip")
-    except:
+    except Exception as e:
+        __import__("sys").print_exception(e)
         Quit.value = True
     Quit.value = True
     oled.fill(0)

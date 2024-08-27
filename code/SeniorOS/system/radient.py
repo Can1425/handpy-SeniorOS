@@ -1,5 +1,6 @@
 import socket
-
+class CodeError(Exception):
+    pass
 def NormalGet(url,timeout=2):
     #解析url
     print("访问:"+url)
@@ -41,6 +42,7 @@ def ParseResponse(response):
     return status_code, body
 def Get(url, timeout=2):
     response = NormalGet(url, timeout)
+    print(repr(response))
     status_code, body = ParseResponse(response)
     if status_code == "308" or status_code == "301" or status_code == "302":
         print("重定向找我干嘛")
@@ -51,8 +53,8 @@ def Get(url, timeout=2):
         print("返回数据:"+str(redirect_item))
         print("重定向地址:"+redirect_item)
         Redirect(redirect_item, timeout)
-    elif status_code == "404":print("无页面找我干嘛")
-    elif status_code == "502":print("服务器问题找我干嘛")
+    else:
+        CodeError("status_code is {}".format(status_code))
     return status_code, body
     # [0]是状态码 , [1]是响应体 , 建议放变量里面
 #实现HTTP的重定向
