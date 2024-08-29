@@ -81,9 +81,7 @@ def App():
             appNum += 1
         if eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, 5, 0)
-            # Core.Load('apps.app' + str(appNum))
             PagesManager.Main.Import('SeniorOS.apps.' + str(appDir[appNum]), 'Main')
             del sys.modules[eval("[/Const('systemName')/]") + '.apps.' + str(appDir[appNum])]
             gc.collect()
-            # exec(str("App"+ str(appNum) +".main()"))
             DayLight.VastSea.SeniorMove.Text(List[appNum], 5, 0, DayLight.AutoCenter(List[appNum]), 48)

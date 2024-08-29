@@ -6,12 +6,16 @@ import SeniorOS.system.radient as Radient
 import gc
 import os
 import _thread
+binmode=False
+try:
+    import ModRunner
+    binmode=True
+except:binmode=False
 import SeniorOS.lib.log_manager as LogManager
 source = "http://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 
 def Main():
-    global source
     pluginsNum = 0
     gc.enable()
     Core.FullCollect()
@@ -36,6 +40,7 @@ def Main():
         Log.Error(str(e))
         return
     Quit.value = True
+    del Quit
     Core.FullCollect()
     while not button_a.is_pressed():
         pluginsNum = DayLight.Select.Style2(pluginsList, pluginsTip, 18, False, "线上插件")
@@ -45,14 +50,17 @@ def Main():
                 DayLight.VastSea.Off()
                 DayLight.App.Style1('线上插件')
                 DayLight.Text(eval("[/Language('请稍等')/]"), 5, 18, 2)
-                # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text('由于适配问题，部分情况下A键无法退出，请尝试重启', 5, 36, 1)
                 oled.show()
                 Core.FullCollect()
-                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])))
-                oled.fill(0)
-                exec(_response)
-                DayLight.VastSea.Off()
+                if binmode:
+                    open("/SeniorOS/download/web_app.py","w").write(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
+                    ModRunner.module_run("/SeniorOS/download/web_app.py")
+                else:
+                    oled.fill(0)
+                    print(gc.mem_free())
+                    exec(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
+                    DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()
                 while not button_a.is_pressed():
