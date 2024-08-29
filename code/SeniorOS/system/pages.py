@@ -58,9 +58,7 @@ def CloudNotification():
     _thread.start_new_thread(LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     oled.show()
     try:
-        _notifications = Radient.Get(source + '/Notifications.sros')[1]
-        print(_notifications)
-        notifications = _notifications.split(';')
+        notifications = Radient.Get(source + '/Notifications.sros')[1].split(';')
         print(notifications)
     except IndexError as e:
         Quit.value = True
@@ -73,6 +71,7 @@ def CloudNotification():
         oled.DispChar(notifications[1], 5, 32)
         oled.DispChar(notifications[2], 5, 45)
         oled.show()
+    del notifications
     return
 
 def HS_CPU():
@@ -109,7 +108,6 @@ def HS_Flash():
 def PeripheralPanel():
     PeripheralList = ["引脚控制","UART控制"]
     PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
-    #PeripheralUART = ["Pin.13","Pin.14","Pin.15","Pin.16"]
     while not button_a.is_pressed():
         options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
         if options == 0:
@@ -228,12 +226,7 @@ def About():
             FTReader.Textreader(Core.Data.GetOriginal('Hello_World')).Main()
             DayLight.VastSea.Transition(False)
 
-def Wlanscan():
-    #定义扫描WiFi函数
-    import network
-    wlan = network.WLAN()#定义类
-    wlan.active(True)#打开
-    return [i[0].decode() for i in network.WLAN().scan()]#返回
+def Wlanscan():return [i[0].decode() for i in wifi().sta.scan()]#返回
 
 def Choosewifi() -> bool:
     while not button_a.is_pressed():

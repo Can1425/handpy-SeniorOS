@@ -9,7 +9,12 @@ import SeniorOS.system.daylight as DayLight
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
-import SeniorOS.lib.pages_manager as PageManager
+binmode = False
+try:
+    import ModRunner
+    binmode = True
+except:
+    pass
 Log = LogManager.Log
 
 class Animations:
@@ -111,7 +116,6 @@ class Textreader:
                     offset-=8
                     break
 
-
 class FileViewer:
     def __init__(self):
         self.Dir=os.listdir("/")
@@ -170,7 +174,9 @@ class FileViewer:
                         self.DirLen=len(self.Dir)
                         selset_num=0
                         Animations.ClearFromLeftSide()
-                    elif file_config=="可执行文件":__import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
+                    elif file_config=="可执行文件":
+                        if binmode:ModRunner.module_run(RealPath)
+                        else:__import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
                     elif file_config=="图片":self.ShowImage("{}/{}".format(path,self.Dir[selset_num]))
                     else:self.UseTextReader("{}/{}".format(path,self.Dir[selset_num]))
                     break
@@ -188,7 +194,6 @@ class FileViewer:
                     break
 
 def Main():
-    path='/'
     while not button_a.is_pressed():
         fileview=FileViewer()
-        fileview.fileviewer(path)
+        fileview.fileviewer("/")

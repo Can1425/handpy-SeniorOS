@@ -30,10 +30,8 @@ elif info == "1":
                 except:
                     Log.Error("连接WiFi失败")
                     Log.Message("请使用浏览器打开https://ys.mihoyo.com/进行求助")
-                    import SeniorOS.system.smart_wifi as SmartWifi
-                    SmartWifi.main()
-                    del SmartWifi;gc.collect()
-    del wifilist,net,netscan,connect;gc.collect()
+    del wifilist,net,netscan,connect
+    gc.collect()
 elif info == "2":
     # 启动门户
     import SeniorOS.system.smart_wifi as SmartWifi

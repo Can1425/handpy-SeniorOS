@@ -58,8 +58,7 @@ while True:
         ClearVar() # 清空全局变量
         break
     elif button_b.is_pressed():
-        path = '/SeniorOS/others_build/'
-        othersBuildMain = os.listdir(path)
+        othersBuildMain = os.listdir('/SeniorOS/others_build/')
         if othersBuildMain != None:
             while not button_a.is_pressed():
                 options = DayLight.Select.Style4(othersBuildMain, False, 'SeniorOS ROC')
@@ -70,5 +69,3 @@ while True:
                     time.sleep(0.5)
                     __import__('SeniorOS.others_build.' + othersBuildMain[options].replace('.mpy', ''))
                     break
-                else:
-                    pass

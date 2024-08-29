@@ -24,13 +24,10 @@ def Main():
     Quit.value = False
     _thread.start_new_thread(Pages.LoadWait, (Quit, eval("[/Language('请稍等')/]"), False))
     try:
-        _response = Radient.Get(source + '/plugins/list.sros')[1]
-        pluginsList = (_response.split(';'))
-        _response = Radient.Get(source + '/plugins/author.sros')[1]
-        pluginsTip = (_response.split(';'))
-        _response = Radient.Get(source + '/plugins/tip.sros')[1]
-        pluginsTip2 = (_response.split(';'))
-        Englist=((Radient.Get(source + '/plugins/list_English.sros'))[1]).split(';')
+        pluginsList = ((Radient.Get(source + '/plugins/list.sros')[1]).split(';'))
+        pluginsTip = ((Radient.Get(source + '/plugins/author.sros')[1]).split(';'))
+        pluginsTip2 = ((Radient.Get(source + '/plugins/tip.sros')[1]).split(';'))
+        Englist=(Radient.Get(source + '/plugins/list_English.sros'))[1].split(';')
         Log.Debug(len(pluginsList))
         Log.Debug(pluginsTip)
     except IndexError as e:
