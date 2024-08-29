@@ -1,10 +1,12 @@
-from SeniorOS.lib.devlib import oled,touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
+from SeniorOS.lib.devlib import oled,touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T,button_a,button_b
 import time
 import uos
 import gc
 import sys
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
+import os
+
 Core.FullCollect()
 
 def RenameCode():
@@ -22,7 +24,7 @@ while True:
     oled.DispChar('TH - REPL',5,32)
     oled.DispChar("ON - main.py",5,48)
     oled.show()
-    while not eval("[/GetButtonExpr('python')/]"):
+    while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
     if eval("[/GetButtonExpr('py')/]"):
         DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16)
@@ -39,7 +41,6 @@ while True:
         oled.fill(0)
         oled.DispChar('启动至 main.py',5,0)
         oled.show()
-        ClearVar()
         time.sleep(0.5)
         break
     elif eval("[/GetButtonExpr('th')/]"):
@@ -56,3 +57,18 @@ while True:
             pass
         ClearVar() # 清空全局变量
         break
+    elif button_b.is_pressed():
+        path = '/SeniorOS/others_build/'
+        othersBuildMain = os.listdir(path)
+        if othersBuildMain != None:
+            while not button_a.is_pressed():
+                options = DayLight.Select.Style4(othersBuildMain, False, 'SeniorOS ROC')
+                if options != None:
+                    oled.fill(0)
+                    oled.DispChar('启动至 ' + othersBuildMain[options].replace('.mpy', ''), 5, 0)
+                    oled.show()
+                    time.sleep(0.5)
+                    __import__('SeniorOS.others_build.' + othersBuildMain[options].replace('.mpy', ''))
+                    break
+                else:
+                    pass
