@@ -9,12 +9,6 @@ import SeniorOS.system.daylight as DayLight
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
-binmode = False
-try:
-    import ModRunner
-    binmode = True
-except:
-    pass
 Log = LogManager.Log
 
 class Animations:
@@ -175,8 +169,7 @@ class FileViewer:
                         selset_num=0
                         Animations.ClearFromLeftSide()
                     elif file_config=="可执行文件":
-                        if binmode:ModRunner.module_run(RealPath)
-                        else:__import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
+                        __import__(RealPath[:-3] if RealPath.endswith(".py") else RealPath[:-4])
                     elif file_config=="图片":self.ShowImage("{}/{}".format(path,self.Dir[selset_num]))
                     else:self.UseTextReader("{}/{}".format(path,self.Dir[selset_num]))
                     break
