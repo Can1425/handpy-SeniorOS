@@ -6,10 +6,10 @@ image_picture = Image()
 rgb.brightness(1.0)
 
 def Main():
-    num = 1
+    mode = True
     while not button_a.is_pressed():
         DayLight.App.Style1('手电筒')
-        if num == 1:
+        if mode:
             oled.blit(image_picture.load('face/System/Dot_full.pbm', 0), 48, 20)
             oled.show()
             rgb.fill((int(255), int(255), int(255)))
@@ -22,12 +22,12 @@ def Main():
             rgb.write()
         while not button_a.is_pressed():
             if eval("[/GetButtonExpr('py')/]"):
-                num = 1
+                mode = 1
                 break
             if eval("[/GetButtonExpr('on')/]"):
-                num = 0
+                mode = 0
                 break
-    num = 0
+    mode = 0
     rgb.fill( (0, 0, 0) )
     rgb.write()
     time.sleep_ms(1)
