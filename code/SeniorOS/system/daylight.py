@@ -12,9 +12,9 @@ LogManager.Output("system/daylight.mpy", "INFO")
 def UITime(pages=True):
     h = str(Core.GetTime.Hour())
     m = str(Core.GetTime.Min())
-    return ('0' + str(h) if len(str(h)) == 1 else str(h)) + \
+    return ('0%s'%(h) if len(m) == 1 else h) + \
              (':' if pages else "") + \
-            ('0' + str(m) if len(str(m)) == 1 else str(m))
+            ('0%s'%(m) if len(m) == 1 else h)
 
 def GetCharWidth(s):
     # 获取字符宽度的优化实现
@@ -41,11 +41,10 @@ def ProgressBoxMove(x,y,w,h,progress,step=8):
     del now;gc.collect()
 class App:
     def Style1(appTitle:str, window = False):
-        gc.collect()
-        oled.fill(0)
-        if window:
-            Box(1, 1, 126, 62)
-        UITools()
+        NT=time.ticks_us()
+        oled.fill_rect(0,0,128,16,0)
+        #UITools()
+        if window:Box(1, 1, 126, 62)
         Text(appTitle, 5, 0, 3, 1, 100)
         oled.DispChar(UITime(True), 93, 0, 1)
 
@@ -141,18 +140,22 @@ class Select:
         listNum = 0
         while True:
             oled.fill(0)
-            if appTitle:
-                App.Style1(appTitle,window)
+            start_time=time.ticks_us()
+            #if appTitle:
+            #    App.Style1(appTitle,window)
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
+                if listNum == i + start:continue
                 Text(item, 5, 16 * (i + 1), 2, showMode=1)
             if len(displayItems) > 0:
                 oled.fill_rect(5, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
                 Text(displayItems[listNum - start], 5, 16 + 16 * (listNum - start), 2, showMode = 2)
-            if window:
-                Box(1, 1, 126, 62)
+            #if window:Box(1, 1, 126, 62)
+            if appTitle:
+                App.Style1(appTitle,window)
             oled.show()
+            print(time.ticks_us()-start_time)
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
@@ -451,3 +454,4 @@ mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
 def Text(text, x, y, outMode, space = 1, maximum_x = 126, returnX = 5, returnAddy = 16, showMode = 1):
     oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
     return
+#Text(appTitle, 5, 0, 1, 3, 1, 100)

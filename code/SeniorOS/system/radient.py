@@ -5,10 +5,9 @@
 import socket
 import gc
 class CodeError(Exception):
-    #oled.text("".join(Exception.args),0,8)
-    #oled.show()
     pass
 def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
+    if not url.startswith("http://"):url = "http://" + url
     print("访问:"+url)
     url_parse = url.split('/')
     print("目标"+url_parse[2])
@@ -21,19 +20,22 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
     s.settimeout(timeout)
     s.send(('GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)).encode())
     StatusCode = ""
-    print(gc.mem_free())
-    gc.collect()
+    GetTime=0
     while True:
         gc.collect()
+        print("获取数据中 次数:%d"%(GetTime))
         try:data = s.recv(bufferSize)
         except:break
         if StatusCode != "200":
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
-            file.write(data.decode().split("\r\n\r\n")[1])
+            try:file.write(data.decode().split("\r\n\r\n")[1])
+            except:pass
         elif StatusCode == "200":
             file.write(data.decode())
         elif StatusCode != "" and len(StatusCode) > 0:
             raise CodeError("status_code is {}".format(StatusCode))
+        del data
+        GetTime+=1
     s.close()
     
 
@@ -104,6 +106,8 @@ def Redirect(url, timeout=2):
             if i.startswith('Location:'):redirect_item = i[10:]
         return Redirect(redirect_item, timeout)
 
-#if __name__ == "__main__":
-#    with open("test.html","w",encoding="utf-8") as f:
-#        GetToFile("http://113.45.220.29/plugins/list.sros",f,bufferSize=4096)
+if __name__ == "__main__":
+    with open("test.html","w",encoding="utf-8") as f:
+        GetToFile("www.baidu.com",f,bufferSize=512)
+        #GetToFile("www.baidu.com",open("test.html","w",encoding="utf-8"),bufferSize=512)
+        #GetToFile("http://server.lpover.eu.org/plugins/list.sros",f,bufferSize=4096)
