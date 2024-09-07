@@ -7,6 +7,7 @@ import gc
 import os
 import _thread
 import SeniorOS.lib.log_manager as LogManager
+#import ModRunner
 source = "http://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 
@@ -47,7 +48,15 @@ def Main():
                 Core.FullCollect()
                 oled.fill(0)
                 print(gc.mem_free())
-                exec(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
+                file_name="/SeniorOS/download/" + Englist[pluginsNum] + ".py"
+                with open(file_name, "w") as file:
+                    Radient.GetToFile( (''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])),
+                                      file,
+                                      timeout=3,
+                                      bufferSize=2048)
+                #ModRunner.module_run(file_name)
+                exec(open(file_name).read())
+                #exec(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
                 DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()

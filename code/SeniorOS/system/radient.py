@@ -3,8 +3,40 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # radient.py - by LP_OVER
 import socket
+import gc
 class CodeError(Exception):
+    #oled.text("".join(Exception.args),0,8)
+    #oled.show()
     pass
+def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
+    print("访问:"+url)
+    url_parse = url.split('/')
+    print("目标"+url_parse[2])
+    host = url_parse[2]
+    path = '/'
+    if len(url_parse) > 3:
+        path = '/' + '/'.join(url_parse[3:])
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host, 80))
+    s.settimeout(timeout)
+    s.send(('GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)).encode())
+    StatusCode = ""
+    print(gc.mem_free())
+    gc.collect()
+    while True:
+        gc.collect()
+        try:data = s.recv(bufferSize)
+        except:break
+        if StatusCode != "200":
+            StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
+            file.write(data.decode().split("\r\n\r\n")[1])
+        elif StatusCode == "200":
+            file.write(data.decode())
+        elif StatusCode != "" and len(StatusCode) > 0:
+            raise CodeError("status_code is {}".format(StatusCode))
+    s.close()
+    
+
 def NormalGet(url,timeout=2):
     #解析url
     print("访问:"+url)
@@ -20,8 +52,7 @@ def NormalGet(url,timeout=2):
     s.connect((host, 80))
     s.settimeout(timeout)
     #发送请求
-    request = 'GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)
-    s.send(request.encode())
+    s.send(('GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)).encode())
     #接收响应
     response = b''
     while True:
@@ -72,3 +103,7 @@ def Redirect(url, timeout=2):
         for i in redirect_data:
             if i.startswith('Location:'):redirect_item = i[10:]
         return Redirect(redirect_item, timeout)
+
+#if __name__ == "__main__":
+#    with open("test.html","w",encoding="utf-8") as f:
+#        GetToFile("http://113.45.220.29/plugins/list.sros",f,bufferSize=4096)

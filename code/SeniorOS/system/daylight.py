@@ -5,7 +5,7 @@ import time
 from SeniorOS.lib.devlib import *
 import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.lib.pages_manager as PagesManager
-import micropython
+import framebuf
 LogManager.Output("system/daylight.mpy", "INFO")
 
 # 缓存时间相关的字符串
@@ -207,31 +207,48 @@ class VastSea:
     @staticmethod
     def SelsetBoxMove(x,y,char,ToX,ToY,NewChar,MODE="rect"):
         sx=x;sy=y
+        NowWidth = GetCharWidth(char)
         ToWidth = GetCharWidth(NewChar)
+        if MODE == "rect":
+            char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            oled.DispChar(char,0,0,buffer=char1FB)
+            oled.DispChar(NewChar,0,0,buffer=char2FB)
+        if MODE != "rect":
+            char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            char1FB_FILL.fill(1)
+            char2FB_FILL.fill(1)
+            oled.DispChar(char,0,0,mode=2,buffer=char1FB_FILL)
+            oled.DispChar(NewChar,0,0,mode=2,buffer=char2FB_FILL)
         if ToWidth > 0:
             NowW=GetCharWidth(char)
             if MODE == "rect":
-                for i in range(7):
-                    oled.DispChar(char,sx,sy)
-                    oled.DispChar(NewChar,ToX,ToY)
+                for i in range(6):
                     oled.rect(x,y,NowW,16,1)
+                    oled.blit(char1FB,sx,sy)
+                    oled.blit(char2FB,ToX,ToY)
                     oled.show()
                     oled.rect(x,y,NowW,16,1)
                     NowW+=(ToWidth-NowW)//2
                     x+=(ToX-x)//2
                     y+=(ToY-y)//2
-                return
+                    time.sleep_ms(25)
             else:
-                for i in range(7):
-                    oled.DispChar(char,sx,sy)
+                for i in range(6):
+                    oled.blit(char1FB_FILL,sx,sy)
                     oled.fill_rect(x,y,NowW,16,1)
-                    oled.DispChar(NewChar,ToX,ToY,2)
+                    oled.blit(char2FB_FILL,ToX,ToY)
                     oled.show()
                     oled.fill_rect(x,y,NowW,16,0)
                     NowW+=(ToWidth-NowW)//2
                     x+=(ToX-x)//2
                     y+=(ToY-y)//2
-                return
+                    time.sleep_ms(25)
+        if MODE == "rect":del char1FB,char2FB
+        else:del char1FB_FILL,char2FB_FILL
+        gc.collect()
+        return
     @staticmethod   
     def Off():
         oled.fill(0)
@@ -263,15 +280,6 @@ class VastSea:
         
     
     class SeniorMove:
-        @staticmethod
-        def LoadText(text,x,y):
-            gc.collect()
-            total=x+140
-            for i in range(7):
-                oled.DispChar(text,total,y)
-                total=total-((7-i)**2)
-                oled.show()
-                oled.DispChar(text,total,y,2)
         @staticmethod
         def Box(text, x=0, y=0, h=16):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))

@@ -26,6 +26,7 @@ class wifi:
         self.sta = network.WLAN(network.STA_IF)
 
     def connectWiFi(self, ssid, passwd):
+        print(repr(ssid),repr(passwd))
         self.sta.active(False)
         self.sta.active(True)
         self.sta.connect(ssid, passwd)
