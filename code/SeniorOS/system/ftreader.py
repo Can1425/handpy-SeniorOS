@@ -9,6 +9,7 @@ import SeniorOS.system.daylight as DayLight
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
+import framebuf,time
 Log = LogManager.Log
 
 class Animations:
@@ -31,12 +32,15 @@ class Animations:
     def textMove(text):
         Core.FullCollect()
         total=156
+        movText=framebuf.FrameBuffer(bytearray(16*DayLight.GetCharWidth(text)),DayLight.GetCharWidth(text),16,framebuf.MONO_VLSB)
+        oled.DispChar(text,0,0,buffer=movText)
         for i in range(7):
-            oled.fill_rect(total,0,128,16,0)
-            oled.vline(total-1,2,12,1)
-            oled.DispChar(text,total+1,0)
+            oled.fill_rect(total,12,128,16,0)
+            oled.vline(total-1,14,12,1)
+            oled.blit(movText,total+1,12)
             total=total-((7-i)**2)
             oled.show()
+            time.sleep_ms(0.1)
     def lineMove():
         i=0
         for _ in range(7):
@@ -147,21 +151,24 @@ class FileViewer:
             print("{}/{}".format(path,self.Dir[selset_num]))
             file_config=self.config[self.FileConfig("{}/{}".format(path,self.Dir[selset_num]))]#获取文件属性
             oled.fill(0)
-            oled.DispChar(self.Dir[selset_num],16,0)
-            oled.DispChar("属性:{}".format(file_config),0,16)
+            oled.text("%s"%(path),4,4)
+            oled.DispChar(self.Dir[selset_num],16,12)
+            #oled.DispChar("属性:{}".format(file_config),0,16)
             oled.DispChar("TH-打开",0,32)
             oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
             oled.DispChar("{}/{}".format(selset_num+1,self.DirLen),DayLight.AutoCenter("{}/{}".format(selset_num+1,self.DirLen)),48)
-            oled.Bitmap(0,0,self.PictureConfig[file_config],16,16,1)
-            oled.hline(0,16,130,1)
+            oled.Bitmap(0,12,self.PictureConfig[file_config],16,16,1)
+            oled.hline(0,28,130,1)
+            oled.rect(2,2,124,12,1)
             oled.show()
             while True:
                 if button_a.is_pressed():return 0
                 elif touchpad_t.is_pressed() or touchpad_h.is_pressed():
                     RealPath = "{}/{}".format(path,self.Dir[selset_num])
                     if file_config=="目录":
-                        if self.Dir[selset_num]=="返回上一层":self.Dir[selset_num]=".."
-                        RealPath = "{}/{}".format(path,self.Dir[selset_num])
+                        if self.Dir[selset_num]=="返回上一层":
+                            RealPath = path.replace("/"+path.split("/")[-1],"")
+                        else:RealPath = "{}/{}".format(path,self.Dir[selset_num])
                         path=RealPath
                         self.Dir=os.listdir(RealPath)
                         self.Dir.insert(0,"返回上一层")
