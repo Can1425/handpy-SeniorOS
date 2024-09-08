@@ -53,19 +53,12 @@ class DataCtrl:
     def Get(self, controls, dataName):
         ConfigRead = Data.GetOriginal(controls)
         Config=ConfigRead.split('\n')
-        data=[]
-        TSList2=[]
-        # 遍历Config列表
         for i in range(len(Config)):
-            TSList1=Config[i].split(':')
-            TSList2.append(TSList1[0])
-            data.append(TSList1[1])
-        try: index = TSList2.index(dataName)
-        except: index = 0
-        if controls == "text":
-            return data[index].strip("\r")
-        elif controls == "list":
-            return data[index].split(';')
+            if Config[i].startswith(dataName+":"):
+                if controls == "text":
+                    return Config[i].split(':')[1]
+                elif controls == "list":
+                    return Config[i].split(':')[1].split(';')
     def Write(self, controls, dataName, dataValue, ListReplacement = None):
         if controls == "text":
             ConfigRead = Data.GetOriginal(controls)

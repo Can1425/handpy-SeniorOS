@@ -40,7 +40,7 @@ class Animations:
             oled.blit(movText,total+1,12)
             total=total-((7-i)**2)
             oled.show()
-            time.sleep_ms(0.1)
+            time.sleep(0.01)
     def lineMove():
         i=0
         for _ in range(7):

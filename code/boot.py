@@ -6,17 +6,13 @@ import sys
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import os
-
-Core.FullCollect()
-
 def RenameCode():
     uos.rename('/main.py.bak','/main.py')
 def ClearVar():
-    Core.FullCollect()
     for var in sys.modules:
         if not var in ('Core', 'DayLight', 'time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count', 'oled', 'touchPad_P', 'touchPad_Y', 'touchPad_H', 'touchPad_O', 'touchPad_N', 'touchPad_T', 'sys'):
             del sys.modules[var]
-    gc.collect()
+    Core.FullCollect()
 while True:
     oled.fill(0)
     oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,5,0)

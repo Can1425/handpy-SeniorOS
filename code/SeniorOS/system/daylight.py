@@ -41,9 +41,8 @@ def ProgressBoxMove(x,y,w,h,progress,step=8):
     del now;gc.collect()
 class App:
     def Style1(appTitle:str, window = False):
-        NT=time.ticks_us()
         oled.fill_rect(0,0,128,16,0)
-        #UITools()
+        UITools()
         if window:Box(1, 1, 126, 62)
         Text(appTitle, 5, 0, 3, 1, 100)
         oled.DispChar(UITime(True), 93, 0, 1)
@@ -136,13 +135,10 @@ class Select:
     def Style4(dispContent:list, window:False, appTitle:str = False):
         lendispcontext = len(dispContent)
         maxdispcontextindex = lendispcontext - 1
-        UITools()
         listNum = 0
         while True:
             oled.fill(0)
             start_time=time.ticks_us()
-            #if appTitle:
-            #    App.Style1(appTitle,window)
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
@@ -151,7 +147,6 @@ class Select:
             if len(displayItems) > 0:
                 oled.fill_rect(5, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
                 Text(displayItems[listNum - start], 5, 16 + 16 * (listNum - start), 2, showMode = 2)
-            #if window:Box(1, 1, 126, 62)
             if appTitle:
                 App.Style1(appTitle,window)
             oled.show()
@@ -381,10 +376,10 @@ class VastSea:
             else:
                 VastSea.Off()
             
-
 def UITools():
     try:
-        oled.invert(int(Core.Data.Get("text", "lightMode")))
+        if Core.Data.Get("text", "lightMode") == "1":
+            oled.invert(1)
         oled.contrast(int(Core.Data.Get("text", "luminance")))
     except:
         pass
