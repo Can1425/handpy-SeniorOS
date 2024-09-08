@@ -56,9 +56,9 @@ class Main:
             gc.collect()
         except Exception as e:
             Log.Error(moduleLoc + " > ERROR LOG THROWN:")
-            print("--------------------------------------------------\n")
+            print("--------------------------------------------------")
             sys.print_exception(e)
-            print("--------------------------------------------------\n")
+            print("--------------------------------------------------")
             return False
         else:
             gc.collect()

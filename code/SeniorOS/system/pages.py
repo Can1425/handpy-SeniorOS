@@ -5,9 +5,7 @@ import SeniorOS.system.typer as Typer
 import SeniorOS.system.ftreader as FTReader
 import SeniorOS.system.radient as Radient ;gc.collect()
 import ntptime
-from SeniorOS.lib.devlib import wifi,oled
-from SeniorOS.lib.devlib import touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T
-from SeniorOS.lib.devlib import button_a,button_b;gc.collect()
+from SeniorOS.lib.devlib import *;gc.collect()
 import time
 import machine
 import SeniorOS.lib.log_manager as LogManager
@@ -330,10 +328,10 @@ def WiFiConfig():
 
 def DeviceID():
     oled.fill(0)
-    while not button_a.is_pressed():
-        ID1 = Core.GetDeviceID(mode=0)
-        ID2 = Core.GetDeviceID(mode=1)
-        DayLight.App.Style1('设备标识符')
-        DayLight.Text('ID1 ' + ID1, 5, 16, 1)
-        DayLight.Text('ID2 ' + ID2, 5, 32, 1)
-        oled.show()
+    ID1 = Core.GetDeviceID(mode=0)
+    ID2 = Core.GetDeviceID(mode=1)
+    DayLight.App.Style1('设备标识符')
+    DayLight.Text('ID1 ' + ID1, 5, 16, 1)
+    DayLight.Text('ID2 ' + ID2, 5, 32, 1)
+    oled.show()
+    while not button_a.is_pressed():pass
