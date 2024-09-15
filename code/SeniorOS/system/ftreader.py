@@ -138,8 +138,7 @@ class FileViewer:
         return 0
 
     def FileConfig(self,filePath:str):#文件类型判断
-        if filePath.endswith("返回上一层"):return 0#上一层是目录(
-        if os.stat(filePath)[0]<20000:return 0
+        if filePath.endswith("返回上一层") or os.stat(filePath)[0]<20000:return 0#上一层是目录(
         else:
             stringEnd=filePath.endswith
             if stringEnd(".py") or stringEnd(".mpy"):return 2
@@ -153,7 +152,6 @@ class FileViewer:
             oled.fill(0)
             oled.text("%s"%(path),4,4)
             oled.DispChar(self.Dir[selset_num],16,12)
-            #oled.DispChar("属性:{}".format(file_config),0,16)
             oled.DispChar("TH-打开",0,32)
             oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
             oled.DispChar("{}/{}".format(selset_num+1,self.DirLen),DayLight.AutoCenter("{}/{}".format(selset_num+1,self.DirLen)),48)
@@ -170,6 +168,7 @@ class FileViewer:
                             RealPath = path.replace("/"+path.split("/")[-1],"")
                         else:RealPath = "{}/{}".format(path,self.Dir[selset_num])
                         path=RealPath
+                        if path.startswith("//"):path=path[1:]
                         self.Dir=os.listdir(RealPath)
                         self.Dir.insert(0,"返回上一层")
                         self.DirLen=len(self.Dir)
@@ -194,6 +193,4 @@ class FileViewer:
                     break
 
 def Main():
-    while not button_a.is_pressed():
-        fileview=FileViewer()
-        fileview.fileviewer("/")
+    FileViewer().fileviewer("/")

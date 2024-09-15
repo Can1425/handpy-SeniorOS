@@ -298,14 +298,14 @@ def ConnectWiFiMode():
             return
 
 def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=False):
-    if fill:
-        oled.fill(0)
+    if fill:oled.fill(0)
     while not WhetherToQuit:
         if text != "None":
             DayLight.Text(text, DayLight.AutoCenter(text), 28, 2)
         DayLight.VastSea.SeniorMove.Line(0,63,0,63,0,63,128,63,False)
         DayLight.VastSea.SeniorMove.Line(0,63,128,63,128,63,128,63,False)
         oled.show()
+    oled.fill(0)
     #_thread.exit() （会自动退出的）
 
 def Message(text, center=False) -> bool:

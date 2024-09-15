@@ -41,14 +41,14 @@ class DataCtrl:
         return self.data[dataName]
     # 写入数据
     def WriteOriginal(self,dataName,dataValue,singleUseSet=False,needReboot=False):
-        if singleUseSet: # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
-            self.data[dataName]=dataValue
+        if singleUseSet or (not needReboot): # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
+            self.data[dataName]=dataValue#needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
             return
         with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
             f.write(dataValue)
             self.data[dataName]=dataValue
-        if not needReboot: #needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
-            self.data[dataName]=dataValue
+        #if not needReboot: 
+        #    self.data[dataName]=dataValue
 
     def Get(self, controls, dataName):
         ConfigRead = Data.GetOriginal(controls)
@@ -56,9 +56,9 @@ class DataCtrl:
         for i in range(len(Config)):
             if Config[i].startswith(dataName+":"):
                 if controls == "text":
-                    return Config[i].split(':')[1]
+                    return Config[i].split(':')[1].replace("\r","")
                 elif controls == "list":
-                    return Config[i].split(':')[1].split(';')
+                    return (Config[i].split(':')[1].split(';'))
     def Write(self, controls, dataName, dataValue, ListReplacement = None):
         if controls == "text":
             ConfigRead = Data.GetOriginal(controls)
@@ -122,9 +122,6 @@ def VitalData(*nothing):
         touchPadValue = (int(Data.Get("text", "touchPadValue")))
         return touchPadValue
     else:return tmp_of_touchPadValue
-    # ...
-    #vitalDataList = ["Hello", touchPadValue]
-    #return vitalDataList[data]
 
 class AppSetup:
     def __init__(self,filePath):

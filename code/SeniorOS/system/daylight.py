@@ -12,9 +12,9 @@ LogManager.Output("system/daylight.mpy", "INFO")
 def UITime(pages=True):
     h = str(Core.GetTime.Hour())
     m = str(Core.GetTime.Min())
-    return ('0%s'%(h) if len(m) == 1 else h) + \
+    return ('0%s'%(h) if len(h) == 1 else h) + \
              (':' if pages else "") + \
-            ('0%s'%(m) if len(m) == 1 else h)
+            ('0%s'%(m) if len(m) == 1 else m)
 
 def GetCharWidth(s):
     # 获取字符宽度的优化实现
