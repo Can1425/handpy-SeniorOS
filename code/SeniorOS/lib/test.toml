@@ -1,4 +1,6 @@
-num = "3.14"
+num = 3.14
 str = "Hello, world!"
-bool = "True"
+bool = True
 list = [1,2,3,4,5]
+[dict]
+dict = {'key1': 'value1', 'key2': 'value2'}

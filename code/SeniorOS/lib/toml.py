@@ -10,14 +10,8 @@ class toml:
                 js[i[1:-1]] = {}
             else:
                 string=(i.split('=')[1]).split("#")[0].strip().strip("\"").strip("\'")
-                if string.startswith("[") and string.endswith("]"):
-                    string = string[1:-1]
-                    spst=string.split(",")
-                    n=0
-                    for n in range(len(spst)):
-                        spst[n]=spst[n].strip().strip("\"").strip("\'")
-                    js[i.split('=')[0].strip()] = spst
-                else:js[i.split('=')[0].strip()] = string
+                try:js[i.split('=')[0].strip()] = eval(string,{})
+                except:js[i.split('=')[0].strip()] = string
         return js
     def dict2toml(self, js):
         text = ""
@@ -31,5 +25,6 @@ class toml:
                     else:text += f"{js[i][j]}"
                 text += "]\n"
             else:
-                text += f"{i} = \"{js[i]}\"\n"
+                if type(js[i]) == str:text += f"{i} = \"{js[i]}\"\n"
+                else:text += f"{i} = {js[i]}\n"
         return text
