@@ -19,3 +19,17 @@ class toml:
                     js[i.split('=')[0].strip()] = spst
                 else:js[i.split('=')[0].strip()] = string
         return js
+    def dict2toml(self, js):
+        text = ""
+        for i in js:
+            if type(js[i]) == dict:
+                text += f"[{i}]\n"
+            if type(js[i]) == list:
+                text += f"{i} = ["
+                for j in range(len(js[i])):
+                    if j != len(js[i])-1:text += f"{js[i][j]},"
+                    else:text += f"{js[i][j]}"
+                text += "]\n"
+            else:
+                text += f"{i} = \"{js[i]}\"\n"
+        return text
