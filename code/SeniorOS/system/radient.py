@@ -33,7 +33,7 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
         gc.collect()
         print("获取数据中 次数:%d"%(GetTime))
         try:data = s.recv(bufferSize)
-        except:break
+        except:ShareVar.ui.DownloadExit = False;break
         if StatusCode != "200":
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
             try:
