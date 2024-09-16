@@ -3,8 +3,8 @@ import SeniorOS.lib.log_manager as LogManager
 Log = LogManager.Log
 LogManager.Output("system/main.mpy", "INFO")
 import os;os.chdir('/')
-import SeniorOS.system.core as Core#;gc.collect()
-from SeniorOS.lib.devlib import wifi#;gc.collect()
+import SeniorOS.system.core as Core;gc.collect()
+from SeniorOS.lib.devlib import wifi;gc.collect()
 import SeniorOS.system.pages as Pages
 import ntptime
 info=Core.Data.Get("text","connectWifiMode")

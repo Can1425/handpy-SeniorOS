@@ -5,7 +5,7 @@ import framebuf
 import network
 import gc
 import time
-import json
+import SeniorOS.lib.toml as toml
 from machine import unique_id
 from SeniorOS.lib.devlib import *
 import SeniorOS.lib.log_manager as LogManager
@@ -29,9 +29,10 @@ class DataCtrl:
         self.dataFolderPath=dataFolderPath
         LogManager.Output("SystemData initial", "INFO")
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
-        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.sros')]:
+        self.toml = toml.toml()
+        for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.toml')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
-                self.data[i.strip('.sros')]=f.read().strip('\r')
+                self.data[i.replace('.toml','')]=self.toml.toml2dict(f)
                 eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
         # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
         eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
@@ -39,81 +40,14 @@ class DataCtrl:
     # 获取数据
     def GetOriginal(self,dataName):
         return self.data[dataName]
-    # 写入数据
-    def WriteOriginal(self,dataName,dataValue,singleUseSet=False,needReboot=False):
-        if singleUseSet or (not needReboot): # singleUseSet参数:一次性设置 不会实际写入文件 此选参为True时 needReboot不生效
-            self.data[dataName]=dataValue#needReboot参数:当该值为True时 不修改实际运行值 特别适用于类似 开机需要根据config作init的程序使用
-            return
-        with open(self.dataFolderPath+dataName+'.sros','w',encoding='utf-8') as f:
-            f.write(dataValue)
-            self.data[dataName]=dataValue
-        #if not needReboot: 
-        #    self.data[dataName]=dataValue
-
     def Get(self, controls, dataName):
         ConfigRead = Data.GetOriginal(controls)
-        Config=ConfigRead.split('\n')
-        for i in range(len(Config)):
-            if Config[i].startswith(dataName+":"):
-                if controls == "text":
-                    return Config[i].split(':')[1].replace("\r","")
-                elif controls == "list":
-                    return (Config[i].split(':')[1].split(';'))
+        try:return eval(eval("ConfigRead[dataName]",{"ConfigRead":ConfigRead,"dataName":dataName}))
+        except:return ConfigRead[dataName]
     def Write(self, controls, dataName, dataValue, ListReplacement = None):
-        if controls == "text":
-            ConfigRead = Data.GetOriginal(controls)
-            Config=ConfigRead.split('\n')
-            TSList2=[]
-            for i in range(len(Config)):
-                TSList1=Config[i].split(':')
-                TSList2.append(TSList1[0])
-            try: index = TSList2.index(dataName)
-            except: index = 0
-            Config[index] = dataName + ":" + dataValue
-            
-            with open(self.dataFolderPath + 'text' + '.sros','w') as f:
-                f.write('\n'.join(Config))
-                self.data[controls]='\n'.join(Config)
-                print(Config)
-            with open(self.dataFolderPath + 'text' + '.sros','r') as f:
-                print(f.read())
-            return
-        elif controls == "list":
-            ConfigRead = Data.GetOriginal('list') 
-            ConfigRead=ConfigRead.split('\n') 
-            if ListReplacement == None: 
-                dtName=[];dtValue=[]
-                for i in ConfigRead: 
-                    CFG=i.split(':')
-                    dtName.append(CFG[0]) 
-                    dtValue.append(CFG[1])
-                try: index = dtName.index(dataName) 
-                except: return 
-                for i in ["\n","\r","\r\n",'\n','\r','\r\n']:
-                    dataValue=dataValue.replace(i,'')
-                for t in range(len(dtValue)):
-                    for i in ["\n","\r","\r\n",'\n','\r','\r\n']:
-                        dtValue[t]=dtValue[t].replace(i,'')
-                dtValue[index] += ";"+str(dataValue)
-                with open(self.dataFolderPath + 'list.sros','w') as f:
-                    for i in range(len(dtValue)):
-                        f.write("{}:{}\n".format(dtName[i],dtValue[i]))
-                    self.data[controls]='\n'.join(dtName)+':'+ ''.join(dtValue)
-            else:  # 如果 ListReplacement 不为空
-                data=[]
-                TSList2=[]
-                for i in ConfigRead:
-                    TSList1=i.split(':')
-                    TSList2.append(TSList1[0])
-                    data.append(TSList1[1]) 
-                try: index = TSList2.index(dataName)
-                except: index = 0
-                TSList3 = data[index].split(';')
-                TSList3[ListReplacement] = dataValue
-                TSList4 = ";".join(TSList3) 
-                ConfigRead[index] = dataName + ":" + TSList4 
-                f.write("\n".join(ConfigRead))
-                self.data[controls]='\n'.join(Config)
+        self.data[controls][dataName] = dataValue
+        with open(self.dataFolderPath+controls+'.toml',"w") as f:
+            f.write(self.toml.dict2toml(self.data[controls]))
 
 Data = DataCtrl("/SeniorOS/data/")
 tmp_of_touchPadValue = -1

@@ -1,7 +1,6 @@
 import gc
 import SeniorOS.system.daylight as DayLight;gc.collect()
 import SeniorOS.system.core as Core
-import SeniorOS.system.typer as Typer
 import SeniorOS.system.ftreader as FTReader
 import SeniorOS.system.radient as Radient ;gc.collect()
 import ntptime
@@ -179,7 +178,7 @@ def Home():
     oled.fill(0)
     time.sleep_ms(int(eval("[/Const('interval')/]")))
     while not eval("[/GetButtonExpr('pythonab')/]"):
-        PagesManager.Main.Import('SeniorOS.style.home', 'Style' + Core.Data.Get("text", "homeStyleNum"), False)
+        PagesManager.Main.Import('SeniorOS.style.home', 'Style%d' % Core.Data.Get("text", "homeStyleNum"), False)
     if button_a.is_pressed():
         DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,0)
         PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
@@ -235,7 +234,9 @@ def Choosewifi() -> bool:
             DayLight.VastSea.Transition(False)
             return
         wifiName = wifiList[num]
+        import SeniorOS.system.typer as Typer
         wifiPassword = Typer.main()
+        del Typer;gc.collect()
         Quit = Core.SharedVar.LoadQuit()
         Quit.value = False
         _thread.start_new_thread(LoadWait,(Quit, "正在尝试建立连接", True))

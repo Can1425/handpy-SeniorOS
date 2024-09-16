@@ -92,10 +92,7 @@ class Select:
         UITools()
         selectNum = 0
         if appTitle:
-            if not window:
-                App.Style1(appTitle)
-            else:
-                App.Style1(appTitle, True)
+            App.Style1(appTitle,window)
         elif window:
             Box(1,1,126,62)
         oled.show()
@@ -103,14 +100,11 @@ class Select:
             if window:
                 oled.RoundRect(2, y - 18, 124, 55, 2, 1)
             oled.show()
-            on_pressed = eval("[/GetButtonExpr('on')/]")
-            py_pressed = eval("[/GetButtonExpr('py')/]")
-            th_pressed = eval("[/GetButtonExpr('th')/]")
-            if on_pressed:
+            if eval("[/GetButtonExpr('on')/]"):
                 selectNum = min(selectNum + 1, len(dispContent) - 1)
-            if py_pressed:
+            if eval("[/GetButtonExpr('py')/]"):
                 selectNum = max(selectNum - 1, 0)
-            if th_pressed:
+            if eval("[/GetButtonExpr('th')/]"):
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
             Text(tip[selectNum], 5, y, 2)
@@ -121,14 +115,9 @@ class Select:
     @staticmethod
     def Style3():
         UITools()
-        selectNum = 0
         while not button_a.is_pressed():
-            if eval("[/GetButtonExpr('on')/]"):
-                selectNum = 1
-                return selectNum
-            if eval("[/GetButtonExpr('py')/]"):
-                selectNum = 0
-                return selectNum
+            if eval("[/GetButtonExpr('on')/]"):return 1
+            elif eval("[/GetButtonExpr('py')/]"):return 0
             time.sleep_ms(int(eval("[/Const('interval')/]")))
 
     @staticmethod        
@@ -138,7 +127,6 @@ class Select:
         listNum = 0
         while True:
             oled.fill(0)
-            start_time=time.ticks_us()
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
@@ -150,7 +138,6 @@ class Select:
             if appTitle:
                 App.Style1(appTitle,window)
             oled.show()
-            print(time.ticks_us()-start_time)
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
@@ -212,7 +199,7 @@ class VastSea:
             char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
             oled.DispChar(char,0,0,buffer=char1FB)
             oled.DispChar(NewChar,0,0,buffer=char2FB)
-        if MODE != "rect":
+        else:
             char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
             char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
             char1FB_FILL.fill(1)

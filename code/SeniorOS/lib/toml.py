@@ -3,10 +3,10 @@ class toml:
         js = {};text=(file.read()).split('\r\n' if '\r\n' in file.read() else '\n')
         for i in text:
             if i.startswith('#') or "=" not in i:continue
-            if i.startswith('['):js[i[1:-1]] = {}
+            if i.startswith('[') and i.endswith(']'):js[i[1:-1]] = {}
             else:
                 string=(i.split('=')[1]).split("#")[0].strip().strip("\"").strip("\'")
-                js[i.split('=')[0].strip()] = eval("string")
+                js[i.split('=')[0].strip()] = eval("string",{"string":string})
         return js
     def dict2toml(self,js):
         text = ""
