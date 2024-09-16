@@ -1,7 +1,5 @@
 import time
 import os
-import sys
-import framebuf
 import network
 import gc
 import time
@@ -158,11 +156,13 @@ def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
 class Screenshot:
     def CopyFramebuf(path,oledObj=__import__("SeniorOS.lib.devlib")):
         bufb=bytearray(128*64)
+        import framebuf
         with open(path,"wb")as f:
             f.write(b"P4\n128 64\n")
             buf=framebuf.FrameBuffer(bufb,128,64,framebuf.MONO_HLSB)
             buf.blit(oledObj.buffer,0,0)
             f.write(bufb)
+        del bufb,buf,f;gc.collect()
     def Enumerate(path,oledObj=__import__("SeniorOS.lib.devlib")):# 以「枚举」为核心 的算法
         if eval("[/Const('screenshotMethod')/]")=="fast": # 速度优先
             with open(path, 'wb') as f:

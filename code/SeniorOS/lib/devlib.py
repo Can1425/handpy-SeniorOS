@@ -42,6 +42,7 @@ class wifi:
             print(".", end="")
             STATUS=self.sta.status()
             time.sleep_ms(500)
+        print("")
         print(self.sta.ifconfig())
         LogManager.Output('WiFi %s Connection Successful, Config:%s' % (ssid,str(self.sta.ifconfig())), "INFO")
         return True

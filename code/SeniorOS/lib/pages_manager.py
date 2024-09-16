@@ -29,18 +29,6 @@ import gc,sys
 
 Log = LogManager.Log
 
-# 定义错误类
-
-# class InternalPageError(Exception):
-    # '''捕获的所有屏幕内部异常都会直接引起此异常'''
-    # pass
-
-#  class ScreenError(Exception):
-    # pass
-
-# class PageError(Exception):
-    # Log.Error('PageError 在 PagesManager V2 版本被弃用，请注意更换相关逻辑。')
-
 class Main:
     def __init__(self) -> None:
         pass

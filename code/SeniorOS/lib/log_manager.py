@@ -25,18 +25,15 @@ def format_timestamp():
     return f'{t[0]}-{t[1]}-{t[2]} {t[3]}:{t[4]}:{t[5]}'
 
 def getTime(format: bool = False):
-    nowTime = int(time.time())
-    if not format:
-        return nowTime
-    else: 
-        return format_timestamp()
+    if not format:return int(time.time())
+    else:return format_timestamp()
 
 def logFormatReplace(formatText:str,message:str,prefix:str='#',level:str='INFO') -> str:
     formatText=formatText.replace(f'{prefix}level{prefix}', level)\
        .replace(f'{prefix}format_time{prefix}', getTime(True))\
        .replace(f'{prefix}time{prefix}', str(getTime()))\
        .replace(f'{prefix}message{prefix}', message)
-    formatText+=f"\nRam-info:{gc.mem_free()} B\nCPU:{esp32.raw_temperature()}°F"
+    formatText+=f"\nRam-info:{gc.mem_free()} Bytes\nCPU:{esp32.raw_temperature()}°F"
     return formatText
 
 class LogManager:

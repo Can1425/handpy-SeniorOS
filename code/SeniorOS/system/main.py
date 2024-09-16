@@ -1,4 +1,4 @@
-import gc,_thread
+import gc
 import SeniorOS.lib.log_manager as LogManager
 Log = LogManager.Log
 LogManager.Output("system/main.mpy", "INFO")
@@ -6,7 +6,6 @@ import os;os.chdir('/')
 import SeniorOS.system.core as Core;gc.collect()
 from SeniorOS.lib.devlib import wifi;gc.collect()
 import SeniorOS.system.pages as Pages
-import ntptime
 info=Core.Data.Get("text","connectWifiMode")
 wifilist=[]
 if info == "0":
@@ -25,7 +24,9 @@ elif info == "1":
             if str(i)==GetWifiCfg(j):
                 try:
                     net.connectWiFi(wifilist[0][i],wifilist[1][i])
+                    import ntptime
                     ntptime.settime(8,"time.windows.com")
+                    del ntptime;gc.collect()
                     connect=True
                 except:
                     Log.Error("连接WiFi失败")
