@@ -8,9 +8,9 @@ from SeniorOS.lib.devlib import wifi;gc.collect()
 import SeniorOS.system.pages as Pages
 info=Core.Data.Get("text","connectWifiMode")
 wifilist=[]
-if info == "0":
+if info == 0:
     Pages.WifiPages()
-elif info == "1":
+elif info == 1:
     wifilist=[Core.Data.Get("list","wifiName"),Core.Data.Get("list","wifiPassword")]
     net=wifi()
     net.sta.active(True)
@@ -33,8 +33,7 @@ elif info == "1":
                     Log.Message("请使用浏览器打开https://ys.mihoyo.com/进行求助")
     del wifilist,net,netscan,connect
     gc.collect()
-elif info == "2":
-    # 启动门户
+elif info == 2:
     import SeniorOS.system.smart_wifi as SmartWifi
     SmartWifi.main()
     del SmartWifi;gc.collect()

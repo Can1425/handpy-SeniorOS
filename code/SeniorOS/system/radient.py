@@ -92,7 +92,6 @@ def ParseResponse(response):
     return status_code, body
 def Get(url, timeout=2):
     response = NormalGet(url, timeout)
-    print(repr(response))
     status_code, body = ParseResponse(response)
     if status_code == "308" or status_code == "301" or status_code == "302":
         print("重定向找我干嘛")
@@ -118,9 +117,3 @@ def Redirect(url, timeout=2):
         for i in redirect_data:
             if i.startswith('Location:'):redirect_item = i[10:]
         return Redirect(redirect_item, timeout)
-
-if __name__ == "__main__":
-    with open("test.html","w",encoding="utf-8") as f:
-        GetToFile("oyhq.eu.org",f,bufferSize=512,timeout=20)
-        #GetToFile("www.baidu.com",open("test.html","w",encoding="utf-8"),bufferSize=512)
-        #GetToFile("http://server.lpover.eu.org/plugins/list.sros",f,bufferSize=4096)

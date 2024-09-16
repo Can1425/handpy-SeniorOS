@@ -63,5 +63,6 @@ while True:
                     oled.DispChar('启动至 ' + othersBuildMain[options].replace('.mpy', ''), 5, 0)
                     oled.show()
                     time.sleep(0.5)
+                    Core.FullCollect()
                     __import__('SeniorOS.others_build.' + othersBuildMain[options].replace('.mpy', ''))
                     break

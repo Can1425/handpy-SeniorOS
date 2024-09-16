@@ -10,3 +10,8 @@ class radient_UI:
             oled.DispChar(DownloadSpeed, Daylight.AutoCenter(DownloadSpeed), 24, 1)
             oled.show()
         oled.fill(0)
+
+class SmartWifi_UI:
+    def UI():
+        oled.fill(0)
+        oled.show()

@@ -365,8 +365,7 @@ class VastSea:
             
 def UITools():
     try:
-        if Core.Data.Get("text", "lightMode") == "1":
-            oled.invert(1)
+        if Core.Data.Get("text", "lightMode") == "1":oled.invert(1)
         oled.contrast(int(Core.Data.Get("text", "luminance")))
     except:
         pass
@@ -415,7 +414,6 @@ def TouchPadValueSet():
     while not button_A.is_pressed():
         oled.fill(0)
         App.Style2(eval("[/Language('触摸键灵敏度')/]"))
-        time.sleep_ms(5)
         oled.DispChar(eval("[/Language('当前值')/]") + str(sensitivity), 5, 18, 1)
         oled.show()
         if eval("[/GetButtonExpr('on')/]"):

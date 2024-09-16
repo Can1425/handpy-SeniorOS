@@ -6,9 +6,9 @@ class toml:
             if i.startswith('[') and i.endswith(']'):js[i[1:-1]] = {}
             else:
                 string=(i.split('=')[1]).split("#")[0].strip().strip("\"").strip("\'")
-                js[i.split('=')[0].strip()] = eval("string",{"string":string})
+                js[i.split('=')[0].strip()] = eval('''eval("string",{"string":string})''',{"string":string})
         return js
     def dict2toml(self,js):
         text = ""
-        for i in js:text += "{0} = {1}{2}{1}\n".format(i, "\"" if type(js[i]) == str else "",js[i])
+        for i in js:text += "{0} = {1}{2}{1}\n".format(i, "\"" if type(js[i]) == str else "",eval("js[i]",{"js":js,"i":i}))
         return text
