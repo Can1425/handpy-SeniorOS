@@ -44,12 +44,8 @@ class DataCtrl:
             f.write(self.toml.dict2toml(self.data[controls]))
 
 Data = DataCtrl("/SeniorOS/data/")
-tmp_of_touchPadValue = -1
 def VitalData(*nothing):
-    if tmp_of_touchPadValue == -1:
-        touchPadValue = (int(Data.Get("text", "touchPadValue")))
-        return touchPadValue
-    else:return tmp_of_touchPadValue
+    return (int(Data.Get("text", "touchPadValue")))
 
 class AppSetup:
     def __init__(self,filePath):
