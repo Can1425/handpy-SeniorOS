@@ -179,24 +179,26 @@ def Home():
     time.sleep_ms(int(eval("[/Const('interval')/]")))
     while not eval("[/GetButtonExpr('pythonab')/]"):
         PagesManager.Main.Import('SeniorOS.style.home', 'Style%d' % Core.Data.Get("text", "homeStyleNum"), False)
-    if button_a.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,0)
-        PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,0,-10,-20)
-    elif button_b.is_pressed():
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),138,-20,5,0)
-        PagesManager.Main.Import("SeniorOS.system.pages", "EquipmentPanel")
-        DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),5,0,138,-20)
-    elif eval("[/GetButtonExpr('th')/]"):
-        DayLight.VastSea.SeniorMove.Line(128, 0, 0, 0, 0, 46, 128, 46)
-        PagesManager.Main.Import("SeniorOS.apps.port", "App")
-        DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
-    elif eval("[/GetButtonExpr('ab')/]"):
-        pass
-    elif eval("[/GetButtonExpr('py')/]"):
-        PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[0]), "Main")
-    elif eval("[/GetButtonExpr('on')/]"):
-        PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
+        while True:
+            if button_a.is_pressed():
+                DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),-10,-20,5,0)
+                PagesManager.Main.Import("SeniorOS.system.pages", "CloudNotification")
+                DayLight.VastSea.SeniorMove.Text(eval("[/Language('云端通知')/]"),5,0,-10,-20)
+                break
+            elif button_b.is_pressed():
+                DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),138,-20,5,0)
+                PagesManager.Main.Import("SeniorOS.system.pages", "EquipmentPanel")
+                DayLight.VastSea.SeniorMove.Text(eval("[/Language('设备面板')/]"),5,0,138,-20)
+                break
+            elif eval("[/GetButtonExpr('th')/]"):
+                DayLight.VastSea.SeniorMove.Line(128, 0, 0, 0, 0, 46, 128, 46)
+                PagesManager.Main.Import("SeniorOS.apps.port", "App")
+                DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
+                break
+            elif eval("[/GetButtonExpr('py')/]"):
+                PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[0]), "Main")
+            elif eval("[/GetButtonExpr('on')/]"):
+                PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
 
 def HomeomePlugInSet():
     while not button_a.is_pressed():

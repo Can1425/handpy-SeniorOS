@@ -5,7 +5,11 @@ class radient_UI:
     def GetToFile_UI():
         import SeniorOS.system.radient as radient
         while radient.ShareVar.ui.DownloadExit:
-            DownloadSpeed = str(radient.ShareVar.ui.DownloadSpeed)+"Bytes/s"
+            if radient.ShareVar.ui.DownloadSpeed != None:
+                if radient.ShareVar.ui.DownloadSpeed > 1024:
+                    DownloadSpeed = str(radient.ShareVar.ui.DownloadSpeed/1024)+"KB/s / "+str(radient.ShareVar.ui.Downloadlength/1024)+"KB"
+                else:
+                    DownloadSpeed = str(radient.ShareVar.ui.DownloadSpeed)+"B/s / "+str(radient.ShareVar.ui.Downloadlength)+"B" 
             oled.fill(0)
             oled.DispChar(DownloadSpeed, Daylight.AutoCenter(DownloadSpeed), 24, 1)
             oled.show()

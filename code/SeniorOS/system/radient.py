@@ -12,6 +12,7 @@ class ShareVar:
     class ui:
         DownloadSpeed = 0
         DownloadExit = False
+        Downloadlength = 0
 def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
     if not url.startswith("http://"):url = "http://" + url
     print("访问:"+url)
@@ -26,16 +27,15 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
     s.settimeout(timeout)
     s.send(('GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)).encode())
     StatusCode = ""
-    GetTime=0
     ShareVar.ui.DownloadExit = True
     _thread.start_new_thread(ui.radient_UI.GetToFile_UI,())
     while True:
         gc.collect()
-        print("获取数据中 次数:%d"%(GetTime))
         try:data = s.recv(bufferSize)
         except:ShareVar.ui.DownloadExit = False;break
         if StatusCode != "200":
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
+            ShareVar.ui.Downloadlength = int(data.decode().split('\r\n')[1].split(' ')[1])
             try:
                 file.write(data.decode().split("\r\n\r\n")[1])
                 ShareVar.ui.DownloadSpeed = len(data.decode().split("\r\n\r\n")[1])
