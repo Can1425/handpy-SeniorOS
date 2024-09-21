@@ -336,10 +336,9 @@ def Sleep():#please use this function in the thread
     print("[INFO] Sleep() is started")
     while True:
         if eval("[/GetButtonExpr('pythonab')/]"):timenow=0
-        else:timenow+=1
-        if timenow >= timeout:
-            print("[INFO] INTO SLEEP MODE")
-            break
+        else:
+            if timenow >= timeout:break
+            timenow+=1
         time.sleep(1)
 _thread.stack_size(64)
 _thread.start_new_thread(Sleep, ())
