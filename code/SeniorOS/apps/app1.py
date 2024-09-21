@@ -54,9 +54,9 @@ def Main():
                                       file,
                                       timeout=3,
                                       bufferSize=2048)
-                #ModRunner.module_run(file_name)
-                exec(open(file_name).read())
-                #exec(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
+                    Core.FullCollect()
+                with open(file_name, "r") as file:
+                    exec(compile(file.read(), file_name, 'exec'))
                 DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()

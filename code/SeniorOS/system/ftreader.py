@@ -113,7 +113,18 @@ class Textreader:
                 elif button_a.is_pressed():
                     offset-=8
                     break
-
+class DiskManager:
+    def __init__(self):
+        self.DiskList = ["flash"]
+        self.DiskListPoint = ["/"]
+        #本来这里可以用json的，但sm dl不给用
+    def DiskManager(self):
+        while True:
+            options = DayLight.ListOptions(["打开存储器","退出"],appTitle = "选择操作",x=16)
+            if options == 0:
+                FileViewer().fileviewer(self.DiskList[DayLight.ListOptions(self.DiskList,appTitle = "选择操作",x=16)])
+            elif options == 1:
+                return 0
 class FileViewer:
     def __init__(self):
         self.Dir=os.listdir("/")

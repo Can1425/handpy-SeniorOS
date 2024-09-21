@@ -22,15 +22,10 @@ class DataCtrl:
         self.data={}
         self.dataFolderPath=dataFolderPath
         LogManager.Output("SystemData initial", "INFO")
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
         self.toml = toml.toml()
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.toml')]:
             with open(dataFolderPath+i,'r',encoding='utf-8')as f:
                 self.data[i.replace('.toml','')]=self.toml.toml2dict(f)
-                eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
-        # 反正几乎是内部API 所以编码 命名规则 换行符采用 自己手动改改（
-        eval("[/EnableDebugMsg('Core.DataCtrl.__init__')/]")
-
     # 获取数据
     def GetOriginal(self,dataName):
         return self.data[dataName]
@@ -179,7 +174,7 @@ class Screenshot:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件
-
+'''
 def Tree(path="/",prt=print,_tabs=0):
     lst=os.listdir(path)
     dirs=[]
@@ -199,7 +194,7 @@ def Tree(path="/",prt=print,_tabs=0):
             lk="└"
         prt("│"*_tabs+lk+i)
         if n<ldirs:
-            Tree(path+'/'+i,prt,_tabs+1)
+            Tree(path+'/'+i,prt,_tabs+1)'''
 
 def ListState(dispContent, selectNum):
     return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))

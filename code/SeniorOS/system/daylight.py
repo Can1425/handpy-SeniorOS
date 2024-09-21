@@ -50,8 +50,7 @@ class App:
     def Style2(appTitle:str, window = False):
         gc.collect()
         oled.fill(0)
-        if window:
-            Box(1, 1, 126, 62)
+        if window:Box(1, 1, 126, 62)
         UITools()
         Text(appTitle, 5, 5, 3, 1, 90)
 
@@ -62,10 +61,7 @@ class Select:
         UITools()
         selectNum = 0
         if appTitle:
-            if not window:
-                App.Style1(appTitle)
-            else:
-                App.Style1(appTitle, True)
+            App.Style1(appTitle, window)
         elif window:
             Box(1,1,126,62)
         oled.show()
@@ -121,20 +117,22 @@ class Select:
             time.sleep_ms(int(eval("[/Const('interval')/]")))
 
     @staticmethod        
-    def Style4(dispContent:list, window:False, appTitle:str = False):
+    def Style4(dispContent:list, window:False, appTitle:str = False, x = 5, images = None):
         lendispcontext = len(dispContent)
         maxdispcontextindex = lendispcontext - 1
         listNum = 0
+        if images!=None and x < 16:x=16
         while True:
             oled.fill(0)
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
+                if images!=None:oled.Bitmap(0,16*(i+1),images(i),16,16,1)
                 if listNum == i + start:continue
-                Text(item, 5, 16 * (i + 1), 2, showMode=1)
+                Text(item, x, 16 * (i + 1), 2, showMode=1)
             if len(displayItems) > 0:
-                oled.fill_rect(5, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
-                Text(displayItems[listNum - start], 5, 16 + 16 * (listNum - start), 2, showMode = 2)
+                oled.fill_rect(x, 16 + 16 * (listNum - start), GetCharWidth(displayItems[listNum - start]), 16, 1)
+                Text(displayItems[listNum - start], x, 16 + 16 * (listNum - start), 2, showMode = 2)
             if appTitle:
                 App.Style1(appTitle,window)
             oled.show()
@@ -364,11 +362,8 @@ class VastSea:
                 VastSea.Off()
             
 def UITools():
-    try:
-        if Core.Data.Get("text", "lightMode") == "1":oled.invert(1)
-        oled.contrast(int(Core.Data.Get("text", "luminance")))
-    except:
-        pass
+    if Core.Data.Get("text", "lightMode") == "1":oled.invert(1)
+    oled.contrast(int(Core.Data.Get("text", "luminance")))
 
 def LightModeSet():
     mode = [eval("[/Language('关闭')/]"),
