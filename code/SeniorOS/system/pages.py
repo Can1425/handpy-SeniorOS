@@ -307,7 +307,15 @@ def Message(text, center=False) -> bool:
     oled.show()
     time.sleep(3)
     return True
-
+def ShutDown():
+    options = DayLight.Select.Style4(['关机','重启','取消'], False, '选择操作')
+    if options == 0:
+        oled.poweroff()
+        machine.deepsleep()
+    elif options == 1:
+        machine.reset()
+    else:
+        return
 def WiFiConfig():
     IP,netmask,gateway,DNS = wifi.sta.ifconfig()
     status = str(wifi.sta.status())
