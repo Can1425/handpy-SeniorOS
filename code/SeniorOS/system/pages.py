@@ -62,19 +62,19 @@ def CloudNotification():
         print(e)
         return
     Quit.value = True
-    while not button_a.is_pressed():
-        DayLight.App.Style1(eval("[/Language('云端通知')/]"))
-        oled.DispChar(notifications[0], 5, 18)
-        oled.DispChar(notifications[1], 5, 32)
-        oled.DispChar(notifications[2], 5, 45)
-        oled.show()
+    DayLight.App.Style1(eval("[/Language('云端通知')/]"))
+    oled.DispChar(notifications[0], 5, 18)
+    oled.DispChar(notifications[1], 5, 32)
+    oled.DispChar(notifications[2], 5, 45)
+    oled.show()
+    while not button_a.is_pressed():pass
     del notifications
     return
 
 def HS_CPU():
     oled.fill(0)
     oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,32)
-    oled.DispChar("CPU - ESP32",0,0)
+    oled.DispChar("MPU - ESP32",0,0)
     oled.DispChar("NORMAL 160HZ",0,16)
     oled.show()
     while True:
