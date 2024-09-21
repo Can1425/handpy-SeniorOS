@@ -30,15 +30,13 @@ def Box(x1, y1, x2, y2, fill = False):
 
 def ProgressBoxMove(x,y,w,h,progress,step=8):
     #progress使用百分制%
-    now=0
-    OurUI=UI(oled)#我们的 UI (苏里苏气)
+    now,OurUI = 0,UI(oled)#我们的 UI (苏里苏气)
     for _ in range(step):
         OurUI.ProgressBar(x, y, w, h, ((w - 0) / (100 - 0)) * (now - 0) + 0)
         oled.show()
         now+=(progress-now)//2
         time.sleep_ms(25)
-    del OurUI#苏联解体力(悲)
-    del now;gc.collect()
+    del OurUI;now;gc.collect()#苏联解体力(悲)
 class App:
     def Style1(appTitle:str, window = False):
         oled.fill_rect(0,0,128,16,0)
@@ -70,14 +68,11 @@ class Select:
             oled.DispChar(dispContent[selectNum], AutoCenter(dispContent[selectNum]), y, 1)
             oled.DispChar(Core.ListState(dispContent, selectNum), 105, 40, 1)
             oled.show()
-            on_pressed = eval("[/GetButtonExpr('on')/]")
-            py_pressed = eval("[/GetButtonExpr('py')/]")
-            th_pressed = eval("[/GetButtonExpr('th')/]")
-            if on_pressed:
+            if eval("[/GetButtonExpr('on')/]"):
                 selectNum = min(selectNum + 1, len(dispContent) - 1)
-            if py_pressed:
+            if eval("[/GetButtonExpr('py')/]"):
                 selectNum = max(selectNum - 1, 0)
-            if th_pressed:
+            if eval("[/GetButtonExpr('th')/]"):
                 return selectNum
             time.sleep_ms(int(eval("[/Const('interval')/]")))
         return
@@ -265,7 +260,6 @@ class VastSea:
     class SeniorMove:
         @staticmethod
         def Box(text, x=0, y=0, h=16):
-            speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             w = GetCharWidth(text)
             target_w = 128
             target_h = 64
