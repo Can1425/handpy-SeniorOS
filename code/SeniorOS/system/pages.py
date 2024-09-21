@@ -253,8 +253,8 @@ def Choosewifi() -> bool:
             Quit.value = True
             Message('添加失败')
             return False
-    
-def Collect():
+
+def WaitMod(func):
     oled.fill(0)
     DayLight.UITools()
     try:
@@ -262,7 +262,7 @@ def Collect():
         time.sleep_ms(5)
         oled.DispChar(eval("[/Language('正在进行操作')/]"), 5, 18, 1)
         oled.show()
-        Core.FullCollect()
+        eval("func",{"func":func})
         oled.DispChar(eval("[/Language('加载成功')/]"), 5, 45, 1)
         time.sleep_ms(5)
         oled.show()
@@ -270,23 +270,11 @@ def Collect():
     except:
         oled.DispChar(eval("[/Language('加载失败')/]"), 5, 45, 1)
         oled.show()
+def Collect():
+    WaitMod("Core.FullCollect()")
 
 def Time():
-    DayLight.UITools()
-    try:
-        oled.fill(0)
-        oled.DispChar(eval("[/Language('请稍等')/]"), 5, 5, 1)
-        time.sleep_ms(5)
-        oled.DispChar(eval("[/Language('正在进行操作')/]"), 5, 18, 1)
-        oled.show()
-        ntptime.settime(8, Core.Data.Get("text", "timingServer"))
-        oled.DispChar(eval("[/Language('加载成功')/]"), 5, 45, 1)
-        time.sleep_ms(5)
-        oled.show()
-        return True
-    except:
-        oled.DispChar(eval("[/Language('加载失败')/]"), 5, 45, 1)
-        oled.show()
+    WaitMod("""ntptime.settime(8, Core.Data.Get("text", "timingServer"))""")
 
 def ConnectWiFiMode():
     mode = ['预配置选择','自动连接预配置','SmartWiFi']
@@ -294,7 +282,7 @@ def ConnectWiFiMode():
     while not button_a.is_pressed():
         options = DayLight.Select.Style4(mode, False, '网络连接方式')
         if options != None:
-            Core.Data.Write('text', 'connectWifiMode', str(options))
+            Core.Data.Write('text', 'connectWifiMode', options)
             Message('好耶，设置成功')
         else:
             DayLight.VastSea.Transition(False)
@@ -314,20 +302,16 @@ def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=F
 def Message(text, center=False) -> bool:
     DayLight.Box(1, 1, 126, 62, True)
     oled.DispChar('消息', DayLight.AutoCenter('消息'), 5)
-    if center:
-        DayLight.Text(text, DayLight.AutoCenter(text), 26, 2)
-    else:
-        DayLight.Text(text, 8, 20, 1)
+    DayLight.Text(text, (DayLight.AutoCenter(text) if center else 8), 26, 2)
     Log.Message(text)
     oled.show()
-    time.sleep_ms(3000)
+    time.sleep(3)
     return True
 
 def WiFiConfig():
-    connected = wifi.sta.isconnected()
     IP,netmask,gateway,DNS = wifi.sta.ifconfig()
     status = str(wifi.sta.status())
-    FTReader.Textreader('是否连接: ' + "是" if connected else "否" + "\n" + "状态码: "  + status + '\n' + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS + '\n' + 'Gateway: ' + gateway).Main()
+    FTReader.Textreader('是否连接: ' + "是" if wifi.sta.isconnected() else "否" + "\n" + "状态码: "  + status + '\n' + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS + '\n' + 'Gateway: ' + gateway).Main()
 def ToSleep():
     _thread.start_new_thread(Sleep, ())
     Home()
@@ -344,10 +328,8 @@ _thread.stack_size(64)
 _thread.start_new_thread(Sleep, ())
 def DeviceID():
     oled.fill(0)
-    ID1 = Core.GetDeviceID(mode=0)
-    ID2 = Core.GetDeviceID(mode=1)
     DayLight.App.Style1('设备标识符')
-    DayLight.Text('ID1 ' + ID1, 5, 16, 1)
-    DayLight.Text('ID2 ' + ID2, 5, 32, 1)
+    DayLight.Text('ID1 {}'.format(Core.GetDeviceID(mode=0)), 5, 16, 1)
+    DayLight.Text('ID2 {}'.format(Core.GetDeviceID(mode=1)), 5, 32, 1)
     oled.show()
     while not button_a.is_pressed():pass
