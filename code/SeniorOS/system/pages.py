@@ -328,7 +328,21 @@ def WiFiConfig():
     IP,netmask,gateway,DNS = wifi.sta.ifconfig()
     status = str(wifi.sta.status())
     FTReader.Textreader('是否连接: ' + "是" if connected else "否" + "\n" + "状态码: "  + status + '\n' + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS + '\n' + 'Gateway: ' + gateway).Main()
-
+def ToSleep():
+    _thread.start_new_thread(Sleep, ())
+    Home()
+def Sleep():#please use this function in the thread
+    timeout,timenow = 300,0
+    print("[INFO] Sleep() is started")
+    while True:
+        if eval("[/GetButtonExpr('pythonab')/]"):timenow=0
+        else:timenow+=1
+        if timenow >= timeout:
+            print("[INFO] INTO SLEEP MODE")
+            break
+        time.sleep(1)
+_thread.stack_size(64)
+_thread.start_new_thread(Sleep, ())
 def DeviceID():
     oled.fill(0)
     ID1 = Core.GetDeviceID(mode=0)
