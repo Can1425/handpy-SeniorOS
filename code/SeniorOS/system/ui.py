@@ -14,7 +14,7 @@ class radient_UI:
             oled.DispChar(DownloadSpeed, Daylight.AutoCenter(DownloadSpeed), 24, 1)
             oled.show()
         oled.fill(0)
-        del DownloadSpeed, radient
+        del radient
 
 class SmartWifi_UI:
     def UI():

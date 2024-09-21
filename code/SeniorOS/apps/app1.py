@@ -5,7 +5,7 @@ import SeniorOS.system.core as Core
 import SeniorOS.system.radient as Radient
 import gc
 import os
-import _thread
+import _thread,sys
 import SeniorOS.lib.log_manager as LogManager
 #import ModRunner
 source = "http://" + Core.Data.Get("text", "radienPluginsSource")
@@ -29,7 +29,7 @@ def Main():
     except IndexError as e:
         Core.FullCollect()
         Quit.value = True
-        __import__("sys").print_exception(e)
+        sys.print_exception(e)
         Log.Error(str(e))
         return
     Quit.value = True
@@ -54,34 +54,32 @@ def Main():
                                       file,
                                       timeout=3,
                                       bufferSize=2048)
-                    Core.FullCollect()
+                Core.FullCollect()
                 with open(file_name, "r") as file:
-                    exec(compile(file.read(), file_name, 'exec'))
+                    c=compile(file.read(), file_name, 'exec')
+                Core.FullCollect()
+                exec(c)
                 DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()
                 while not button_a.is_pressed():
                     DayLight.App.Style1(str(pluginsList[pluginsNum]))
                     DayLight.Text(str(pluginsTip2[pluginsNum]), 5, 18, 2)
-                    # oled.DispChar(str(pluginsTip2[pluginsNum]), 5, 18, 1, True)
                     oled.show()
             if options == 2:
                 DayLight.VastSea.Off()
                 DayLight.app('线上插件')
                 DayLight.Text(eval("[/Language('请稍等')/]"), 5, 18, 2)
-                # oled.DispChar(eval("[/Language('请稍等')/]"), 5, 18, 1, True)
                 DayLight.Text(eval("[/Language('正在进行操作')/]"), 5, 36, 2)
                 oled.show()
-                _response = Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']])))
                 try:
                     os.chdir("/SeniorOS/downloads")
                 except:
                     os.mkdir("/SeniorOS/downloads")
                     os.chdir("/SeniorOS/downloads")
-                with open(f"{Englist[pluginsNum+1]}.py","w") as file:
-                    file.write(_response)
+                with open("{}.py".format(Englist[pluginsNum+1]),"w") as file:
+                    file.write(Radient.Get((''.join([str(x) for x in [source + '/plugins/main/web_app', pluginsNum + 1, '.sros']]))))
                 os.chdir("/")
                 oled.fill(0)
-                DayLight.VastSea.Off()
                 DayLight.VastSea.Off()
 

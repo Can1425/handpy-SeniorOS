@@ -35,7 +35,7 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
         except:ShareVar.ui.DownloadExit = False;break
         if StatusCode != "200":
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
-            ShareVar.ui.Downloadlength = int(data.decode().split('\r\n')[1].split(' ')[1])
+            #ShareVar.ui.Downloadlength = int(data.decode().split('\r\n')[1].split(' ')[1])
             try:
                 file.write(data.decode().split("\r\n\r\n")[1])
                 ShareVar.ui.DownloadSpeed = len(data.decode().split("\r\n\r\n")[1])
@@ -48,7 +48,6 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
             oled.fill(0);oled.show()
             raise CodeError("status_code is {}".format(StatusCode))
         del data
-        GetTime+=1
     s.close()
     
 
