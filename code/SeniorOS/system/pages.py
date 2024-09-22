@@ -310,12 +310,19 @@ def Message(text, center=False) -> bool:
     time.sleep(3)
     return True
 def ShutDown():
-    options = DayLight.Select.Style4(['关机','重启','取消'], False, '电源设置')
+    options = DayLight.Select.Style4(['关机','重启','睡眠','取消'], False, '电源设置')
     if options == 0:
         oled.poweroff()
         machine.deepsleep()
     elif options == 1:
         machine.reset()
+    elif options == 2:
+        import esp32
+        oled.poweroff()
+        esp32.wake_on_touch(True)
+        print("[INFO] Sleep now")
+        time.sleep_ms(100)
+        machine.lightsleep()
     else:
         return
 def WiFiConfig():
