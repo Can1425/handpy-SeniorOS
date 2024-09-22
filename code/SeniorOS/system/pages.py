@@ -299,7 +299,6 @@ def LoadWait(WhetherToQuit:Core.SharedVar.LoadQuit, text:str="None", fill:bool=F
         DayLight.VastSea.SeniorMove.Line(0,63,128,63,128,63,128,63,False)
         oled.show()
     oled.fill(0)
-    #_thread.exit() （会自动退出的）
 
 def Message(text, center=False) -> bool:
     DayLight.Box(1, 1, 126, 62, True)

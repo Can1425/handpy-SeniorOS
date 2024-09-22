@@ -42,12 +42,15 @@ class Main:
             gc.collect()
             func(*argument)
             gc.collect()
+            del func,module;gc.collect()
         except Exception as e:
             Log.Error(moduleLoc + " > ERROR LOG THROWN:")
             print("--------------------------------------------------")
             sys.print_exception(e)
             print("--------------------------------------------------")
+            del func,module;gc.collect()
             return False
         else:
             gc.collect()
+            del func,module;gc.collect()
             return True
