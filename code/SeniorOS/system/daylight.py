@@ -295,7 +295,7 @@ class VastSea:
             oled.fill(0)
             time.sleep_ms(100)
 
-        def Text(text, startX, startY, endX, endY):
+        def Text(text, startX, startY, endX, endY, font = None) -> bool:
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
             if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
                 elapsedTime = 0  # 已过去的时间
@@ -307,12 +307,17 @@ class VastSea:
                     factor = -(math.cos(math.pi * t) - 1) / 2
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
-                    # 根据计算出的 current_x 和 current_y 更新位置
+                    # 根据计算出的 currentX 和 currentY 更新位置
                     oled.fill(0)
+                    # 是否自定义字体
+                    if font != None:
+                        oled.DispChar_font(font, text, int(currentX), int(currentY))
                     oled.DispChar(text, int(currentX), int(currentY))
                     oled.show()
+                return True
             else:
                 VastSea.Off()
+                return False
 
         def Line(startX, startY, startX2,startY2, endX, endY, endX2, endY2, fill:bool = True):
             speed = int(Core.Data.Get("text", "VastSeaSpeed"))
