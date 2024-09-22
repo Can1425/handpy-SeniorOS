@@ -1,6 +1,4 @@
 from SeniorOS.lib.devlib import *
-import time
-import micropython
 from SeniorOS.apps.logo import Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
@@ -27,13 +25,11 @@ def Bitmap(bitMap0, bitMap1, bitMap2, bitMap3, bitMap4, startX, startY, endX, en
             currentX= startX + (endX - startX) * factor
             currentY = startY + (endY - startY) * factor
             # 根据计算出的 current_x 和 current_y 更新位置
-            oled.fill_rect(0,0,128,47,0)
-            if bitMap0 != None:
-                oled.Bitmap(int(currentX - 120), int(currentY), bitMap0, 25, 25, 1)
-            if bitMap1 != None:
-                oled.Bitmap(int(currentX - 60), int(currentY), bitMap1, 25, 25, 1)
+            oled.fill_rect(0,0,128,46,0)
+            if bitMap0 != None:oled.Bitmap(int(currentX - 120), int(currentY), bitMap0, 25, 25, 1)
+            if bitMap1 != None:oled.Bitmap(int(currentX - 60), int(currentY), bitMap1, 25, 25, 1)
             oled.Bitmap(int(currentX), int(currentY), bitMap2, 25, 25, 1)
-            oled.Bitmap(int(currentX + 60), int(currentY), bitMap3, 25, 25, 1)
+            if bitMap3 !=None:oled.Bitmap(int(currentX + 60), int(currentY), bitMap3, 25, 25, 1)
             if bitMap4 != None:
                 oled.Bitmap(int(currentX + 120), int(currentY), bitMap4, 25, 25, 1)
             oled.show()
@@ -44,24 +40,28 @@ def App():
     global appNum
     appNum = 0
     while not eval("[/GetButtonExpr('ath')/]"):
-        oled.DispChar('>', 120, 48, 1)
-        oled.DispChar('<', 1, 48, 1)
-        oled.DispChar(List[appNum],DayLight.AutoCenter(List[appNum]), 48, 1)
+        oled.fill_rect(0,50,128,16,0)
+        try:oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
+        except:appNum-=1;oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
         if appNum - 1 >= 0:
             oled.Bitmap(-10, 10, Logo[appNum - 1], 25, 25, 1)
         oled.Bitmap(50, 10, Logo[appNum], 25, 25, 1)
-        if appNum + 1 < len(Logo) - 1:
+        if appNum < len(Logo) - 1:
             oled.Bitmap(110, 10, Logo[appNum + 1], 25, 25, 1)
         oled.hline(0, 46, 128, 1)
         oled.show()
-        oled.fill_rect(0,49,128,16,0)
+        oled.fill_rect(0,50,128,16,0)
+        oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
         if eval("[/GetButtonExpr('py')/]"):
-            if appNum - 1 >= 0:
-                if appNum - 2 >= 0:
-                    Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
-                else:
-                    Bitmap(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
-                appNum -= 1
+                if appNum - 1 >= 0:
+                    if appNum - 2 >= 0 and not (appNum == len(Logo) - 1):
+                        Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
+                    elif appNum == len(Logo) - 1:
+                        try:Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], None, None, 50, 10, 110, 10)
+                        except:Bitmap(None, Logo[appNum - 1], Logo[appNum], None, None, 50, 10, 110, 10)
+                    else:
+                        Bitmap(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
+                    appNum -= 1
         if eval("[/GetButtonExpr('on')/]"):
             if appNum + 2 <= len(Logo) - 1:
                 if appNum - 1 >= 0:
