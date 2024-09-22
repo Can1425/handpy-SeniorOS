@@ -27,7 +27,7 @@ def Bitmap(bitMap0, bitMap1, bitMap2, bitMap3, bitMap4, startX, startY, endX, en
             currentX= startX + (endX - startX) * factor
             currentY = startY + (endY - startY) * factor
             # 根据计算出的 current_x 和 current_y 更新位置
-            oled.fill(0)
+            oled.fill_rect(0,0,128,47,0)
             if bitMap0 != None:
                 oled.Bitmap(int(currentX - 120), int(currentY), bitMap0, 25, 25, 1)
             if bitMap1 != None:
@@ -54,6 +54,7 @@ def App():
             oled.Bitmap(110, 10, Logo[appNum + 1], 25, 25, 1)
         oled.hline(0, 46, 128, 1)
         oled.show()
+        oled.fill_rect(0,49,128,16,0)
         if eval("[/GetButtonExpr('py')/]"):
             if appNum - 1 >= 0:
                 if appNum - 2 >= 0:

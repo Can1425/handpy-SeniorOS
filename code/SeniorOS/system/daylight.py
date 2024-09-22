@@ -349,9 +349,9 @@ class VastSea:
                     currentX= startX + (endX - startX) * factor
                     currentY = startY + (endY - startY) * factor
                     # 根据计算出的 current_x 和 current_y 更新位置
-                    oled.fill(0)
                     oled.Bitmap(int(currentX), int(currentY), bitMap, w, h, 1)
                     oled.show()
+                    oled.Bitmap(int(currentX), int(currentY), bitMap, w, h, 0)
             else:
                 VastSea.Off()
             

@@ -196,9 +196,11 @@ def Home():
                 DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
                 break
             elif eval("[/GetButtonExpr('py')/]"):
-                PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[0]), "Main")
+                DayLight.VastSea.SeniorMove.Line(128, 0, 0, 0, 0, 46, 128, 46)
+                ShutDown()
+                DayLight.VastSea.SeniorMove.Line(0, 46, 128, 46, 128, 0, 0, 0)
             elif eval("[/GetButtonExpr('on')/]"):
-                PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlug-in")[1]), "Main")
+                PagesManager.Main.Import('{}.apps.{}'.format(eval("[/Const('systemName')/]"), Core.Data.Get("list", "homePlugIn")[1]), "Main")
 
 def HomeomePlugInSet():
     while not button_a.is_pressed():
@@ -308,7 +310,7 @@ def Message(text, center=False) -> bool:
     time.sleep(3)
     return True
 def ShutDown():
-    options = DayLight.Select.Style4(['关机','重启','取消'], False, '选择操作')
+    options = DayLight.Select.Style4(['关机','重启','取消'], False, '电源设置')
     if options == 0:
         oled.poweroff()
         machine.deepsleep()

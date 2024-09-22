@@ -32,15 +32,14 @@ class wifi:
         self.sta.connect(ssid, passwd)
         LogManager.Output("Connection WiFi", "INFO")
         STATUS=self.sta.status()
+        timeout,timenow = 10,0
         while (STATUS != 1010):
-            if STATUS == 200 or STATUS == 204:
+            if STATUS == 200 or STATUS == 204 or timenow>=timeout:
                 LogManager.lm.Error("Timeout!,check your wifi password and keep your network unblocked")
-                return False
-            elif STATUS == 202: 
-                LogManager.lm.Error("WiFi password was wrong!")
                 return False
             print(".", end="")
             STATUS=self.sta.status()
+            timenow+=1
             time.sleep_ms(500)
         print("")
         print(self.sta.ifconfig())

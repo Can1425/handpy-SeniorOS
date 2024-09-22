@@ -1,13 +1,10 @@
 from SeniorOS.lib.devlib import oled,touchPad_P,touchPad_Y,touchPad_H,touchPad_O,touchPad_N,touchPad_T,button_a,button_b
 import time
-import uos
 import gc
 import sys
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
 import os
-def RenameCode():
-    uos.rename('/main.py.bak','/main.py')
 def ClearVar():
     for var in sys.modules:
         if not var in ('Core', 'DayLight', 'time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count', 'oled', 'touchPad_P', 'touchPad_Y', 'touchPad_H', 'touchPad_O', 'touchPad_N', 'touchPad_T', 'sys'):
@@ -46,13 +43,8 @@ while True:
         oled.DispChar("屏幕缓冲区已清空",5,16,out=3,return_x=5,maximum_x=126)
         oled.show()
         oled.fill(0)
-        try:
-            uos.rename('/main.py','/main.py.bak') # 先重命名main.py 直接进入REPL
-            __import__("_thread").start_new_thread(RenameCode,()) # 开多线程 在1s后(已进入REPL)时重命名回去
-        except:
-            pass
         ClearVar() # 清空全局变量
-        break
+        sys.exit(1)
     elif button_b.is_pressed():
         othersBuildMain = os.listdir('/SeniorOS/others_build/')
         if othersBuildMain != None:
