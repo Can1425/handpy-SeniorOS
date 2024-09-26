@@ -24,6 +24,20 @@ ACCEPT : touchPad_X
  DENY  : touchpad_x
 ```
 
+合并字符串请用 "%" 或 .format() , 禁止使用 str(+) 或 f""(f-string) 的写法
+examples:
+```python
+str1 = "Hello"
+str2 = "World"
+# 正确
+str3 = "%s %s" % (str1, str2)
+str4 = "{} {}".format(str1, str2)
+
+# 错误
+str3 = str1 + " " + str2
+str4 = f"{str1} {str2}"
+```
+
 ## 文件目录结构
 
 - 任何与系统本体无关的内容不应存放于 `code` 文件夹内

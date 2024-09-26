@@ -10,6 +10,14 @@ def ClearVar():
         if not var in ('Core', 'DayLight', 'time', 'NeoPixel', '__name__', 'gc', 'uos', 'bdev', 'machine', 'count', 'oled', 'touchPad_P', 'touchPad_Y', 'touchPad_H', 'touchPad_O', 'touchPad_N', 'touchPad_T', 'sys'):
             del sys.modules[var]
     Core.FullCollect()
+def Selset(ItemString:str,x,y,*MoreString):
+    DayLight.VastSea.SeniorMove.Box(ItemString,x,y)
+    oled.fill(0)
+    oled.DispChar('启动至 %s'%(ItemString.split(" - ")[1]),5,0)
+    if MoreString is not None:
+        for i in [0,1,2]:oled.DispChar(MoreString[i],5,(i + 1) << 4)
+    oled.show()
+    time.sleep(0.5)
 while True:
     oled.fill(0)
     oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,5,0)
@@ -20,28 +28,16 @@ while True:
     while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
     if eval("[/GetButtonExpr('py')/]"):
-        DayLight.VastSea.SeniorMove.Box("PY - SeniorOS",5,16)
-        oled.fill(0)
-        oled.DispChar('启动至 SeniorOS',5,0)
-        oled.show()
-        time.sleep(0.5)
+        Selset("PY - SeniorOS",5,16)
         gc.enable()
         oled.contrast(int(Core.Data.Get("text", "luminance")))
-        import SeniorOS.system.main
+        __import__('SeniorOS.system.main')
         break
     elif eval("[/GetButtonExpr('on')/]"):
-        DayLight.VastSea.SeniorMove.Box("ON - main.py",5,48)
-        oled.fill(0)
-        oled.DispChar('启动至 main.py',5,0)
-        oled.show()
-        time.sleep(0.5)
+        Selset("ON - main.py",5,48)
         break
     elif eval("[/GetButtonExpr('th')/]"):
-        DayLight.VastSea.SeniorMove.Box("TH - REPL",5,32)
-        oled.fill(0)
-        oled.DispChar('启动至 REPL',5,0)
-        oled.DispChar("屏幕缓冲区已清空",5,16,out=3,return_x=5,maximum_x=126)
-        oled.show()
+        Selset("TH - REPL",5,32,"屏幕缓冲区已清空")
         oled.fill(0)
         ClearVar() # 清空全局变量
         sys.exit(1)
@@ -51,10 +47,7 @@ while True:
             while not button_a.is_pressed():
                 options = DayLight.Select.Style4(othersBuildMain, False, 'SeniorOS ROC')
                 if options != None:
-                    oled.fill(0)
-                    oled.DispChar('启动至 ' + othersBuildMain[options].replace('.mpy', ''), 5, 0)
-                    oled.show()
-                    time.sleep(0.5)
+                    Selset("SeniorOS ROC - %s"%(othersBuildMain[options].replace('.mpy', '')),5,0)
                     Core.FullCollect()
-                    __import__('SeniorOS.others_build.' + othersBuildMain[options].replace('.mpy', ''))
+                    __import__('SeniorOS.others_build.%s'%(othersBuildMain[options].replace('.mpy', '')))
                     break
