@@ -12,7 +12,7 @@ import SeniorOS.lib.pages_manager as PagesManager
 import SeniorOS.system.core as Core
 
 pagesNum = 0
-DLTIME=lambda:DayLight.UITime(True)
+DLTIME=DayLight.UITime(True)
 
 #-----------------------------------------------------------------------------------#
 def Style1():
@@ -39,7 +39,6 @@ class Style3Dependencies:
         PagesManager.Main.Import("SeniorOS.style.home", "Page%d"%pagesNum)
     
     def Page0():
-        while not button_a.is_pressed():
             oled.fill(0)
             oled.DispChar_font(SeniorOS.fonts.misans, DLTIME, 5, 10)
             oled.DispChar_font(SeniorOS.fonts.misans_16, (''.join([str(x) for x in [time.localtime()[1], '/', time.localtime()[2]]])), 5, 35)
