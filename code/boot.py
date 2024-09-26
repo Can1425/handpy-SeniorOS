@@ -14,7 +14,7 @@ def Selset(ItemString:str,x,y,*MoreString):
     DayLight.VastSea.SeniorMove.Box(ItemString,x,y)
     oled.fill(0)
     oled.DispChar('启动至 %s'%(ItemString.split(" - ")[1]),5,0)
-    if MoreString is not None:
+    if MoreString != None:
         for i in [0,1,2]:oled.DispChar(MoreString[i],5,(i + 1) << 4)
     oled.show()
     time.sleep(0.5)
