@@ -122,7 +122,9 @@ class Select:
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
-                if images!=None:oled.Bitmap(0,16*(i+1),images(i),16,16,1)
+                if images!=None:
+                    try:oled.Bitmap(0,16*(i+1),images[i],16,16,1)
+                    except:pass
                 if listNum == i + start:continue
                 Text(item, x, 16 * (i + 1), 2, showMode=1)
             if len(displayItems) > 0:

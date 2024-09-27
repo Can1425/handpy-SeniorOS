@@ -4,7 +4,7 @@ from esp import flash_read
 from neopixel import NeoPixel
 from SeniorOS.lib.ssd1106_dpr import SSD1106_I2C
 from micropython import schedule,const
-from gui import *
+from SeniorOS.lib.BetterGui import *
 import micropython
 from framebuf import FrameBuffer
 import ustruct,math,time

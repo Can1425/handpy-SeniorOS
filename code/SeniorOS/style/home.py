@@ -10,7 +10,6 @@ import font.digiface_11
 import urequests
 import SeniorOS.lib.pages_manager as PagesManager
 import SeniorOS.system.core as Core
-
 pagesNum = 0
 DLTIME=DayLight.UITime(True)
 

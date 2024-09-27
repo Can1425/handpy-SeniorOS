@@ -120,9 +120,9 @@ class DiskManager:
         #本来这里可以用json的，但sm dl不给用
     def DiskManager(self):
         while True:
-            options = DayLight.ListOptions(["打开存储器","退出"],appTitle = "选择操作",x=16)
+            options = DayLight.ListOptions(["打开存储器","退出"],window=False,appTitle = "选择操作",x=16 ,images = [bytearray([0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XF0,0X10,0XEF,0XF7,0XDF,0XF1,0X80,0X17,0XBF,0XF7,0XA7,0XFD,0XA7,0XFD,0XBF,0XFD,0X80,0X01,])])
             if options == 0:
-                FileViewer().fileviewer(self.DiskList[DayLight.ListOptions(self.DiskList,appTitle = "选择操作",x=16)])
+                FileViewer().fileviewer(self.DiskListPoint[DayLight.ListOptions(self.DiskList,False,appTitle = "选择盘")])
             elif options == 1:
                 return 0
 class FileViewer:
@@ -204,4 +204,5 @@ class FileViewer:
                     break
 
 def Main():
-    FileViewer().fileviewer("/")
+    DiskManager().DiskManager()
+    return 
