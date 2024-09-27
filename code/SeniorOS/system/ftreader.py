@@ -6,6 +6,7 @@
 from SeniorOS.lib.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
+import SeniorOS.system.pages as Pages
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
@@ -113,17 +114,78 @@ class Textreader:
                 elif button_a.is_pressed():
                     offset-=8
                     break
+class RAMBlockDev:#ramdisk by micropython
+    def __init__(self, block_size, num_blocks):
+        self.block_size = block_size
+        self.data = bytearray(block_size * num_blocks)
+
+    def readblocks(self, block_num, buf, offset=0):
+        addr = block_num * self.block_size + offset
+        for i in range(len(buf)):
+            buf[i] = self.data[addr + i]
+
+    def writeblocks(self, block_num, buf, offset=None):
+        if offset is None:
+            # do erase, then write
+            for i in range(len(buf) // self.block_size):
+                self.ioctl(6, block_num + i)
+            offset = 0
+        addr = block_num * self.block_size + offset
+        for i in range(len(buf)):
+            self.data[addr + i] = buf[i]
+
+    def ioctl(self, op, arg):
+        if op == 4: # block count
+            return len(self.data) // self.block_size
+        if op == 5: # block size
+            return self.block_size
+        if op == 6: # block erase
+            return 0
 class DiskManager:
     def __init__(self):
         self.DiskList = ["flash"]
         self.DiskListPoint = ["/"]
         #本来这里可以用json的，但sm dl不给用
+        self.SDCardList = []
+        self.SDCardMountPoint = []
+        self.RamDisk = False
     def DiskManager(self):
         while True:
-            options = DayLight.ListOptions(["打开存储器","退出"],window=False,appTitle = "选择操作",x=16 ,images = [bytearray([0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XF0,0X10,0XEF,0XF7,0XDF,0XF1,0X80,0X17,0XBF,0XF7,0XA7,0XFD,0XA7,0XFD,0XBF,0XFD,0X80,0X01,])])
+            options = DayLight.ListOptions(["打开存储器","SD卡管理器","RAM虚拟盘","退出"],window=False,appTitle = "选择操作",x=16 ,images = [bytearray([0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XF0,0X10,0XEF,0XF7,0XDF,0XF1,0X80,0X17,0XBF,0XF7,0XA7,0XFD,0XA7,0XFD,0XBF,0XFD,0X80,0X01,])])
             if options == 0:
                 FileViewer().fileviewer(self.DiskListPoint[DayLight.ListOptions(self.DiskList,False,appTitle = "选择盘")])
             elif options == 1:
+                Pages.Message("SD卡管理器暂未实现!",True)
+                '''
+                options = DayLight.ListOptions(["挂载SD卡","卸载SD卡"],False,appTitle = "选择操作")
+                if options == 0:
+                    import machine
+                elif options == 1:
+                    if len(self.SDCardList):
+                '''       
+            elif options == 2:
+                options = DayLight.ListOptions(["挂载RAMDISK","卸载RAMDISK"],False,appTitle = "选择操作")
+                if options == 0:
+                    if self.RamDisk:
+                        Pages.Message("RAMDISK已经挂载!",True)
+                        break
+                    else:
+                        #使用最高1024bytes的ramdisk
+                        import vfs
+                        bdev = RAMBlockDev(1024, 50)
+                        vfs.VfsLfs2.mkfs(bdev)
+                        vfs.mount(bdev, '/ramdisk')
+                        self.RamDisk = True
+                        self.DiskList.append("ramdisk")
+                        self.DiskListPoint.append("/ramdisk")
+                elif options == 1:
+                    if self.RamDisk:
+                        import vfs
+                        vfs.umount("/ramdisk")
+                        self.DiskList.remove("ramdisk")
+                        self.DiskListPoint.remove("/ramdisk")
+                    self.RamDisk = False
+            elif options == 3:
                 return 0
 class FileViewer:
     def __init__(self):
