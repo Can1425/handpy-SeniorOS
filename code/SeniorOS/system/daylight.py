@@ -118,12 +118,13 @@ class Select:
         listNum = 0
         if images!=None and x < 16:x=16
         while True:
+            gc.collect()
             oled.fill(0)
             start = max(0, min(len(dispContent) - 3, listNum - 1))
             displayItems = dispContent[start:start + 3]
             for i, item in enumerate(displayItems):
                 if images!=None:
-                    try:oled.Bitmap(0,16*(i+1),images[i],16,16,1)
+                    try:oled.Bitmap(0,16*(i+1),images[i+start],16,16,0)
                     except:pass
                 if listNum == i + start:continue
                 Text(item, x, 16 * (i + 1), 2, showMode=1)
@@ -136,15 +137,15 @@ class Select:
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
-                        VastSea.SelsetBoxMove(5, 16+16*(listNum-start),displayItems[listNum - start],
-                                              5,16+16*(listNum-start+1),displayItems[listNum - start+1],
+                        VastSea.SelsetBoxMove(x, 16+16*(listNum-start),displayItems[listNum - start],
+                                              x,16+16*(listNum-start+1),displayItems[listNum - start+1],
                                               MODE="fill_rect")
                         listNum += 1
                         break
                 elif eval("[/GetButtonExpr('py')/]"):
                     if listNum > 0:
-                        VastSea.SelsetBoxMove(5,16+16*(listNum-start),displayItems[listNum - start],
-                                              5,16+16*(listNum-start-1),displayItems[listNum - start-1],
+                        VastSea.SelsetBoxMove(x,16+16*(listNum-start),displayItems[listNum - start],
+                                              x,16+16*(listNum-start-1),displayItems[listNum - start-1],
                                               MODE="fill_rect")
                         listNum -= 1
                         break
@@ -189,6 +190,7 @@ class VastSea:
         sx=x;sy=y
         NowWidth = GetCharWidth(char)
         ToWidth = GetCharWidth(NewChar)
+        gc.collect()
         if MODE == "rect":
             char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
             char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)

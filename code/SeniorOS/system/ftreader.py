@@ -6,7 +6,7 @@
 from SeniorOS.lib.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
-import SeniorOS.system.pages as Pages
+#温馨提示，一个逆天问题导致Pages无法导入，讲究看看就好
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
@@ -66,10 +66,15 @@ class Animations:
         oled.rect(0,0,128,64,1)
         oled.show()
 class picture:
+    #fileviewer_images
     pathpic=bytearray([0X00,0X00,0X3E,0X00,0X41,0X00,0X80,0X80,0X81,0XFC,0XFE,0X02,0X80,0X01,0X80,0X01,0XFF,0XFF,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X40,0X02,0X3F,0XFC,])
     filepic=bytearray([0X00,0X00,0X3F,0XC0,0X20,0X60,0X2F,0X50,0X20,0X48,0X2F,0X7C,0X20,0X04,0X23,0XC4,0X22,0X04,0X23,0X84,0X22,0X04,0X22,0X04,0X22,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
     runpic=filepic
     picpic=bytearray([0XFF,0XFF,0X80,0X01,0X8C,0X01,0X92,0X01,0X92,0X09,0X8C,0X15,0X80,0X23,0X84,0X41,0X8A,0X81,0X91,0X01,0XA0,0X01,0XC0,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0XFF,0XFF,])
+    #DiskManager_images
+    Flash = bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0F,0XEF,0X10,0X08,0X20,0X0E,0X7F,0XE8,0X40,0X08,0X58,0X02,0X58,0X02,0X40,0X02,0X7F,0XFE,])
+    SDCard = bytearray([0X00,0X00,0X3F,0XC0,0X20,0X20,0X20,0X10,0X20,0X08,0X20,0X04,0X20,0X04,0X26,0XE4,0X28,0X94,0X26,0X94,0X22,0X94,0X2C,0XE4,0X20,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
+    EXIT = bytearray([0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X80,0X01,0X00,0X03,0XF0,0X01,0X08,0X00,0X84,0X00,0X44,0X00,0X04,0X00,0X04,0X00,0X08,0X1F,0XF0,0X00,0X00,0X00,0X00,0X00,0X00,])
 class Textreader:
     def __init__(self, text, splitCfg="\n"):
         self.text = text.split(splitCfg)
@@ -114,78 +119,41 @@ class Textreader:
                 elif button_a.is_pressed():
                     offset-=8
                     break
-class RAMBlockDev:#ramdisk by micropython
-    def __init__(self, block_size, num_blocks):
-        self.block_size = block_size
-        self.data = bytearray(block_size * num_blocks)
-
-    def readblocks(self, block_num, buf, offset=0):
-        addr = block_num * self.block_size + offset
-        for i in range(len(buf)):
-            buf[i] = self.data[addr + i]
-
-    def writeblocks(self, block_num, buf, offset=None):
-        if offset is None:
-            # do erase, then write
-            for i in range(len(buf) // self.block_size):
-                self.ioctl(6, block_num + i)
-            offset = 0
-        addr = block_num * self.block_size + offset
-        for i in range(len(buf)):
-            self.data[addr + i] = buf[i]
-
-    def ioctl(self, op, arg):
-        if op == 4: # block count
-            return len(self.data) // self.block_size
-        if op == 5: # block size
-            return self.block_size
-        if op == 6: # block erase
-            return 0
 class DiskManager:
     def __init__(self):
         self.DiskList = ["flash"]
         self.DiskListPoint = ["/"]
         #本来这里可以用json的，但sm dl不给用
-        self.SDCardList = []
-        self.SDCardMountPoint = []
+        self.SDCard=False
         self.RamDisk = False
+        self.sd_read_only = False
     def DiskManager(self):
         while True:
-            options = DayLight.ListOptions(["打开存储器","SD卡管理器","RAM虚拟盘","退出"],window=False,appTitle = "选择操作",x=16 ,images = [bytearray([0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XFF,0XF0,0X10,0XEF,0XF7,0XDF,0XF1,0X80,0X17,0XBF,0XF7,0XA7,0XFD,0XA7,0XFD,0XBF,0XFD,0X80,0X01,])])
+            options = DayLight.ListOptions(["打开存储器","SD卡管理器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.SDCard,picture.EXIT])
+            gc.collect()
             if options == 0:
                 FileViewer().fileviewer(self.DiskListPoint[DayLight.ListOptions(self.DiskList,False,appTitle = "选择盘")])
             elif options == 1:
-                Pages.Message("SD卡管理器暂未实现!",True)
-                '''
                 options = DayLight.ListOptions(["挂载SD卡","卸载SD卡"],False,appTitle = "选择操作")
-                if options == 0:
-                    import machine
+                if options == 0: #已导入
+                    Pages.Message("请将卡插至P13-P16",True)
+                    #挂载部分
+                    self.sd_read_only = bool(DayLight.ListOptions(["读/写","只读"],False,appTitle = "SD卡权限"))
+                    os.mount(SDCard(sck = Pin.P13, miso = Pin.P14, mosi = Pin.P15, cs = Pin.P16), "/sd", readonly = self.sd_read_only)
+                    Pages.Message("SD卡已挂载至目录  /sd")#看着有点乱
+                    self.SDCard=True
+                    self.DiskList.append("SDCard")
+                    self.DiskListPoint.append("/sd")
                 elif options == 1:
-                    if len(self.SDCardList):
-                '''       
-            elif options == 2:
-                options = DayLight.ListOptions(["挂载RAMDISK","卸载RAMDISK"],False,appTitle = "选择操作")
-                if options == 0:
-                    if self.RamDisk:
-                        Pages.Message("RAMDISK已经挂载!",True)
-                        break
+                    if self.SDCard:
+                        os.umount(self.sd_fsdir)
+                        Pages.Message("SD卡已卸载!",True)
+                        self.SDCard = False
+                        self.DiskList.remove("SDCard")
+                        self.DiskListPoint.remove("/sd")
                     else:
-                        #使用最高1024bytes的ramdisk
-                        import vfs
-                        bdev = RAMBlockDev(1024, 50)
-                        vfs.VfsLfs2.mkfs(bdev)
-                        vfs.mount(bdev, '/ramdisk')
-                        self.RamDisk = True
-                        self.DiskList.append("ramdisk")
-                        self.DiskListPoint.append("/ramdisk")
-                elif options == 1:
-                    if self.RamDisk:
-                        import vfs
-                        vfs.umount("/ramdisk")
-                        self.DiskList.remove("ramdisk")
-                        self.DiskListPoint.remove("/ramdisk")
-                    self.RamDisk = False
-            elif options == 3:
+                        Pages.Message("未挂载SD卡!",True)
+            elif options == 2:
                 return 0
 class FileViewer:
     def __init__(self):
@@ -194,7 +162,7 @@ class FileViewer:
         self.DirLen=len(self.Dir)
         self.config={0:"目录",1:"文件",2:"可执行文件",3:"图片"}
         self.PictureConfig={"目录":picture.pathpic,"文件":picture.filepic,
-                            "可执行文件":picture.runpic,"图片":picture.picpic}
+                            "可执行文件":picture.runpic,"图片":picture.picpic,}
     def UseTextReader(self,Path):
         with open(Path,"r") as f:
             readFile=Textreader(f.read())
