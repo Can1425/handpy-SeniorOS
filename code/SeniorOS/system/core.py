@@ -41,7 +41,7 @@ class DataCtrl:
 Data = DataCtrl("/SeniorOS/data/")
 def VitalData(*nothing):
     return (int(Data.Get("text", "touchPadValue")))
-
+'''
 class AppSetup:
     def __init__(self,filePath):
         self.filePath=filePath
@@ -83,7 +83,7 @@ class AppSetup:
                     if lines>2:
                         f.write(i+'\n')
                     lines+=1
-        return 
+        return '''
 # Core.AppSetup("/SeniorOS/download/test.spk").setup()
     
 # 文件/路径 格式工厂
@@ -130,12 +130,11 @@ def FullCollect():
             return m
 
 # 获取设备ID
-def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),
-                mode=1
-        ):
-    if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
-    elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
-
+def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),mode=1):
+    return ("".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x")) if mode == 0 else "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x")))
+    #if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
+    #elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
+'''
 # 支持2算法的截图
 # 分别为 直接复制缓冲区数据(CopyFrameBuf) 和 枚举缓冲区数据(Enumerate)
 # 在Enumerate中 又细分为 速度优先(fast) 与 内存占用最小(ram)
@@ -173,7 +172,7 @@ class Screenshot:
             with open('screenshot.pbm', 'wb') as f:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
-                f.write(buffer)  # 将缓冲区数据写入PBM文件
+                f.write(buffer)  # 将缓冲区数据写入PBM文件'''
 '''
 def Tree(path="/",prt=print,_tabs=0):
     lst=os.listdir(path)
