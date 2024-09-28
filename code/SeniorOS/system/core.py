@@ -24,23 +24,22 @@ class DataCtrl:
         LogManager.Output("SystemData initial", "INFO")
         self.toml = toml.toml()
         for i in [f for f in os.listdir(dataFolderPath) if f.endswith('.toml')]:
-            with open(dataFolderPath+i,'r',encoding='utf-8')as f:
-                self.data[i.replace('.toml','')]=self.toml.toml2dict(f)
+            with open(dataFolderPath+i,'r',encoding='utf-8')as f:self.data[i.replace('.toml','')]=self.toml.toml2dict(f)
     # 获取数据
-    def GetOriginal(self,dataName):
-        return self.data[dataName]
+    def GetOriginal(self,FileName,end="sros"):
+        with open("%s/%s.%s"%(self.dataFolderPath,FileName,end),"r") as f:return f.read()
     def Get(self, controls, dataName):
-        ConfigRead = Data.GetOriginal(controls)
+        ConfigRead = self.data[controls]
         try:return eval(eval("ConfigRead[dataName]",{"ConfigRead":ConfigRead,"dataName":dataName}))
         except:return ConfigRead[dataName]
     def Write(self, controls, dataName, dataValue):
         self.data[controls][dataName] = dataValue
-        with open(self.dataFolderPath+controls+'.toml',"w") as f:
-            f.write(self.toml.dict2toml(self.data[controls]))
+        with open(self.dataFolderPath+controls+'.toml',"w") as f:f.write(self.toml.dict2toml(self.data[controls]))
 
 Data = DataCtrl("/SeniorOS/data/")
-def VitalData(*nothing):
-    return (int(Data.Get("text", "touchPadValue")))
+VitalData = lambda nothing:Data.Get("vitalData","touchPadValue")
+#def VitalData(*nothing):
+ #   return (int(Data.Get("text", "touchPadValue")))
 '''
 class AppSetup:
     def __init__(self,filePath):
@@ -90,13 +89,14 @@ class AppSetup:
 class File_Path_Factory:
 
     # 将所有的斜杠替换为反斜杠 便于统一路径
-    def Replace2Backslash(path):
-        return path.replace("\\","/")
+    Replace2Backslash = lambda path: path.replace("/", "\\")
+    #def Replace2Backslash(path):
+    #    return path.replace("\\","/")
 
     # 判断文件是否存在
     # 传入一绝对路径 返回1布尔值
     def FileIsExist(filePath:str)->bool:
-        filePath=File_Path_Factory.Format.Replace2Backslash(filePath)
+        filePath=File_Path_Factory.Replace2Backslash(filePath)
         if filePath[-1] in os.listdir("/"+filePath[:-1]):return True
         else:return False
 

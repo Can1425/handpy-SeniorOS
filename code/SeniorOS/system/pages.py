@@ -39,10 +39,8 @@ def ConfigureWLAN(ssid, password):
         return False
 
 def WifiPages():
-    oled.fill(0)
     DayLight.VastSea.Off()
-    while not eval("[/GetButtonExpr('th')/]"):
-        wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), False, eval("[/Language('请选择配置')/]"))
+    wifiNum = DayLight.ListOptions(Core.Data.Get("list", "wifiName"), False, eval("[/Language('请选择配置')/]"))
     oled.show()
     ConfigureWLAN((Core.Data.Get("list", "wifiName")[wifiNum]), (Core.Data.Get("list", "wifiPassword")[wifiNum]))
 
@@ -258,12 +256,10 @@ def WaitMod(func):
     DayLight.UITools()
     try:
         oled.DispChar(eval("[/Language('请稍等')/]"), 5, 5, 1)
-        time.sleep_ms(5)
         oled.DispChar(eval("[/Language('正在进行操作')/]"), 5, 18, 1)
         oled.show()
         eval("func",{"func":func})
         oled.DispChar(eval("[/Language('加载成功')/]"), 5, 45, 1)
-        time.sleep_ms(5)
         oled.show()
         return True
     except:

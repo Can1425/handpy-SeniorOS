@@ -36,11 +36,9 @@ class Main:
     def Import(moduleLoc: str, funcName: str, log = True, *argument) -> bool:
         gc.collect()
         if log:Log.Info(moduleLoc + " " + funcName + "(func)")
-        module = __import__(moduleLoc, globals(), locals(), [funcName])
-        func = getattr(module, funcName)
         try:
             gc.collect()
-            func(*argument)
+            getattr(__import__(moduleLoc, globals(), locals(), [funcName]), funcName)(*argument)
             gc.collect()
         except Exception as e:
             Log.Error(moduleLoc + " > ERROR LOG THROWN:")

@@ -24,8 +24,7 @@ AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
 HomeTimeAutoCenter = AutoCenter
 def Box(x1, y1, x2, y2, fill = False):
     UITools()
-    if fill:
-        oled.fill_rect(x1 + 1, y1 + 1, x2 - 2, y2 - 2, 0)
+    if fill:oled.fill_rect(x1 + 1, y1 + 1, x2 - 2, y2 - 2, 0)
     oled.rect(x1, y1, x2, y2, 1)
 
 def ProgressBoxMove(x,y,w,h,progress,step=8):
@@ -170,20 +169,19 @@ class VastSea:
             Core.Data.Write("text", 'VastSeaSwitch', str(get))
         return
     def SpeedSet():
-        presuppose = {
-            0:"100",
-            1:"200",
-            2:"300",
-        }
+        presuppose = lambda num:str((num+1)*100)
+        #presuppose = {
+        #    0:"100",
+        #    1:"200",
+        #    2:"300",
+        #}
         while not button_a.is_pressed():
             options = Select.Style4(["高效", "优雅", "柔和"], False, "动画速率")
             if options != None:
                 VastSea.Transition()
-                Core.Data.Write("text", "VastSeaSpeed", presuppose[options])
+                Core.Data.Write("text", "VastSeaSpeed", presuppose(options))
                 PagesManager.Main.Import('SeniorOS.system.pages', 'Message', True, "设置成功\n{}".format(["故事半古之人，功必倍之", "用心聆听，深深呼吸", "松风吹解带，山月照弹琴"][options]))
                 VastSea.Transition(False)
-
-        else:
             VastSea.Transition(False)
     @staticmethod
     def SelsetBoxMove(x,y,char,ToX,ToY,NewChar,MODE="rect"):
@@ -431,5 +429,3 @@ def TouchPadValueSet():
 mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
 def Text(text, x, y, outMode, space = 1, maximum_x = 126, returnX = 5, returnAddy = 16, showMode = 1):
     oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
-    return
-#Text(appTitle, 5, 0, 1, 3, 1, 100)
