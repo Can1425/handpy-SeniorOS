@@ -37,7 +37,7 @@ class DataCtrl:
         with open(self.dataFolderPath+controls+'.toml',"w") as f:f.write(self.toml.dict2toml(self.data[controls]))
 
 Data = DataCtrl("/SeniorOS/data/")
-VitalData = lambda nothing:Data.Get("vitalData","touchPadValue")
+VitalData = lambda nothing:Data.Get("text","touchPadValue")
 #def VitalData(*nothing):
  #   return (int(Data.Get("text", "touchPadValue")))
 '''
@@ -196,5 +196,5 @@ def Tree(path="/",prt=print,_tabs=0):
             Tree(path+'/'+i,prt,_tabs+1)'''
 
 def ListState(dispContent, selectNum):
-    return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))
-
+    return "{}/{}".format(selectNum+1, len(dispContent))
+    #return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))

@@ -222,7 +222,8 @@ def About():
             FTReader.Textreader(Core.Data.GetOriginal('Hello_World')).Main()
             DayLight.VastSea.Transition(False)
 
-def Wlanscan():return [i[0].decode() for i in wifi().sta.scan()]#返回
+Wlanscan = lambda: [i[0].decode() for i in wifi().sta.scan()]
+#def Wlanscan():return [i[0].decode() for i in wifi().sta.scan()]#返回
 
 def Choosewifi() -> bool:
     while not button_a.is_pressed():

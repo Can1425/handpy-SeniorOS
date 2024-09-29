@@ -8,7 +8,7 @@ import SeniorOS.lib.pages_manager as PagesManager
 appNum = 0
 operationalJudgment = 0
 List = Core.Data.Get("list", "localAppName")
-appDir=os.listdir("SeniorOS/apps")
+appDir=os.listdir("/SeniorOS/apps")
 for i in range(len(appDir)):
     if appDir[i]!="port.py" or appDir[i]!="logo.py":
         appDir[i]=appDir[i].replace(".mpy","")
@@ -35,7 +35,8 @@ def Bitmap(bitMap0, bitMap1, bitMap2, bitMap3, bitMap4, startX, startY, endX, en
             oled.show()
     else:
         DayLight.VastSea.Off()
-
+def PYTouch(a,b,c,d):Bitmap(a, b, c, d, None, 50, 10, 110, 10)
+def ONTouch(a,b,c,d,e):Bitmap(a, b, c, d, e, 50, 10, -10, 10)
 def App():
     global appNum
     appNum = 0
@@ -55,34 +56,32 @@ def App():
         if eval("[/GetButtonExpr('py')/]"):
                 if appNum - 1 >= 0:
                     if appNum - 2 >= 0 and not (appNum == len(Logo) - 1):
-                        Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
+                        PYTouch(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1])
                     elif appNum == len(Logo) - 1:
-                        try:Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], None, None, 50, 10, 110, 10)
-                        except:Bitmap(None, Logo[appNum - 1], Logo[appNum], None, None, 50, 10, 110, 10)
+                        try:PYTouch(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], None)
+                        except:PYTouch(None, Logo[appNum - 1], Logo[appNum], None)
                     else:
-                        Bitmap(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, 110, 10)
+                        PYTouch(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1])
                     appNum -= 1
-        if eval("[/GetButtonExpr('on')/]"):
+        elif eval("[/GetButtonExpr('on')/]"):
             if appNum + 2 <= len(Logo) - 1:
                 if appNum - 1 >= 0:
-                    if appNum - 2 >= 0:
-                        Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
-                    else:
-                        Bitmap(None, Logo[appNum - 2], Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
+                    ist = appNum - 2 >= 0#温馨提示，这里所有的ist都是bool类型，只占1个字节，不用改了
+                    ONTouch((Logo[appNum - 2] if ist else None), 
+                            Logo[appNum - 1],Logo[appNum], Logo[appNum + 1], Logo[appNum + 2])
                 else:
-                    Bitmap(None, None, Logo[appNum], Logo[appNum + 1], Logo[appNum + 2], 50, 10, -10, 10)
+                    ONTouch(None, None, Logo[appNum], Logo[appNum + 1], Logo[appNum + 2])
             elif appNum + 1 <= len(Logo) - 1:
                 if appNum - 1 >= 0:
-                    if appNum - 2 >= 0:
-                        Bitmap(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1], None, 50, 10, -10, 10)
-                    else:
-                        Bitmap(None, Logo[appNum - 2], Logo[appNum], Logo[appNum + 1], None, 50, 10, -10, 10)
+                    ist = appNum - 2 >= 0
+                    ONTouch((Logo[appNum - 2] if ist else None),
+                            Logo[appNum - 1],Logo[appNum], Logo[appNum + 1], None)
                 else:
-                    Bitmap(None, None, Logo[appNum], Logo[appNum + 1], None, 50, 10, -10, 10)
+                    ONTouch(None, None, Logo[appNum], Logo[appNum + 1], None)
             appNum += 1
-        if eval("[/GetButtonExpr('th')/]"):
+        elif eval("[/GetButtonExpr('th')/]"):
             DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, 5, 0)
-            PagesManager.Main.Import('SeniorOS.apps.' + str(appDir[appNum]), 'Main')
-            del sys.modules[eval("[/Const('systemName')/]") + '.apps.' + str(appDir[appNum])]
+            PagesManager.Main.Import('SeniorOS.apps.%s'%appDir[appNum], 'Main')
+            del sys.modules["{}.apps.{}".format(eval("[/Const('systemName')/]"),appDir[appNum])]
             gc.collect()
             DayLight.VastSea.SeniorMove.Text(List[appNum], 5, 0, DayLight.AutoCenter(List[appNum]), 48)
