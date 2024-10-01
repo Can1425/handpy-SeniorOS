@@ -16,10 +16,7 @@ def UITime(pages=True):
              (':' if pages else "") + \
             ('0%s'%(m) if not (bool(len(m)-1)) else m)
 
-def GetCharWidth(s):
-    # 获取字符宽度的优化实现
-    return oled.DispChar(s, 0, 0, Colormode.noshow)[0][0] + int(len(s)/2)
-
+GetCharWidth = lambda s: oled.DispChar(s, 0, 0, Colormode.noshow)[0][0] + int(len(s)/2)
 AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
 HomeTimeAutoCenter = AutoCenter
 def Box(x1, y1, x2, y2, fill = False):
@@ -78,7 +75,7 @@ class Select:
         UITools()
         selectNum = 0
         if appTitle:App.Style1(appTitle,window)
-        elif window:Box(1,1,126,62)
+        if window:Box(1,1,126,62)
         oled.show()
         while not button_a.is_pressed():
             if window:
@@ -98,7 +95,7 @@ class Select:
 
     @staticmethod
     def Style3():
-        UITools()
+        #UITools()
         while not button_a.is_pressed():
             if eval("[/GetButtonExpr('on')/]"):return 1
             elif eval("[/GetButtonExpr('py')/]"):return 0
@@ -130,16 +127,20 @@ class Select:
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
+                        print("start:{}".format(gc.mem_free()))
                         VastSea.SelsetBoxMove(x, 16+16*(listNum-start),displayItems[listNum - start],
                                               x,16+16*(listNum-start+1),displayItems[listNum - start+1],
                                               MODE="fill_rect")
+                        print("end:{}".format(gc.mem_free()))
                         listNum += 1
                         break
                 elif eval("[/GetButtonExpr('py')/]"):
                     if listNum > 0:
+                        print("start:{}".format(gc.mem_free()))
                         VastSea.SelsetBoxMove(x,16+16*(listNum-start),displayItems[listNum - start],
                                               x,16+16*(listNum-start-1),displayItems[listNum - start-1],
                                               MODE="fill_rect")
+                        print("end:{}".format(gc.mem_free()))
                         listNum -= 1
                         break
                 elif eval("[/GetButtonExpr('th')/]"):
@@ -155,7 +156,6 @@ class VastSea:
             oled.fill(0)
             UITools()
             App.Style2(eval("[/Language('动效开关')/]"))
-            time.sleep_ms(5)
             get = int(Core.Data.Get("text", "VastSeaSwitch"))
             oled.DispChar([eval("[/Language('关闭')/]"), eval("[/Language('开启')/]")][get], 5, 18, 1)
             oled.show()
@@ -164,11 +164,6 @@ class VastSea:
         return
     def SpeedSet():
         presuppose = lambda num:str((num+1)*100)
-        #presuppose = {
-        #    0:"100",
-        #    1:"200",
-        #    2:"300",
-        #}
         while not button_a.is_pressed():
             options = Select.Style4(["高效", "优雅", "柔和"], False, "动画速率")
             if options != None:
@@ -183,14 +178,21 @@ class VastSea:
         NowWidth = GetCharWidth(char)
         ToWidth = GetCharWidth(NewChar)
         gc.collect()
+        if gc.mem_free() < (5 * (16 * NowWidth + 16 * ToWidth)):
+            print("内存不足,停止运行!")
+            return
         if MODE == "rect":
-            char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
-            char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            try:char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            except:return
+            try:char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            except:return
             oled.DispChar(char,0,0,buffer=char1FB)
             oled.DispChar(NewChar,0,0,buffer=char2FB)
         else:
-            char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
-            char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            try:char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            except:return
+            try:char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
+            except:return
             char1FB_FILL.fill(1)
             char2FB_FILL.fill(1)
             oled.DispChar(char,0,0,mode=2,buffer=char1FB_FILL)
@@ -368,7 +370,7 @@ def LightModeSet():
         oled.fill(0)
         UITools()
         App.Style2(eval("[/Language('日光模式')/]"))
-        time.sleep_ms(5)
+        
         get = int(Core.Data.Get("text", "lightMode"))
         oled.DispChar(mode[get], 5, 18, 1)
         oled.show()
@@ -383,7 +385,7 @@ def LuminanceSet():
         oled.contrast(luminance)
         oled.fill(0)
         App.Style2(eval("[/Language('亮度调节')/]"))
-        time.sleep_ms(5)
+        
         oled.DispChar(eval("[/Language('当前值')/]") + str(luminance), 5, 18, 1)
         oled.show()
         if eval("[/GetButtonExpr('on')/]"):
@@ -405,22 +407,16 @@ def TouchPadValueSet():
     while not button_A.is_pressed():
         oled.fill(0)
         App.Style2(eval("[/Language('触摸键灵敏度')/]"))
-        oled.DispChar(eval("[/Language('当前值')/]") + str(sensitivity), 5, 18, 1)
+        oled.DispChar("{}:{}".format(eval("[/Language('当前值')/]"),str(sensitivity)), 5, 18, 1)
         oled.show()
         if eval("[/GetButtonExpr('on')/]"):
-            sensitivity = sensitivity + 5
-            if sensitivity > 800:
-                sensitivity = 800
+            sensitivity = (sensitivity + 5 if sensitivity + 5 <= 800 else 800)
             TouchPad.config(sensitivity)
         if eval("[/GetButtonExpr('py')/]"):
-            sensitivity = sensitivity - 5
-            if sensitivity < -100:
-                sensitivity = -100
+            sensitivity = (sensitivity - 5 if sensitivity - 5 >= -100 else -100)
             TouchPad.config(sensitivity)
     TouchPad.config(sensitivity)
-    Core.Data.Write("text",'luminance',str(sensitivity))
-    return sensitivity
+    return Core.Data.Write("text","touchPadValue",sensitivity)
 
 mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
-def Text(text, x, y, outMode, space = 1, maximum_x = 126, returnX = 5, returnAddy = 16, showMode = 1):
-    oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
+Text = lambda text,x,y,outMode,space = 1,maximum_x=126,returnX=5,returnAddy=16,showMode=1:oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)

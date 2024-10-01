@@ -153,7 +153,7 @@ class Image():
             file.seek(0)
             img_arrays = bytearray(file.read())
             if self.image_type == 'P4':
-                fb = self._pbm_decode(file.read())
+                fb = self._pbm_decode(img_arrays)
 
             elif self.image_type == 'BM':
                 fb = self._bmp_decode(img_arrays)
@@ -162,20 +162,31 @@ class Image():
             gc.collect()
             return fb
 
-    def _pbm_decode(self, file):#p4
-        index = 2
-        width = ''
-        height = ''
-        for index in range(5+index):#算上空格最多5字符,如:" 128 "
-            if file[index] == ord(" "):continue
-            width += chr(file[index])
-        width = int(width)
-        for index in range(4+index):#算上空格最多4字符,如:" 64 "
-            if file[index] == ord(" "):continue
-            height += chr(file[index])
-        height = int(height)
-        return FrameBuffer(bytearray(file.read()), width, height, framebuf.MONO_HLSB)
-    
+    def _pbm_decode(self, img_arrays):
+        next_value = bytearray()
+        pnm_header = []
+        stat = True
+        index = 3
+        while stat:
+            next_byte = bytes([img_arrays[index]])
+            if next_byte == b"#":
+                while bytes([img_arrays[index]]) not in [b"", b"\n"]:
+                    index += 1
+            if not next_byte.isdigit():
+                if next_value:
+                    pnm_header.append(int("".join(["%c" % char for char in next_value])))
+                    next_value = bytearray()
+            else:
+                next_value += next_byte
+            if len(pnm_header) == 2:
+                stat = False
+            index += 1
+        pixel_arrays = img_arrays[index:]
+        if self.invert == 1:
+            for i in range(len(pixel_arrays)):
+                pixel_arrays[i] = (~pixel_arrays[i]) & 0xff
+        return FrameBuffer(pixel_arrays, pnm_header[0], pnm_header[1], 3)
+
     def _bmp_decode(self, img_arrays):
 
         #file_size = int.from_bytes(img_arrays[2:6], 'little')

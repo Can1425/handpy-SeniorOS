@@ -66,8 +66,6 @@ def replace_expression(file):
 def compile_file(file_path):
     if Path(file_path).name == "boot.py":
         return
-    elif Path(file_path).name == "logo.py":
-        return
     logging.debug(f"编译文件：{file_path}")  # 将文件处理日志级别设置为DEBUG
     os.system(f"mpy-cross-v5 {file_path} -march=xtensawin")
     os.remove(file_path)

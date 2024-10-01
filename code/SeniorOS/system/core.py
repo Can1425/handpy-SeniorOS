@@ -35,6 +35,7 @@ class DataCtrl:
     def Write(self, controls, dataName, dataValue):
         self.data[controls][dataName] = dataValue
         with open(self.dataFolderPath+controls+'.toml',"w") as f:f.write(self.toml.dict2toml(self.data[controls]))
+        return dataValue
 
 Data = DataCtrl("/SeniorOS/data/")
 VitalData = lambda nothing:Data.Get("text","touchPadValue")

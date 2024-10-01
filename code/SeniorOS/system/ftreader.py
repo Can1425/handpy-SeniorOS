@@ -6,13 +6,14 @@
 from SeniorOS.lib.devlib import *
 import SeniorOS.system.core as Core
 import SeniorOS.system.daylight as DayLight
-#温馨提示，一个逆天问题导致Pages无法导入，讲究看看就好
+import SeniorOS.apps.logo as Logo
 import os
 import gc
 import SeniorOS.lib.log_manager as LogManager
 import framebuf,time
 Log = LogManager.Log
 
+img = Logo.GetLogo("/SeniorOS/data/ftreader.sros")
 class Animations:
     def ClearFromLeftSide(mode:bool = True):
         if mode:
@@ -67,14 +68,14 @@ class Animations:
         oled.show()
 class picture:
     #fileviewer_images
-    pathpic=bytearray([0X00,0X00,0X3E,0X00,0X41,0X00,0X80,0X80,0X81,0XFC,0XFE,0X02,0X80,0X01,0X80,0X01,0XFF,0XFF,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0X40,0X02,0X3F,0XFC,])
-    filepic=bytearray([0X00,0X00,0X3F,0XC0,0X20,0X60,0X2F,0X50,0X20,0X48,0X2F,0X7C,0X20,0X04,0X23,0XC4,0X22,0X04,0X23,0X84,0X22,0X04,0X22,0X04,0X22,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
+    pathpic=img.Logo(0)
+    filepic=img.Logo(1)
     runpic=filepic
-    picpic=bytearray([0XFF,0XFF,0X80,0X01,0X8C,0X01,0X92,0X01,0X92,0X09,0X8C,0X15,0X80,0X23,0X84,0X41,0X8A,0X81,0X91,0X01,0XA0,0X01,0XC0,0X01,0X80,0X01,0X80,0X01,0X80,0X01,0XFF,0XFF,])
+    picpic=img.Logo(2)
     #DiskManager_images
-    Flash = bytearray([0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X00,0X0F,0XEF,0X10,0X08,0X20,0X0E,0X7F,0XE8,0X40,0X08,0X58,0X02,0X58,0X02,0X40,0X02,0X7F,0XFE,])
-    SDCard = bytearray([0X00,0X00,0X3F,0XC0,0X20,0X20,0X20,0X10,0X20,0X08,0X20,0X04,0X20,0X04,0X26,0XE4,0X28,0X94,0X26,0X94,0X22,0X94,0X2C,0XE4,0X20,0X04,0X20,0X04,0X3F,0XFC,0X00,0X00,])
-    EXIT = bytearray([0X00,0X00,0X00,0X00,0X00,0X40,0X00,0X80,0X01,0X00,0X03,0XF0,0X01,0X08,0X00,0X84,0X00,0X44,0X00,0X04,0X00,0X04,0X00,0X08,0X1F,0XF0,0X00,0X00,0X00,0X00,0X00,0X00,])
+    Flash = img.Logo(3)
+    SDCard = img.Logo(4)
+    EXIT = img.Logo(5)
 class Textreader:
     def __init__(self, text, splitCfg="\n"):
         self.text = text.split(splitCfg)

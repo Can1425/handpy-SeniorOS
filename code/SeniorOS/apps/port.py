@@ -1,10 +1,11 @@
-from SeniorOS.lib.devlib import *
-from SeniorOS.apps.logo import Logo
+import gc
+from SeniorOS.lib.devlib import *#;gc.collect()
+import SeniorOS.apps.logo as Logo
 import SeniorOS.system.daylight as DayLight
 import SeniorOS.system.core as Core
 import sys,os,gc
 import SeniorOS.lib.pages_manager as PagesManager
-
+LogoShow = Logo.GetLogo("/SeniorOS/data/Logo.sros")
 appNum = 0
 operationalJudgment = 0
 List = Core.Data.Get("list", "localAppName")
@@ -37,51 +38,58 @@ def Bitmap(bitMap0, bitMap1, bitMap2, bitMap3, bitMap4, startX, startY, endX, en
         DayLight.VastSea.Off()
 def PYTouch(a,b,c,d):Bitmap(a, b, c, d, None, 50, 10, 110, 10)
 def ONTouch(a,b,c,d,e):Bitmap(a, b, c, d, e, 50, 10, -10, 10)
-def App():
+def MAIN():
     global appNum
-    appNum = 0
     while not eval("[/GetButtonExpr('ath')/]"):
         oled.fill_rect(0,50,128,16,0)
         try:oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
         except:appNum-=1;oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
         if appNum - 1 >= 0:
-            oled.Bitmap(-10, 10, Logo[appNum - 1], 25, 25, 1)
-        oled.Bitmap(50, 10, Logo[appNum], 25, 25, 1)
-        if appNum < len(Logo) - 1:
-            oled.Bitmap(110, 10, Logo[appNum + 1], 25, 25, 1)
+            oled.Bitmap(-10, 10, LogoShow.Logo(appNum - 1), 25, 25, 1)
+        oled.Bitmap(50, 10, LogoShow.Logo(appNum), 25, 25, 1)
+        if appNum < LogoShow.LogoLength() - 1:
+            oled.Bitmap(110, 10, LogoShow.Logo(appNum + 1), 25, 25, 1)
         oled.hline(0, 46, 128, 1)
         oled.show()
         oled.fill_rect(0,50,128,16,0)
         oled.DispChar("<  {}  >".format(List[appNum]),DayLight.AutoCenter("<  {}  >".format(List[appNum])), 48, 1)
         if eval("[/GetButtonExpr('py')/]"):
                 if appNum - 1 >= 0:
-                    if appNum - 2 >= 0 and not (appNum == len(Logo) - 1):
-                        PYTouch(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], Logo[appNum + 1])
-                    elif appNum == len(Logo) - 1:
-                        try:PYTouch(Logo[appNum - 2], Logo[appNum - 1], Logo[appNum], None)
-                        except:PYTouch(None, Logo[appNum - 1], Logo[appNum], None)
+                    if appNum - 2 >= 0 and not (appNum == LogoShow.LogoLength() - 1):
+                        PYTouch(LogoShow.Logo(appNum - 2), LogoShow.Logo(appNum - 1), LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1))
+                    elif appNum == LogoShow.LogoLength() - 1:
+                        try:PYTouch(LogoShow.Logo(appNum - 2), LogoShow.Logo(appNum - 1), LogoShow.Logo(appNum), None)
+                        except:PYTouch(None, LogoShow.Logo(appNum - 1), LogoShow.Logo(appNum), None)
                     else:
-                        PYTouch(None, Logo[appNum - 1], Logo[appNum], Logo[appNum + 1])
+                        PYTouch(None, LogoShow.Logo(appNum - 1), LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1))
                     appNum -= 1
         elif eval("[/GetButtonExpr('on')/]"):
-            if appNum + 2 <= len(Logo) - 1:
+            if appNum + 2 <= LogoShow.LogoLength() - 1:
                 if appNum - 1 >= 0:
                     ist = appNum - 2 >= 0#温馨提示，这里所有的ist都是bool类型，只占1个字节，不用改了
-                    ONTouch((Logo[appNum - 2] if ist else None), 
-                            Logo[appNum - 1],Logo[appNum], Logo[appNum + 1], Logo[appNum + 2])
+                    ONTouch((LogoShow.Logo(appNum - 2) if ist else None), 
+                            LogoShow.Logo(appNum - 1),LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1), LogoShow.Logo(appNum + 2))
                 else:
-                    ONTouch(None, None, Logo[appNum], Logo[appNum + 1], Logo[appNum + 2])
-            elif appNum + 1 <= len(Logo) - 1:
+                    ONTouch(None, None, LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1), LogoShow.Logo(appNum + 2))
+            elif appNum + 1 <= LogoShow.LogoLength() - 1:
                 if appNum - 1 >= 0:
                     ist = appNum - 2 >= 0
-                    ONTouch((Logo[appNum - 2] if ist else None),
-                            Logo[appNum - 1],Logo[appNum], Logo[appNum + 1], None)
+                    ONTouch((LogoShow.Logo(appNum - 2) if ist else None),
+                            LogoShow.Logo(appNum - 1),LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1), None)
                 else:
-                    ONTouch(None, None, Logo[appNum], Logo[appNum + 1], None)
+                    ONTouch(None, None, LogoShow.Logo(appNum), LogoShow.Logo(appNum + 1), None)
             appNum += 1
         elif eval("[/GetButtonExpr('th')/]"):
-            DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, 5, 0)
-            PagesManager.Main.Import('SeniorOS.apps.%s'%appDir[appNum], 'Main')
-            del sys.modules["{}.apps.{}".format(eval("[/Const('systemName')/]"),appDir[appNum])]
-            gc.collect()
-            DayLight.VastSea.SeniorMove.Text(List[appNum], 5, 0, DayLight.AutoCenter(List[appNum]), 48)
+            return
+def App():
+    global appNum
+    while True:
+        gc.collect()
+        MAIN()
+        gc.collect()
+        DayLight.VastSea.SeniorMove.Text(List[appNum], DayLight.AutoCenter(List[appNum]), 48, 5, 0)
+        PagesManager.Main.Import('SeniorOS.apps.%s'%appDir[appNum], 'Main')
+        del sys.modules["{}.apps.{}".format(eval("[/Const('systemName')/]"),appDir[appNum])]
+        gc.collect()
+        DayLight.VastSea.SeniorMove.Text(List[appNum], 5, 0, DayLight.AutoCenter(List[appNum]), 48)
+    
