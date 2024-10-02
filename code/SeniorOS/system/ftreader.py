@@ -74,7 +74,7 @@ class picture:
     picpic=img.Logo(2)
     #DiskManager_images
     Flash = img.Logo(3)
-    SDCard = img.Logo(4)
+    #SDCard = img.Logo(4)
     EXIT = img.Logo(5)
 class Textreader:
     def __init__(self, text, splitCfg="\n"):
@@ -130,10 +130,12 @@ class DiskManager:
         self.sd_read_only = False
     def DiskManager(self):
         while True:
-            options = DayLight.ListOptions(["打开存储器","SD卡管理器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.SDCard,picture.EXIT])
+            options = DayLight.ListOptions(["打开存储器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.EXIT])
+            #options = DayLight.ListOptions(["打开存储器","SD卡管理器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.SDCard,picture.EXIT])
             gc.collect()
             if options == 0:
                 FileViewer().fileviewer(self.DiskListPoint[DayLight.ListOptions(self.DiskList,False,appTitle = "选择盘")])
+                '''
             elif options == 1:
                 options = DayLight.ListOptions(["挂载SD卡","卸载SD卡"],False,appTitle = "选择操作")
                 if options == 0: #已导入
@@ -153,8 +155,8 @@ class DiskManager:
                         self.DiskList.remove("SDCard")
                         self.DiskListPoint.remove("/sd")
                     else:
-                        Pages.Message("未挂载SD卡!",True)
-            elif options == 2:
+                        Pages.Message("未挂载SD卡!",True)'''
+            elif options == 1:
                 return 0
 class FileViewer:
     def __init__(self):
