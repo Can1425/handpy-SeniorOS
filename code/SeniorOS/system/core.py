@@ -45,21 +45,6 @@ VitalData = lambda nothing:Data.Get("text","touchPadValue")
 class AppSetup:
     def __init__(self,filePath):
         self.filePath=filePath
-    def WriteLogoData(self,logoData):
-        print(os.getcwd())
-        with open("/SeniorOS/apps/logo.py","r") as f:
-            tmp=f.read()
-            t=f.read().split("\r\n")
-            print(t)
-            tl=len(t)
-            t[tl-1]=",   "+logoData
-            t.append("]")
-            print(t)
-        with open("/SeniorOS/apps/logo.py","w") as f:
-            f.write(tmp[:-1])
-        with open("/SeniorOS/apps/logo.py","a+") as f:
-            f.write("\r\n".join(t))
-            f.write(",")
     def Main(self):
         #安装文件格式:
         #------------------------------(安装example.py)
@@ -69,20 +54,13 @@ class AppSetup:
         # //以下都是文件数据
         #---------------------------------------------
         with open(self.filePath,"r") as app:
-            print(self.filePath)
-            appData=(app.read()).split('\r\n')
-            appCFG=[appData[0],appData[1],appData[2]]
-            self.WriteLogoData(appCFG[0])
-            for i in range(3):
-                for j in ["\n","\r","\r\n",'\n','\r','\r\n']:
-                    appCFG[i]=appCFG[i].replace(j,'')
-            Data.Write("list","localAppName",appCFG[1])
-            with open("/SeniorOS/apps/{}".format(str(appCFG[2])),"w") as f:
-                lines=0
-                for i in appData:
-                    if lines>2:
-                        f.write(i+'\n')
-                    lines+=1
+            app.seek(0)
+            with open("/SeniorOS/data/Logo.sros","a") as logo:
+                logo.write(app.readline().strip().strip("\n"))
+            Data.Write("list",Data.Get("list","localAppName").append(app.readline().strip().strip("\n")))
+            with open("/SeniorOS/apps/%s"%(app.readline().strip().strip("\n")),"w") as appdata:
+                if app.read(512) == "":return 0
+                appdata.write(app.read())
         return '''
 # Core.AppSetup("/SeniorOS/download/test.spk").setup()
     
