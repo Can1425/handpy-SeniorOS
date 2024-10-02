@@ -5,6 +5,7 @@ import time
 from SeniorOS.lib.devlib import *
 import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.lib.pages_manager as PagesManager
+from SeniorOS.system.ftreader import Animations
 import framebuf
 LogManager.Output("system/daylight.mpy", "INFO")
 
@@ -234,23 +235,7 @@ class VastSea:
     @staticmethod   
     def Transition(mode:bool = True):
         if int(Core.Data.Get("text", "VastSeaSwitch")) == 1:
-            if mode:
-                for i in range(13):
-                    times = i**2
-                    oled.vline(times, 0, 64, 1)
-                    oled.vline(times+1, 0, 64, 0)
-                    oled.fill_rect(0, 0, times, 64, 0)
-                    oled.show()
-            else:
-                for i in range(13):
-                    times = 13 - i
-                    times_squared = times ** 2
-                    oled.fill_rect(0, 0, 128, 64, 0)
-                    oled.vline(times_squared, 0, 64, 1)
-                    oled.vline(times_squared + 1, 0, 64, 0)
-                    oled.show()
-                oled.fill_rect(0, 0, 128, 64, 0)
-                oled.show()
+            Animations.ClearFromLeftSide(mode)
         else:
             VastSea.Off()
         
