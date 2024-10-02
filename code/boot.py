@@ -15,29 +15,30 @@ def Selset(ItemString:str,x,y,*MoreString):
     oled.fill(0)
     oled.DispChar('启动至 %s'%(ItemString.split(" - ")[1]),5,0)
     if MoreString != ():
-        for i in [0,1,2]:oled.DispChar(MoreString[i],5,(i + 1) << 4)
+        for i in range(len(MoreString)):oled.DispChar(MoreString[i],5,(i + 1) << 4)
     oled.show()
     time.sleep(0.5)
+runningList = ['PY - SeniorOS','TH - REPL',"ON - main.py"]
 while True:
     oled.fill(0)
     oled.DispChar(eval("[/Language('SeniorOS 启动选择器')/]") ,5,0)
-    oled.DispChar('PY - SeniorOS',5,16)
-    oled.DispChar('TH - REPL',5,32)
-    oled.DispChar("ON - main.py",5,48)
+    for i in range(len(runningList)):oled.DispChar(runningList[i],5,(i + 1) << 4)
     oled.show()
     while not eval("[/GetButtonExpr('pythonb')/]"):
         pass
     if eval("[/GetButtonExpr('py')/]"):
-        Selset("PY - SeniorOS",5,16)
+        Selset(runningList[0],5,16)
         gc.enable()
         oled.contrast(int(Core.Data.Get("text", "luminance")))
-        __import__('SeniorOS.system.main')
+        with open("/SeniorOS/system/main.py") as f:
+            c=compile(f.read(),"/SeniorOS/system/main.py","exec")
+        exec(c)
         break
     elif eval("[/GetButtonExpr('on')/]"):
-        Selset("ON - main.py",5,48)
+        Selset(runningList[2],5,48)
         break
     elif eval("[/GetButtonExpr('th')/]"):
-        Selset("TH - REPL",5,32,"屏幕缓冲区已清空")
+        Selset(runningList[1],5,32,"屏幕缓冲区已清空")
         oled.fill(0)
         ClearVar() # 清空全局变量
         sys.exit(1)

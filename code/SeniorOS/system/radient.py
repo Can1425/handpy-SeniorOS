@@ -13,7 +13,7 @@ class ShareVar:
         DownloadSpeed = 0
         DownloadExit = False
         Downloadlength = 0
-def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
+def GetToFile(url,file,timeout=2,bufferSize=1024,reprMpy=True):#此处file是对象
     if not url.startswith("http://"):url = "http://" + url
     print("访问:"+url)
     url_parse = url.split('/')
@@ -37,7 +37,7 @@ def GetToFile(url,file,timeout=2,bufferSize=1024):#此处file是对象
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
             #ShareVar.ui.Downloadlength = int(data.decode().split('\r\n')[1].split(' ')[1])
             try:
-                file.write(data.decode().split("\r\n\r\n")[1])
+                file.write(data.decode().split("\r\n\r\n")[1].replace("mpython","SeniorOS.lib.devlib"))
                 ShareVar.ui.DownloadSpeed = len(data.decode().split("\r\n\r\n")[1])
             except:pass
         elif StatusCode == "200":

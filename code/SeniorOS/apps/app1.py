@@ -55,10 +55,7 @@ def Main():
                                       timeout=3,
                                       bufferSize=2048)
                 Core.FullCollect()
-                with open(file_name, "r") as file:
-                    c=compile(file.read(), file_name, 'exec')
-                Core.FullCollect()
-                exec(c)
+                execfile(file_name)
                 DayLight.VastSea.Off()
             if options == 1:
                 DayLight.VastSea.Off()
