@@ -4,15 +4,8 @@
 # radient.py - by LP_OVER
 import socket
 import gc
-import SeniorOS.system.ui as ui
-import _thread
 class CodeError(Exception):
     pass
-class ShareVar:
-    class ui:
-        DownloadSpeed = 0
-        DownloadExit = False
-        Downloadlength = 0
 def GetToFile(url,file,timeout=2,bufferSize=1024,reprMpy=True):#此处file是对象
     if not url.startswith("http://"):url = "http://" + url
     print("访问:"+url)
@@ -27,25 +20,19 @@ def GetToFile(url,file,timeout=2,bufferSize=1024,reprMpy=True):#此处file是对
     s.settimeout(timeout)
     s.send(('GET {} HTTP/1.1\r\nHost: {}\r\n\r\n'.format(path, host)).encode())
     StatusCode = ""
-    ShareVar.ui.DownloadExit = True
-    _thread.start_new_thread(ui.radient_UI.GetToFile_UI,())
     while True:
         gc.collect()
         try:data = s.recv(bufferSize)
-        except:ShareVar.ui.DownloadExit = False;break
+        except:break
         if StatusCode != "200":
             StatusCode = data.decode().split('\r\n')[0].split(' ')[1]
             #ShareVar.ui.Downloadlength = int(data.decode().split('\r\n')[1].split(' ')[1])
             try:
                 file.write(data.decode().split("\r\n\r\n")[1].replace("mpython","SeniorOS.lib.devlib"))
-                ShareVar.ui.DownloadSpeed = len(data.decode().split("\r\n\r\n")[1])
             except:pass
         elif StatusCode == "200":
             file.write(data.decode())
-            ShareVar.ui.DownloadSpeed = len(data.decode())
         elif StatusCode != "" and len(StatusCode) > 0:
-            ShareVar.ui.DownloadExit = False
-            oled.fill(0);oled.show()
             raise CodeError("status_code is {}".format(StatusCode))
         del data
     s.close()

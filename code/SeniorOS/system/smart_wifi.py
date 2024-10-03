@@ -4,17 +4,13 @@
 # SmartWifi - by LP_OVER
 import network
 import socket
-import gc,_thread
+import gc
 import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.system.pages as Pages
-import SeniorOS.system.ui as ui
 ap = network.WLAN(network.AP_IF)
 ap.config(essid='SeniorOS-WIFI', authmode=4, password='12345678')
 ap.active(True)
 Log = LogManager.lm
-class ShareVar:
-    message = ""
-    Exit = True
 def main():
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -22,7 +18,6 @@ def main():
     s.listen(5)
     Log.Info(ap.ifconfig()[0])
     ssid="";pwd=""
-    ShareVar.Exit = False;_thread.start_new_thread(ui.SmartWifi_UI.UI,())
     while True:
         client_sock, client_addr = s.accept()
         print('Client address:', client_addr)
@@ -39,7 +34,6 @@ def main():
             Log.Info("WifiSSID:{}".format(returnText))
             ssid=returnText
             client_sock.write('get')
-            ShareVar.message = "WiFi名称:{}".format(ssid)
         elif returnText.startswith('GET /?pwd='):
             returnText=returnText.split("/")[1]
             returnText=returnText[:-5]
@@ -47,12 +41,10 @@ def main():
             Log.Info("WifiPassword:{}".format(returnText))
             pwd=returnText
             client_sock.write('get')
-            ShareVar.message = "WiFi密码:{}".format(pwd)
         elif returnText.startswith("GET /exit"):
             Pages.ConfigureWLAN(ssid,pwd)
             del s,ap,client_sock,client_addr,ssid,pwd,returnText,h
             gc.collect()
-            ShareVar.Exit = True
             return(ssid,pwd)
         else:
             pass
