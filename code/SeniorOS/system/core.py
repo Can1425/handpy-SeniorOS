@@ -41,7 +41,7 @@ Data = DataCtrl("/SeniorOS/data/")
 VitalData = lambda nothing:Data.Get("text","touchPadValue")
 #def VitalData(*nothing):
  #   return (int(Data.Get("text", "touchPadValue")))
-'''
+
 class AppSetup:
     def __init__(self,filePath):
         self.filePath=filePath
@@ -61,7 +61,7 @@ class AppSetup:
             with open("/SeniorOS/apps/%s"%(app.readline().strip().strip("\n")),"w") as appdata:
                 if app.read(512) == "":return 0
                 appdata.write(app.read())
-        return '''
+        return
 # Core.AppSetup("/SeniorOS/download/test.spk").setup()
     
 # 文件/路径 格式工厂
