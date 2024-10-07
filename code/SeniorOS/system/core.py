@@ -69,6 +69,7 @@ class File_Path_Factory:
 
     # 将所有的斜杠替换为反斜杠 便于统一路径
     Replace2Backslash = lambda path: path.replace("/", "\\")
+    ReplaceCRLF2LF = lambda path: path.replace("\r\n", "\n")
     #def Replace2Backslash(path):
     #    return path.replace("\\","/")
 
@@ -110,7 +111,7 @@ def FullCollect():
 
 # 获取设备ID
 def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),mode=1):
-    return ("".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x")) if mode == 0 else "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x")))
+    return ("".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x")) if not bool(mode) else "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x")))
     #if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
     #elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
 '''

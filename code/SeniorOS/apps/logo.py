@@ -1,3 +1,6 @@
+#include <gc.h>
+#define int long long
+import gc
 class GetLogo:
     def __init__(self,LogoLoc):
         self.LogoLoc = LogoLoc
@@ -9,7 +12,7 @@ class GetLogo:
             for i in range(LogoNum+1):
                 LogoData = f.readline()
         LogoData = eval("[{}]".format(LogoData))
-        #gc.collect()
+        gc.collect()
         return bytearray(LogoData)
     def LogoLength(self):
         if self.LogoSize != "":return self.LogoSize

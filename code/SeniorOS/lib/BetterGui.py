@@ -1,5 +1,3 @@
-# gui for mpython
-# MIT license; Copyright (c) 2019 Zhang Kaihua(apple_eat@126.com)
 import time, math, gc
 from framebuf import FrameBuffer
 import framebuf
@@ -39,12 +37,11 @@ class UI():
         qr.make()
         for _y in range(qr.matrix.height):    # each scanline in the height
             for _x in range(qr.matrix.width):
-                if qr.matrix[_x, _y]:
-            
-                    self.display.fill_rect(_x*scale + x,_y*scale + y ,scale,scale,0)
-                else:
-              
-                    self.display.fill_rect(_x*scale + x ,_y*scale + y,scale,scale,1)
+                self.display.fill_rect(_x*scale + x,_y*scale + y ,scale,scale,int(not(qr.matrix[_x, _y]) ))
+                #if qr.matrix[_x, _y]:
+                #    self.display.fill_rect(_x*scale + x,_y*scale + y ,scale,scale,0)
+                #else:
+                #    self.display.fill_rect(_x*scale + x ,_y*scale + y,scale,scale,1)
         gc.collect()
         
 class multiScreen():
@@ -69,10 +66,11 @@ class multiScreen():
         for i in range(self.frameCount):
             x = starX + i * 8 + i * self.SymbolInterval
             y = int(1.1 * self.hight) + 8
-            if i == self.index:
-                self.display.Bitmap(x, y, self.activeSymbol, 8, 8, 1)
-            else:
-                self.display.Bitmap(x, y, self.inactiveSymbol, 8, 8, 1)
+            self.display.Bitmap(x, y, self.activeSymbol if i == self.index else self.inactiveSymbol, 8, 8, 1)
+            #if i == self.index:
+            #    self.display.Bitmap(x, y, self.activeSymbol, 8, 8, 1)
+            #else:
+            #    self.display.Bitmap(x, y, self.inactiveSymbol, 8, 8, 1)
 
     def nextScreen(self):
         self.index = (self.index + 1) % self.frameCount

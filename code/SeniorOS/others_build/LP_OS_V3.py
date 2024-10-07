@@ -1,4 +1,4 @@
-from mpython import *
+from SeniorOS.lib.devlib import *
 
 SET = None
 
