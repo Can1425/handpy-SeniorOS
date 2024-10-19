@@ -2,22 +2,23 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 # SmartWifi - by LP_OVER
-import network
-import socket
-import gc
-import SeniorOS.lib.log_manager as LogManager
-import SeniorOS.system.pages as Pages
-ap = network.WLAN(network.AP_IF)
-ap.config(essid='SeniorOS-WIFI', authmode=4, password='12345678')
-ap.active(True)
-Log = LogManager.lm
 def main():
+    import network
+    import socket
+    import gc
+    import SeniorOS.lib.log_manager as LogManager
+    import SeniorOS.system.pages as Pages
+    ap = network.WLAN(network.AP_IF)
+    ap.config(essid='SeniorOS-WIFI', authmode=4, password='12345678')
+    ap.active(True)
+    Log = LogManager.lm
     s = socket.socket()
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(socket.getaddrinfo("0.0.0.0", 80)[0][-1])
     s.listen(5)
     Log.Info(ap.ifconfig()[0])
     ssid="";pwd=""
+    gc.collect()
     while True:
         client_sock, client_addr = s.accept()
         print('Client address:', client_addr)
@@ -46,8 +47,6 @@ def main():
             del s,ap,client_sock,client_addr,ssid,pwd,returnText,h
             gc.collect()
             return(ssid,pwd)
-        else:
-            pass
         client_sock.write(b"""
                         HTTP/1.1 200 OK
                         Content-Type: text/html

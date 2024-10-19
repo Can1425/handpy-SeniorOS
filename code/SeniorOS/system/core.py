@@ -39,8 +39,6 @@ class DataCtrl:
 
 Data = DataCtrl("/SeniorOS/data/")
 VitalData = lambda nothing:Data.Get("text","touchPadValue")
-#def VitalData(*nothing):
- #   return (int(Data.Get("text", "touchPadValue")))
 
 class AppSetup:
     def __init__(self,filePath):
@@ -69,7 +67,6 @@ class File_Path_Factory:
 
     # 将所有的斜杠替换为反斜杠 便于统一路径
     Replace2Backslash = lambda path: path.replace("/", "\\")
-    ReplaceCRLF2LF = lambda path: path.replace("\r\n", "\n")
     #def Replace2Backslash(path):
     #    return path.replace("\\","/")
 
@@ -174,7 +171,7 @@ def Tree(path="/",prt=print,_tabs=0):
         prt("│"*_tabs+lk+i)
         if n<ldirs:
             Tree(path+'/'+i,prt,_tabs+1)'''
-
-def ListState(dispContent, selectNum):
-    return "{}/{}".format(selectNum+1, len(dispContent))
-    #return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))
+ListState=lambda dispContent,selectNum:"{}/{}".format(selectNum+1,len(dispContent))
+#def ListState(dispContent, selectNum):
+#    return "{}/{}".format(selectNum+1, len(dispContent))
+#    return (''.join([str(selectNum + 1),'/',str(len(dispContent))]))

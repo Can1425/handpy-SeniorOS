@@ -71,9 +71,8 @@ def CloudNotification():
 
 def HS_CPU():
     oled.fill(0)
-    oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,32)
+    oled.DispChar("目前频率:{} MHZ".format(str(machine.freq()/1000000)),0,16)
     oled.DispChar("MPU - ESP32",0,0)
-    oled.DispChar("NORMAL 160HZ",0,16)
     oled.show()
     while True:
         if button_a.is_pressed():return
@@ -88,8 +87,7 @@ def HS_Ram():
             Collect()
     return 0
 def HS_Flash():
-    fileSystemStatus=os.statvfs("/")
-    fileSystemFree=fileSystemStatus[3] * fileSystemStatus[1]
+    fileSystemFree=os.statvfs("/")[3] * os.statvfs("/")[1]
     oled.fill(0)
     oled.DispChar("Flash - total: 8MB",5,0)
     oled.DispChar("可用:{} MB".format(fileSystemFree/81920),5,16)
@@ -97,12 +95,12 @@ def HS_Flash():
     oled.show()
     while not button_a.is_pressed():
         if button_a.is_pressed():
-            del fileSystemStatus,fileSystemFree
+            del fileSystemFree
             gc.collect()    
             return 0
 def PeripheralPanel():
-    PeripheralList = ["引脚控制","UART控制"]
-    PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P8","Pin.P9","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
+    PeripheralList = ["引脚控制"]
+    PeripheralPin = ["Pin.P0","Pin.P1","Pin.P2","Pin.P3","Pin.P13","Pin.P14","Pin.P15","Pin.P16"]
     while not button_a.is_pressed():
         options = DayLight.Select.Style4(PeripheralList, False, "控制面板")
         if options == 0:
@@ -115,42 +113,27 @@ def PeripheralPanel():
                 DayLight.VastSea.Transition(False)
                 return
             SS=DayLight.Select.Style4(["输出","输入"], False, "选择模式")
-            try:
-                if SS == 0:
-                    while not button_a.is_pressed():
-                        oled.fill(0)
-                        oled.DispChar("引脚 {} 的值为".format(selsetPin),5,0)
-                        PIN=eval("Pin({},Pin.IN)".format(selsetPin))
-                        oled.DispChar(str(PIN.value()),5,16)
-                        oled.show()
-                    DayLight.VastSea.Transition(False)
-                    return
-                else:
-                    while not button_a.is_pressed():
-                        val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
-                        if val != None:
-                            DayLight.VastSea.Transition()
-                            PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
-                            if val == 0:PIN.on()
-                            else:PIN.off()
-                        else:
-                            DayLight.VastSea.Transition(False)
-                            return
-                    return 
-            except:
+            if SS == 0:
                 while not button_a.is_pressed():
                     oled.fill(0)
-                    DayLight.Text("引脚状态获取失败，请尝试检查外设是否正确连接",5, 5, 1)
+                    oled.DispChar("引脚 {} 的值为".format(selsetPin),5,0)
+                    PIN=eval("Pin({},Pin.IN)".format(selsetPin))
+                    oled.DispChar(str(PIN.value()),5,16)
                     oled.show()
                 DayLight.VastSea.Transition(False)
                 return
-        elif options == 1:
-            while not button_a.is_pressed():
-                oled.fill(0)
-                DayLight.Text("暂不可用",5, 5, 1)
-                oled.show()
-            DayLight.VastSea.Transition(False)
-            return
+            elif SS == 1:
+                while not button_a.is_pressed():
+                    val=DayLight.Select.Style4(["高","低"], False, "选择{}电平".format(selsetPin))
+                    if val != None:
+                        DayLight.VastSea.Transition()
+                        PIN=eval("Pin({},Pin.OUT)".format(selsetPin))
+                        if val == 0:PIN.on()
+                        else:PIN.off()
+                    else:
+                        DayLight.VastSea.Transition(False)
+                        return
+                return 
         else:
             DayLight.VastSea.Transition(False)
             return
@@ -322,20 +305,7 @@ def WiFiConfig():
     IP,netmask,gateway,DNS = wifi.sta.ifconfig()
     status = str(wifi.sta.status())
     FTReader.Textreader('是否连接: ' + "是" if wifi.sta.isconnected() else "否" + "\n" + "状态码: "  + status + '\n' + 'IP: ' + IP +'\n' + 'Netmask: ' + netmask + '\n' + 'DNS: ' + DNS + '\n' + 'Gateway: ' + gateway).Main()
-def ToSleep():
-    _thread.start_new_thread(Sleep, ())
-    Home()
-def Sleep():#please use this function in the thread
-    timeout,timenow = 300,0
-    print("[INFO] Sleep() is started")
-    while True:
-        if eval("[/GetButtonExpr('pythonab')/]"):timenow=0
-        else:
-            if timenow >= timeout:break
-            timenow+=1
-        time.sleep(1)
-_thread.stack_size(64)
-_thread.start_new_thread(Sleep, ())
+
 def DeviceID():
     oled.fill(0)
     DayLight.App.Style1('设备标识符')

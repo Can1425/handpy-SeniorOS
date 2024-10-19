@@ -74,7 +74,6 @@ class picture:
     picpic=img.Logo(2)
     #DiskManager_images
     Flash = img.Logo(3)
-    #SDCard = img.Logo(4)
     EXIT = img.Logo(5)
 class Textreader:
     def __init__(self, text, splitCfg="\n"):
@@ -124,38 +123,12 @@ class DiskManager:
     def __init__(self):
         self.DiskList = ["flash"]
         self.DiskListPoint = ["/"]
-        #本来这里可以用json的，但sm dl不给用
-        self.SDCard=False
-        self.RamDisk = False
-        self.sd_read_only = False
     def DiskManager(self):
         while True:
             options = DayLight.ListOptions(["打开存储器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.EXIT])
-            #options = DayLight.ListOptions(["打开存储器","SD卡管理器","退出"],window=False,appTitle = "资源管理",x=16 ,images = [picture.Flash,picture.SDCard,picture.EXIT])
             gc.collect()
             if options == 0:
                 FileViewer().fileviewer(self.DiskListPoint[DayLight.ListOptions(self.DiskList,False,appTitle = "选择盘")])
-                '''
-            elif options == 1:
-                options = DayLight.ListOptions(["挂载SD卡","卸载SD卡"],False,appTitle = "选择操作")
-                if options == 0: #已导入
-                    Pages.Message("请将卡插至P13-P16",True)
-                    #挂载部分
-                    self.sd_read_only = bool(DayLight.ListOptions(["读/写","只读"],False,appTitle = "SD卡权限"))
-                    os.mount(SDCard(sck = Pin.P13, miso = Pin.P14, mosi = Pin.P15, cs = Pin.P16), "/sd", readonly = self.sd_read_only)
-                    Pages.Message("SD卡已挂载至目录  /sd")#看着有点乱
-                    self.SDCard=True
-                    self.DiskList.append("SDCard")
-                    self.DiskListPoint.append("/sd")
-                elif options == 1:
-                    if self.SDCard:
-                        os.umount(self.sd_fsdir)
-                        Pages.Message("SD卡已卸载!",True)
-                        self.SDCard = False
-                        self.DiskList.remove("SDCard")
-                        self.DiskListPoint.remove("/sd")
-                    else:
-                        Pages.Message("未挂载SD卡!",True)'''
             elif options == 1:
                 return 0
 class FileViewer:
@@ -196,7 +169,7 @@ class FileViewer:
             oled.fill(0)
             oled.text("%s"%(path),4,4)
             oled.DispChar(self.Dir[selset_num],16,12)
-            oled.DispChar("TH-打开",0,32)
+            oled.DispChar("TH-打开 B-选项",0,32)
             oled.DispChar("<PY",0,48);oled.DispChar("ON>",104,48)
             oled.DispChar("{}/{}".format(selset_num+1,self.DirLen),DayLight.AutoCenter("{}/{}".format(selset_num+1,self.DirLen)),48)
             oled.Bitmap(0,12,self.PictureConfig[file_config],16,16,1)

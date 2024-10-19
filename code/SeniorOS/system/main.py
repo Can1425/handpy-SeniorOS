@@ -1,7 +1,6 @@
 import gc
 import SeniorOS.lib.log_manager as LogManager
 Log = LogManager.Log
-import _thread
 LogManager.Output("system/main.mpy", "INFO")
 import os;os.chdir('/')
 import SeniorOS.system.core as Core;gc.collect()
@@ -40,10 +39,6 @@ elif info == 2:
     del SmartWifi;gc.collect()
 del info;gc.collect()
 #-----------------
-def GCC():
-    if gc.mem_free() <= 15000:gc.collect()
-_thread.stack_size(32)
-_thread.start_new_thread(GCC,())
 returnData=Pages.Home()
 while not returnData:
     returnData=Pages.Home()

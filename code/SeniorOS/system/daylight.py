@@ -128,20 +128,16 @@ class Select:
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
-                        print("start:{}".format(gc.mem_free()))
                         VastSea.SelsetBoxMove(x, 16+16*(listNum-start),displayItems[listNum - start],
                                               x,16+16*(listNum-start+1),displayItems[listNum - start+1],
                                               MODE="fill_rect")
-                        print("end:{}".format(gc.mem_free()))
                         listNum += 1
                         break
                 elif eval("[/GetButtonExpr('py')/]"):
                     if listNum > 0:
-                        print("start:{}".format(gc.mem_free()))
                         VastSea.SelsetBoxMove(x,16+16*(listNum-start),displayItems[listNum - start],
                                               x,16+16*(listNum-start-1),displayItems[listNum - start-1],
                                               MODE="fill_rect")
-                        print("end:{}".format(gc.mem_free()))
                         listNum -= 1
                         break
                 elif eval("[/GetButtonExpr('th')/]"):
@@ -183,17 +179,13 @@ class VastSea:
             print("内存不足,停止运行!")
             return
         if MODE == "rect":
-            try:char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
-            except:return
-            try:char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
-            except:return
+            char1FB=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            char2FB=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
             oled.DispChar(char,0,0,buffer=char1FB)
             oled.DispChar(NewChar,0,0,buffer=char2FB)
         else:
-            try:char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
-            except:return
-            try:char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
-            except:return
+            char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
+            char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
             char1FB_FILL.fill(1)
             char2FB_FILL.fill(1)
             oled.DispChar(char,0,0,mode=2,buffer=char1FB_FILL)
@@ -222,8 +214,6 @@ class VastSea:
                     x+=(ToX-x)//2
                     y+=(ToY-y)//2
                     time.sleep_ms(25)
-        if MODE == "rect":del char1FB,char2FB
-        else:del char1FB_FILL,char2FB_FILL
         gc.collect()
         return
     @staticmethod   
@@ -344,8 +334,7 @@ class VastSea:
                 VastSea.Off()
             
 def UITools():
-    if bool(int((Core.Data.Get("text", "lightMode")))):oled.invert(1)
-    #if Core.Data.Get("text", "lightMode") == "1":oled.invert(1)
+    if Core.Data.Get("text", "lightMode") == "1":oled.invert(1)
     oled.contrast(int(Core.Data.Get("text", "luminance")))
 
 def LightModeSet():
@@ -370,18 +359,13 @@ def LuminanceSet():
         oled.contrast(luminance)
         oled.fill(0)
         App.Style2(eval("[/Language('亮度调节')/]"))
-        
         oled.DispChar(eval("[/Language('当前值')/]") + str(luminance), 5, 18, 1)
         oled.show()
         if eval("[/GetButtonExpr('on')/]"):
-            luminance = luminance + 5
-            if luminance > 255:
-                luminance = 255
+            luminance = 255 if luminance > 250 else luminance + 5
             oled.contrast(luminance)
         if eval("[/GetButtonExpr('py')/]"):
-            luminance = luminance - 5
-            if luminance < 0:
-                luminance = 0
+            luminance = 0 if luminance - 5 < 0 else luminance - 5
             oled.contrast(luminance)
     oled.contrast(luminance)
     Core.Data.Write("text",'luminance',str(luminance))

@@ -7,15 +7,16 @@ import time
 import SeniorOS.lib.log_manager as LogManager
 LogManager.Output("system/typer.mpy", "INFO")
 
-NL=[
+
+def typeOfNL():
+    NL=[
     ['a','b','c','d','e','f'],
     ['g','h','i','j','k','l'],
     ['m','n','o','p','q','r'],
     ['s','t','u','v','w','x'],
     ['y','z','1','2','3','4'],
     ['5','6','7','8','9','0'],
-]
-def typeOfNL():
+    ]
     #选择NL<list> y轴
     x=0;y=0;up=False
     time.sleep(0.25)
@@ -65,12 +66,12 @@ def typeOfNL():
     time.sleep(0.5)
     if up==True:return NL[y][x].upper()
     else:return NL[y][x]
-PM=[
+def typeOfPM():
+    PM=[
     ['.', ',', ';', ':', '!', '?'],
     [ '"', "'", '-', '—', '(', ')'],
     [ '[', ']', '{', '}', ' ',"_"],
-]
-def typeOfPM():
+    ]
     #选择PM<list> y轴
     x=0;y=0
     time.sleep(0.25)
