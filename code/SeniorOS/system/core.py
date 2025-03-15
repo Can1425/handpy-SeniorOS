@@ -114,7 +114,8 @@ def FullCollect():
 
 # 获取设备ID
 def GetDeviceID(wifiStaObj=network.WLAN(network.STA_IF),mode=1):
-    return ("".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x")) if not bool(mode) else "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x")))
+    return ("".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x")) \
+            if not mode else "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x")))
     #if mode==0:return "".join(str(wifiStaObj.config('mac'))[2:len(str(wifiStaObj.config('mac')))-1].split("\\x"))
     #elif mode==1:return "".join(str(unique_id())[2:len(str(unique_id()))-1].split("\\x"))
 '''
@@ -156,27 +157,4 @@ class Screenshot:
                 # 写入PBM文件头
                 f.write(b'P4\n128 64\n')
                 f.write(buffer)  # 将缓冲区数据写入PBM文件'''
-'''
-def Tree(path="/",prt=print,_tabs=0):
-    lst=os.listdir(path)
-    dirs=[]
-    files=[]
-    l=0
-    for i in lst:
-        pti=path+'/'+i
-        if os.stat(pti)[0] & 0x4000:
-            dirs.append(i)
-        else:
-            files.append(i)
-        l+=1
-    lk="├"
-    ldirs=len(dirs)
-    for n,i in enumerate(dirs+files,1):
-        if n==l:
-            lk="└"
-        prt("│"*_tabs+lk+i)
-        if n<ldirs:
-            Tree(path+'/'+i,prt,_tabs+1)'''
 ListState=lambda dispContent,selectNum:"{}/{}".format(selectNum+1,len(dispContent))
-#def ListState(dispContent, selectNum):
-#    return "{}/{}".format(selectNum+1, len(dispContent))

@@ -128,12 +128,3 @@ python ./tools/Build.py
 ```
 
 将会在`./build`目录下生成真正可运行的文件 使用软件将其按目录结构全部刷入即可
-
-## 使用 HandPyMake 快速体验（测试项）
-
-目前 SeniorOS 已初步适配 HandPyMake
-
-在安装 requirements 且进入创建好的虚拟环境后，在项目目录运行以下指令：
-`hpymake`
-即可自动构建并挂载到掌控板。
-出现提示后，输入 import boot 即可启动 SROS

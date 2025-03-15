@@ -7,14 +7,11 @@ import SeniorOS.system.radient as Radient
 import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.lib.pages_manager as PagesManager
 gc.collect()
-import SeniorOS.lib.VirtualRAM as vRAM
 import ntptime
 import time
 import machine
 import _thread
-ram = vRAM.DiskRam("vram.ram")
-ram.SetItem("str","source","http://%s"%Core.Data.Get("text", "radienPluginsSource"))
-#source = "http://" + Core.Data.Get("text", "radienPluginsSource")
+source = "http://" + Core.Data.Get("text", "radienPluginsSource")
 Log = LogManager.Log
 Log.Info("system/pages.mpy")
 wifi=wifi()
@@ -59,7 +56,7 @@ def CloudNotification():
     _thread.start_new_thread(LoadWait, (Quit, Quit, False))
     oled.show()
     try:
-        notifications = Radient.Get(ram.GetItem("source") + '/Notifications.sros')[1].split(';')
+        notifications = Radient.Get(source + '/Notifications.sros')[1].split(';')
         Quit.value = True
     except IndexError as e:
         print(e)

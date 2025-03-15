@@ -7,13 +7,14 @@ import SeniorOS.lib.log_manager as LogManager
 import SeniorOS.lib.pages_manager as PagesManager
 #from SeniorOS.system.ftreader import Animations
 import framebuf
+import micropython
 LogManager.Output("system/daylight.mpy", "INFO")
 
 # 缓存时间相关的字符串
+@micropython.native
 def UITime(pages=True):
-    h = str(Core.GetTime.Hour())
-    m = str(Core.GetTime.Min())
-    return ('0%s'%(h) if not (bool(len(h)-1)) else h)+(':' if pages else "")+('0%s'%(m) if not (bool(len(m)-1)) else m)
+    t = time.localtime()
+    return f'{t[3]:02}{':' if pages else ""}{t[4]:02}'
 
 GetCharWidth = lambda s: oled.DispChar(s, 0, 0, Colormode.noshow)[0][0] + int(len(s)/2)
 AutoCenter = lambda string: 64 - GetCharWidth(string) // 2
@@ -38,12 +39,11 @@ class App:
         Text(appTitle, 5, 0, 3, 1, 100)
         oled.DispChar(UITime(True), 93, 0, 1)
 
-    def Style2(appTitle:str, window = False, test = False):
+    def Style2(appTitle:str, window = False, S1 = False):
         oled.fill_rect(0,0,128,16,0)
         UITools()
         if window:Box(1, 1, 126, 62)
-        if test:return
-        Text(appTitle, 5, 5, 3, 1, 90)
+        if not S1:Text(appTitle, 5, 5, 3, 1, 90)
 
 class Select:
     @staticmethod
@@ -94,11 +94,9 @@ class Select:
 
     @staticmethod
     def Style3():
-        #UITools()
         while not button_a.is_pressed():
             if eval("[/GetButtonExpr('on')/]"):return 1
             elif eval("[/GetButtonExpr('py')/]"):return 0
-            time.sleep_ms(int(eval("[/Const('interval')/]")))
 
     @staticmethod        
     def Style4(dispContent:list, window:bool = False, appTitle:str = False, x = 5, images = None):
@@ -126,14 +124,10 @@ class Select:
             while not button_a.is_pressed():
                 if eval("[/GetButtonExpr('on')/]"):
                     if listNum < maxdispcontextindex:
-                        VastSea.SelsetBoxMove(x, 16+16*(listNum-start),displayItems[listNum - start],
-                                              x,16+16*(listNum-start+1),displayItems[listNum - start+1])
                         listNum += 1
                         break
                 elif eval("[/GetButtonExpr('py')/]"):
                     if listNum > 0:
-                        VastSea.SelsetBoxMove(x,16+16*(listNum-start),displayItems[listNum - start],
-                                              x,16+16*(listNum-start-1),displayItems[listNum - start-1])
                         listNum -= 1
                         break
                 elif eval("[/GetButtonExpr('th')/]"):return listNum
@@ -165,33 +159,8 @@ class VastSea:
                 VastSea.Transition(False)
             VastSea.Transition(False)
     @staticmethod
-    def SelsetBoxMove(x,y,char,ToX,ToY,NewChar):
-        sx=x;sy=y
-        NowWidth = GetCharWidth(char)
-        ToWidth = GetCharWidth(NewChar)
-        gc.collect()
-        if gc.mem_free() < (5 * (16 * NowWidth + 16 * ToWidth)):return
-        char1FB_FILL=framebuf.FrameBuffer(bytearray(16*NowWidth),NowWidth,16,framebuf.MONO_VLSB)
-        char2FB_FILL=framebuf.FrameBuffer(bytearray(16*ToWidth),ToWidth,16,framebuf.MONO_VLSB)
-        char1FB_FILL.fill(1)
-        char2FB_FILL.fill(1)
-        oled.DispChar(char,0,0,mode=2,buffer=char1FB_FILL)
-        oled.DispChar(NewChar,0,0,mode=2,buffer=char2FB_FILL)
-        if ToWidth > 0:
-            NowW=GetCharWidth(char)
-            for _ in range(6):
-                oled.blit(char1FB_FILL,sx,sy)
-                oled.fill_rect(x,y,NowW,16,1)
-                oled.blit(char2FB_FILL,ToX,ToY)
-                oled.show()
-                oled.fill_rect(x,y,NowW,16,0)
-                NowW+=(ToWidth-NowW)//2
-                x+=(ToX-x)//2
-                y+=(ToY-y)//2
-                time.sleep_ms(25)
-        del char1FB_FILL, char2FB_FILL
-        gc.collect()
-        return
+    def SelsetBoxMove():
+        pass
     @staticmethod   
     def Off():
         oled.fill(0)
@@ -353,5 +322,5 @@ def TouchPadValueSet():
     TouchPad.config(sensitivity)
     return Core.Data.Write("text","touchPadValue",sensitivity)
 
-mode={0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}
-Text = lambda text,x,y,outMode,space = 1,maximum_x=126,returnX=5,returnAddy=16,showMode=1:oled.DispChar(text, x, y, showMode, mode.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
+Text = lambda text,x,y,outMode,space = 1,maximum_x=126,returnX=5,returnAddy=16,showMode=1:\
+oled.DispChar(text, x, y, showMode, {0:Outmode.stop,1:Outmode.autoreturn,2:Outmode.ellipsis}.get(outMode), maximum_x, space, return_x = returnX, return_addy = returnAddy)
